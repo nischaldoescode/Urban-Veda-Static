@@ -1,0 +1,7 @@
+{
+  "name": "Urban Veda - Premium Herbal Juices",
+  "description": "Authentic Ayurvedic herbal juices crafted for modern lifestyles. Freshly made, preservative-free, and delivered daily.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
