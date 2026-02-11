@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, ShieldCheck, HeartPulse, Sparkles, MessageCircle } from 'lucide-react';
 import connectDB from '@/lib/mongodb';
-import Config from '@/lib/models/Config';
+import Config from '@/lib/models/config';
 import Juice from '@/lib/models/Juice';
 import { SiteConfig, Juice as JuiceType } from '@/types';
 import HeroSection from '@/components/home/HeroSection';
