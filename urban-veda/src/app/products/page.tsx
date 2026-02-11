@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import connectDB from '@/lib/mongodb';
-import Config from '@/lib/models/Config';
+import Config from '@/lib/models/config';
 import Juice from '@/lib/models/Juice';
 import { Juice as JuiceType, SiteConfig } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
@@ -29,6 +29,7 @@ export default async function ProductsPage() {
   ]);
 
   return (
+    <>
     <div className="min-h-screen bg-white py-20 px-6">
       <div className="max-w-7xl mx-auto">
         {/* page header */}
@@ -113,6 +114,7 @@ export default async function ProductsPage() {
         )}
       </div>
     </div>
+    </>
   );
 }
 
