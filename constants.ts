@@ -1,5 +1,13 @@
 
-import { Disease, Product, Testimonial } from './types';
+// import { Disease, Product, Testimonial } from './types';
+// Cloud name	
+// djswqd6sd
+// API key	
+// 416911498741665
+// API secret	
+// bVo8zHkixfK7QMkEY4lh2Pgef3w
+
+// CLOUDINARY_URL=cloudinary://416911498741665:bVo8zHkixfK7QMkEY4lh2Pgef3w@djswqd6sd
 
 export const DISEASES: Disease[] = [
   {
