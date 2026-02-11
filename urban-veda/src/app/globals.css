@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    /* custom color palette */
+    --sage-dark: #2d3e2d;
+    --olive: #556b2f;
+    --olive-light: #6b8e23;
+    --sage-bg: #f7f9f7;
+    --herbal-green: #8fbc8f;
+    
+    /* material ui overrides */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+  }
+  
+  body {
+    font-family: 'Inter', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  h1, h2, h3, h4, .serif {
+    font-family: 'Playfair Display', serif;
+  }
+}
+
+@layer components {
+  .bg-sage-gradient {
+    background: linear-gradient(135deg, #f7f9f7 0%, #e8ede8 100%);
+  }
+  
+  .text-sage-dark {
+    color: var(--sage-dark);
+  }
+  
+  .bg-olive {
+    background-color: var(--olive);
+  }
+  
+  .text-olive {
+    color: var(--olive);
+  }
+  
+  /* hide scrollbar utility */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* smooth page transitions */
+@layer utilities {
+  .page-transition {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
