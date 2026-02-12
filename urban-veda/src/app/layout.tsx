@@ -1,10 +1,13 @@
-// root layout - wraps all pages with global providers and metadata
-import type { Metadata } from 'next';
-import { Inter, Playfair_Display } from 'next/font/google';
-import '../styles/globals.css';
-import connectDB from '@/lib/mongodb';
+// root layout - wraps all pages with navigation and footer
+'use client';
 
-// load fonts with next/font for optimization
+import { Inter, Playfair_Display } from 'next/font/google';
+import { useState, useEffect } from 'react';
+import '../styles/globals.css';
+import Navigation from '@/components/layout/Navigation';
+import Footer from '@/components/layout/Footer';
+import MobileNav from '@/components/layout/MobileNav';
+// load fonts
 const inter = Inter({ 
   subsets: ['latin'],
   variable: '--font-inter',
@@ -17,40 +20,68 @@ const playfair = Playfair_Display({
   display: 'swap',
 });
 
-// default metadata - pages can override
-export const metadata: Metadata = {
-  metadataBase: new URL("https://urbanveda.com"),
-  title: {
-    default: 'Urban Veda | Ancient Wisdom for Modern Life',
-    template: '%s | Urban Veda',
-  },
-  description: 'Premium Ayurvedic herbal juices crafted for modern lifestyles. Freshly made, preservative-free, delivered daily.',
-  keywords: ['ayurveda', 'herbal juice', 'detox', 'health', 'wellness', 'organic'],
-  authors: [{ name: 'Urban Veda' }],
-  openGraph: {
-    type: 'website',
-    locale: 'en_US',
-    url: 'https://urbanveda.com',
-    siteName: 'Urban Veda',
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
+// define config type
+interface LayoutConfig {
+  logoName: string;
+  logoImage?: string;
+  announcement: string;
+  whatsappLink: string;
+}
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // initialize database connection on server startup
-  await connectDB();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [config, setConfig] = useState<LayoutConfig>({
+    logoName: 'Urban Veda',
+    logoImage: undefined,
+    announcement: '🌿 trial packs now available!',
+    whatsappLink: 'https://chat.whatsapp.com/HGAz9W01xJsHpIHnGUn38M',
+  });
+
+  // fetch config on mount
+  useEffect(() => {
+    async function fetchConfig() {
+      try {
+        const res = await fetch('/api/config');
+        const data = await res.json();
+        if (data.success) {
+          setConfig({
+            logoName: data.data.logoName,
+            logoImage: data.data.logoImage,
+            announcement: data.data.announcement,
+            whatsappLink: data.data.whatsappLink,
+          });
+        }
+      } catch (error) {
+        console.error('failed to fetch config:', error);
+      }
+    }
+    
+    fetchConfig();
+  }, []);
 
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body className="antialiased">
-        {children}
+        <Navigation 
+          config={config}
+          onMobileMenuOpen={() => setMobileMenuOpen(true)}
+        />
+        
+        <MobileNav
+          isOpen={mobileMenuOpen}
+          onClose={() => setMobileMenuOpen(false)}
+          config={config}
+        />
+
+        <main className="min-h-screen">
+          {children}
+        </main>
+
+        <Footer config={config} />
       </body>
     </html>
   );

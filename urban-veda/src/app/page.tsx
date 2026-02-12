@@ -1,30 +1,37 @@
 // home page - server-side rendered with database data
-import { Metadata } from 'next';
-import Image from 'next/image';
-import Link from 'next/link';
-import { ArrowRight, ShieldCheck, HeartPulse, Sparkles, MessageCircle } from 'lucide-react';
-import connectDB from '@/lib/mongodb';
-import Config from '@/lib/models/config';
-import Juice from '@/lib/models/Juice';
-import { SiteConfig, Juice as JuiceType } from '@/types';
-import HeroSection from '@/components/home/HeroSection';
-import ChallengesSection from '@/components/home/ChallengesSection';
-import ProductPreview from '@/components/home/ProductPreview';
-import CTASection from '@/components/home/CTASection';
+import { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import {
+  ArrowRight,
+  ShieldCheck,
+  HeartPulse,
+  Sparkles,
+  MessageCircle,
+} from "lucide-react";
+import connectDB from "@/lib/mongodb";
+import Config from "@/lib/models/config";
+import Juice from "@/lib/models/Juice";
+import { SiteConfig, Juice as JuiceType } from "@/types";
+import HeroSection from "@/components/home/HeroSection";
+import ChallengesSection from "@/components/home/ChallengesSection";
+import ProductPreview from "@/components/home/ProductPreview";
+import CTASection from "@/components/home/CTASection";
 
 // generate metadata for seo
 export async function generateMetadata(): Promise<Metadata> {
   await connectDB();
-  const config = await Config.findOne().lean();
-
+  const rawConfig = await Config.findOne().lean();
+  const config = rawConfig ? JSON.parse(JSON.stringify(rawConfig)) : null;
+  
   return {
-    title: 'Home',
-    description: config?.metaDescription || 'Ancient wisdom for modern life',
-    keywords: config?.metaKeywords?.split(',') || [],
+    title: "Home",
+    description: config?.metaDescription || "Ancient wisdom for modern life",
+    keywords: config?.metaKeywords?.split(",") || [],
     openGraph: {
-      title: config?.heroHeadline || 'Urban Veda',
-      description: config?.heroSubtext || '',
-      images: [config?.logoImage || '/images/og-image.webp'],
+      title: config?.heroHeadline || "Urban Veda",
+      description: config?.heroSubtext || "",
+      images: [config?.logoImage || "/images/og-image.webp"],
     },
   };
 }
@@ -33,7 +40,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HomePage() {
   // fetch config and juices in parallel for better performance
   await connectDB();
-  
+
   const [config, juices] = await Promise.all([
     Config.findOne().lean<SiteConfig>(),
     Juice.find({ isActive: true })
