@@ -7,6 +7,7 @@ import { SiteConfig } from '@/types';
 import { Leaf, Heart, Users, Award } from 'lucide-react';
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://urbanveda.com"),
   title: 'About Us',
   description: 'Learn about Urban Veda\'s journey from a home kitchen to delivering wellness across Bangalore.',
 };

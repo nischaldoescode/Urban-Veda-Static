@@ -1,7 +1,7 @@
 // root layout - wraps all pages with global providers and metadata
 import type { Metadata } from 'next';
 import { Inter, Playfair_Display } from 'next/font/google';
-import './globals.css';
+import '../styles/globals.css';
 import connectDB from '@/lib/mongodb';
 
 // load fonts with next/font for optimization
@@ -19,6 +19,7 @@ const playfair = Playfair_Display({
 
 // default metadata - pages can override
 export const metadata: Metadata = {
+  metadataBase: new URL("https://urbanveda.com"),
   title: {
     default: 'Urban Veda | Ancient Wisdom for Modern Life',
     template: '%s | Urban Veda',

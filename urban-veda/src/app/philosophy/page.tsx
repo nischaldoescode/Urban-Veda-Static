@@ -6,6 +6,7 @@ import Config from "@/lib/models/config";
 import { SiteConfig } from "@/types";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://urbanveda.com"),
   title: "Philosophy",
   description: "Our commitment to honesty, consistency, and ancient wisdom.",
 };

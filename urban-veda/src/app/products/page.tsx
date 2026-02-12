@@ -13,6 +13,7 @@ import { ArrowRight } from 'lucide-react';
 
 // page metadata
 export const metadata: Metadata = {
+  metadataBase: new URL("https://urbanveda.com"),
   title: 'Our Juices',
   description: 'Explore our range of 100% natural, preservative-free Ayurvedic herbal juices.',
 };
