@@ -68,7 +68,7 @@ urban-veda/
 │   └── styles/
 │       └── globals.css                # global styles
 ├── public/
-│   ├── images/                        # static webp images
+│   ├── images/                       # static webp images
 │   └── favicon.ico
 ├── .env.local                         # environment variables
 ├── next.config.js

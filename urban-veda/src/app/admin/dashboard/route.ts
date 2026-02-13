@@ -1,7 +1,8 @@
 /**
- * admin dashboard api endpoint
- * returns statistics and recent activity
- * requires authentication
+ * admin dashboard statistics endpoint
+ * returns product counts and metrics
+ * 
+ * @requires authentication
  */
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
@@ -10,6 +11,7 @@ import { isAuthenticated } from '@/lib/auth';
 
 export async function GET() {
   try {
+    // verify authentication
     const authenticated = await isAuthenticated();
     if (!authenticated) {
       return NextResponse.json(
@@ -18,12 +20,15 @@ export async function GET() {
       );
     }
 
+    // connect to database
     await connectDB();
 
     // fetch statistics
     const totalProducts = await Juice.countDocuments();
     const activeProducts = await Juice.countDocuments({ isActive: true });
+    const popularProducts = await Juice.countDocuments({ isPopular: true });
 
+    // return stats
     return NextResponse.json({
       success: true,
       stats: {
@@ -36,7 +41,7 @@ export async function GET() {
   } catch (error) {
     console.error('dashboard error:', error);
     return NextResponse.json(
-      { success: false, error: 'failed to fetch dashboard' },
+      { success: false, error: 'failed to fetch dashboard stats' },
       { status: 500 }
     );
   }

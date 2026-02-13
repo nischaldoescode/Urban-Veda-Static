@@ -1,50 +1,48 @@
 /**
  * root layout component
- * 
+ *
  * purpose:
  * - wraps all pages with consistent navigation and footer
  * - loads google fonts with optimization
  * - fetches site configuration from api on mount
- * - manages mobile menu state
  * - provides app-style bottom navigation on mobile devices
- * 
+ *
  * structure:
  * - desktop: top navigation bar with links
- * - mobile: hamburger menu + bottom tab bar (app-style)
+ * - mobile: bottom tab bar (app-style)
  * - both: footer with links and social media
- * 
+ *
  * fonts:
  * - inter: body text (sans-serif)
  * - playfair display: headings (serif)
- * 
+ *
  * state management:
  * - config: site configuration from mongodb
- * - mobileMenuOpen: hamburger menu visibility
- * 
+ *
  * @component
  */
-'use client';
+"use client";
 
-import { Inter, Playfair_Display } from 'next/font/google';
-import { useState, useEffect } from 'react';
-import '../styles/globals.css';
-import Navigation from '@/components/layout/Navigation';
-import Footer from '@/components/layout/Footer';
-import MobileNav from '@/components/layout/MobileBottomNav';
-import MobileBottomNav from '@/components/layout/MobileBottomNav';
+import { Inter, Playfair_Display } from "next/font/google";
+import { useState, useEffect } from "react";
+import "../styles/globals.css";
+import { usePathname } from "next/navigation";
+import Navigation from "@/components/layout/Navigation";
+import Footer from "@/components/layout/Footer";
+import MobileBottomNav from "@/components/layout/MobileBottomNav";
 
 // load google fonts with optimization
-const inter = Inter({ 
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
   preload: true,
 });
 
-const playfair = Playfair_Display({ 
-  subsets: ['latin'],
-  variable: '--font-playfair',
-  display: 'swap',
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
+  display: "swap",
   preload: true,
 });
 
@@ -61,7 +59,7 @@ interface LayoutConfig {
 /**
  * root layout component
  * client component to enable state management and api calls
- * 
+ *
  * @param children - page content to render
  */
 export default function RootLayout({
@@ -69,16 +67,15 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // mobile menu visibility state
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
+  const pathname = usePathname();
   // site configuration state with defaults
   const [config, setConfig] = useState<LayoutConfig>({
-    logoName: 'Urban Veda',
+    logoName: "Urban Veda",
     logoImage: undefined,
-    whatsappLink: 'https://chat.whatsapp.com/HGAz9W01xJsHpIHnGUn38M',
+    whatsappLink: "https://chat.whatsapp.com/HGAz9W01xJsHpIHnGUn38M",
   });
 
+  const isAdminRoute = pathname?.startsWith("/admin");
   /**
    * fetch site configuration from api on component mount
    * updates config state with database values
@@ -87,9 +84,9 @@ export default function RootLayout({
   useEffect(() => {
     async function fetchConfig() {
       try {
-        const res = await fetch('/api/config');
+        const res = await fetch("/api/config");
         const data = await res.json();
-        
+
         if (data.success) {
           setConfig({
             logoName: data.data.logoName,
@@ -98,39 +95,35 @@ export default function RootLayout({
           });
         }
       } catch (error) {
-        console.error('failed to fetch config:', error);
+        console.error("failed to fetch config:", error);
       }
     }
-    
+
     fetchConfig();
   }, []);
 
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body className="antialiased">
-        {/* desktop navigation bar - hidden on mobile */}
-        <Navigation 
-          config={config}
-          onMobileMenuOpen={() => setMobileMenuOpen(true)}
-        />
-        
-        {/* mobile hamburger menu - slide-in drawer */}
-        <MobileNav
-          isOpen={mobileMenuOpen}
-          onClose={() => setMobileMenuOpen(false)}
-          config={config}
-        />
+        {/* only show public nav if NOT on admin routes */}
+        {!isAdminRoute && (
+          <>
+            <Navigation config={config} onMobileMenuOpen={() => {}} />
+          </>
+        )}
 
-        {/* main content area with bottom padding for mobile nav */}
-        <main className="min-h-screen pb-20 lg:pb-0">
+        {/* main content - admin layout handles its own wrapper */}
+        <main className={!isAdminRoute ? "min-h-screen pb-20 lg:pb-0" : ""}>
           {children}
         </main>
 
-        {/* mobile bottom tab navigation - app-style */}
-        <MobileBottomNav />
-
-        {/* footer - desktop and mobile */}
-        <Footer config={config} />
+        {/* only show public nav/footer if NOT on admin routes */}
+        {!isAdminRoute && (
+          <>
+            <MobileBottomNav />
+            <Footer config={config} />
+          </>
+        )}
       </body>
     </html>
   );
