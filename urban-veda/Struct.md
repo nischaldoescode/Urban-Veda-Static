@@ -1,6 +1,6 @@
-```
 
 ## Phase 2: Project Structure
+
 ```
 urban-veda/
 ├── src/
@@ -73,3 +73,4 @@ urban-veda/
 ├── .env.local                         # environment variables
 ├── next.config.js
 └── package.json
+```
