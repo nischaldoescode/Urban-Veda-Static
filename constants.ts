@@ -26,6 +26,29 @@
 // JWT_SECRET=UrbanVedaSecretKey@@#??Sobha.567
 // NEXT_PUBLIC_SITE_URL=http://localhost:3000
 // NODE_ENV=development
+// unsigned upload preset
+// fcbeae78-c990-45ad-b0ac-e2651ae90de8 (pid of upload preset)
+// preset name: Urban-Veda-Upload-Preset
+
+// overwrite:false
+// use filename:false
+// unique filename:false
+// use filename as display name:true
+// use asset folder as public id prefix:false
+// type:upload
+// asset folder:Urban-Veda
+
+// signed upload preset
+// 7b7866d6-44a4-42a4-a7af-26bbd4a8435f (pid of upload preset)
+// preset name: Urban-Veda-Images-Signed
+
+// overwrite:true
+// use filename:false
+// unique filename:false
+// use filename as display name:true
+// use asset folder as public id prefix:false
+// type:upload
+// asset folder:urbanveda-static
 
 // i get this error
 
