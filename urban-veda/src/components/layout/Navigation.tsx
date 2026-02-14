@@ -54,9 +54,15 @@ export default function Navigation({ config }: NavigationProps) {
           : "bg-white/70 backdrop-blur-sm"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-        {/* logo section */}
-        <Link href="/" className="flex items-center space-x-3 group">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between lg:justify-between">
+        {/* spacer for mobile centering */}
+        <div className="w-8 lg:hidden" />
+
+        {/* logo section - centered on mobile */}
+        <Link
+          href="/"
+          className="flex items-center space-x-2 sm:space-x-3 group absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0"
+        >
           {config.logoImage ? (
             <div className="relative w-12 h-12">
               <Image
@@ -71,7 +77,7 @@ export default function Navigation({ config }: NavigationProps) {
               <Leaf size={24} />
             </div>
           )}
-          <span className="font-serif text-2xl sm:text-3xl font-bold text-sage-dark tracking-tight">
+          <span className="font-serif text-xl sm:text-2xl lg:text-3xl font-bold text-sage-dark tracking-tight">
             {config.logoName}
           </span>
         </Link>
@@ -109,7 +115,8 @@ export default function Navigation({ config }: NavigationProps) {
           })}
         </div>
 
-        {/* mobile: logo only, navigation in bottom tab bar */}
+        {/* right spacer for mobile (balances the left spacer) */}
+        <div className="w-8 lg:hidden" />
       </div>
     </motion.nav>
   );

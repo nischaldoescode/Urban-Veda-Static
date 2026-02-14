@@ -3,7 +3,13 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, MessageCircle, ShieldCheck, Sparkles } from "lucide-react";
+import {
+  ArrowLeft,
+  MessageCircle,
+  ShieldCheck,
+  Sparkles,
+  Star,
+} from "lucide-react";
 import connectDB from "@/lib/mongodb";
 import Config from "@/lib/models/config";
 import Juice from "@/lib/models/Juice";
@@ -11,6 +17,7 @@ import { Juice as JuiceType, SiteConfig } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import ImageModal from "@/components/products/ImageModal";
 
 // generate metadata for each product page
 export async function generateMetadata({
@@ -85,16 +92,40 @@ export default async function ProductDetailPage({
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-          {/* product image */}
-          <div className="relative rounded-[3rem] overflow-hidden shadow-2xl aspect-[4/5]">
+          {/* product image with 3D sticker + modal trigger */}
+          <div className="relative rounded-[3rem] overflow-hidden shadow-2xl aspect-[4/5] group">
+            <ImageModal
+              src={juice.image}
+              alt={juice.name}
+              stickerSrc={juice.stickerImage}
+            />
             <Image
               src={juice.image}
               alt={juice.name}
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover"
+              className="object-cover transition-transform duration-700 group-hover:scale-105"
               priority
             />
+
+            {/* 3D sticker overlay */}
+            {juice.stickerImage && (
+              <div
+                className="absolute top-6 right-6 w-20 h-20 sm:w-24 sm:h-24 z-10"
+                style={{
+                  filter: "drop-shadow(0 8px 24px rgba(0,0,0,0.25))",
+                  transform: "rotate(8deg)",
+                  animation: "float 3s ease-in-out infinite",
+                }}
+              >
+                <Image
+                  src={juice.stickerImage}
+                  alt="product sticker"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+            )}
 
             {/* organic badge overlay */}
             <div className="absolute bottom-8 left-8 right-8">
@@ -191,9 +222,9 @@ export default async function ProductDetailPage({
               </a>
             </div>
 
-            <p className="text-xs text-gray-400 text-center px-8 italic">
-              ordering is currently handled via whatsapp for customized health
-              goals and subscription coordination in sobha city
+            <p className="text-xs text-gray-400 text-center px-8 italic whitespace-pre-line">
+              {config?.productOrderNote ||
+                "ordering is currently handled via whatsapp for customized health goals and subscription coordination in sobha city"}
             </p>
           </div>
         </div>

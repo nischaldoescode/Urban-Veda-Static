@@ -17,11 +17,29 @@ urban-veda/
 │   │   │   └── page.tsx               # about (ssr)
 │   │   ├── contact/
 │   │   │   └── page.tsx               # new contact page
-│   │   ├── admin/
-│   │   │   ├── layout.tsx             # admin layout
-│   │   │   ├── page.tsx               # admin dashboard
-│   │   │   └── login/
-│   │   │       └── page.tsx           # admin login
+│   ├── admin/
+│   │   ├── dashboard/
+│   │   │   └── route.ts               # dashboard route
+│   │   │
+│   │   ├── login/
+│   │   │   └── page.tsx               # admin login page
+│   │   │
+│   │   ├── media/
+│   │   │   └── page.tsx               # media page
+│   │   │
+│   │   ├── navigation/
+│   │   │   └── page.tsx               # navigation page
+│   │   │
+│   │   ├── pages/
+│   │   │   └── page.tsx               # pages page
+│   │   │
+│   │   ├── products/
+│   │   │   ├── new/
+│   │   │   │   └── page.tsx           # new product page
+│   │   │   └── page.tsx               # products page
+│   │   │
+│   │   └── settings/
+│   │   |    └── page.tsx               # settings page
 │   │   └── api/
 │   │       ├── auth/
 │   │       │   └── login/
@@ -46,11 +64,6 @@ urban-veda/
 │   │   │   ├── HeroSection.tsx
 │   │   │   ├── ChallengesSection.tsx
 │   │   │   └── ProductPreview.tsx
-│   │   ├── admin/
-│   │   │   ├── ConfigEditor.tsx
-│   │   │   ├── JuiceEditor.tsx
-│   │   │   ├── ImageUploader.tsx
-│   │   │   └── LivePreview.tsx
 │   │   └── shared/
 │   │       ├── ScrollReveal.tsx
 │   │       └── LoadingSpinner.tsx

@@ -14,11 +14,18 @@
 
 import { useState, useEffect } from "react";
 import { Save, Link as LinkIcon, Palette, Globe } from "lucide-react";
+import { useToastContext } from "@/components/ui/toast-provider";
 
 interface Settings {
   logoName: string;
   whatsappLink: string;
   milkRideSubscribeLink: string;
+  footerTagline: string;
+  socialLinks: {
+    instagram: string;
+    facebook: string;
+    twitter: string;
+  };
   metaDescription: string;
   metaKeywords: string;
   colorPalette: {
@@ -27,6 +34,12 @@ interface Settings {
     accent: string;
     background: string;
   };
+  contactInfo: {
+    phone: string;
+    email: string;
+    location: string;
+    hours: string;
+  };
 }
 
 export default function SettingsPage() {
@@ -34,6 +47,12 @@ export default function SettingsPage() {
     logoName: "",
     whatsappLink: "",
     milkRideSubscribeLink: "",
+    footerTagline: "",
+    socialLinks: {
+      instagram: "#",
+      facebook: "#",
+      twitter: "#",
+    },
     metaDescription: "",
     metaKeywords: "",
     colorPalette: {
@@ -42,12 +61,21 @@ export default function SettingsPage() {
       accent: "#8fbc8f",
       background: "#f7f9f7",
     },
+    contactInfo: {
+      phone: "+91 81234 56789",
+      email: "hello@urbanveda.com",
+      location: "sobha city, bangalore",
+      hours: "mon-sat, 8am-8pm",
+    },
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [savedSettings, setSavedSettings] = useState<Settings | null>(null);
   const [activeSection, setActiveSection] = useState<
     "general" | "seo" | "colors"
   >("general");
+
+  const { toast } = useToastContext();
 
   /**
    * fetch settings from api
@@ -63,6 +91,40 @@ export default function SettingsPage() {
             logoName: data.data.logoName,
             whatsappLink: data.data.whatsappLink,
             milkRideSubscribeLink: data.data.milkRideSubscribeLink,
+            footerTagline:
+              data.data.footerTagline || "ancient wisdom for a modern world.",
+            socialLinks: data.data.socialLinks || {
+              instagram: "#",
+              facebook: "#",
+              twitter: "#",
+            },
+            metaDescription: data.data.metaDescription,
+            metaKeywords: data.data.metaKeywords,
+            colorPalette: data.data.colorPalette,
+            contactInfo: data.data.contactInfo || {
+              phone: "+91 81234 56789",
+              email: "hello@urbanveda.com",
+              location: "sobha city, bangalore",
+              hours: "mon-sat, 8am-8pm",
+            },
+          });
+          // track original to detect changes
+          setSavedSettings({
+            logoName: data.data.logoName,
+            whatsappLink: data.data.whatsappLink,
+            milkRideSubscribeLink: data.data.milkRideSubscribeLink,
+            footerTagline: data.data.footerTagline || "",
+            socialLinks: data.data.socialLinks || {
+              instagram: "#",
+              facebook: "#",
+              twitter: "#",
+            },
+            contactInfo: data.data.contactInfo || {
+              phone: "",
+              email: "",
+              location: "",
+              hours: "",
+            },
             metaDescription: data.data.metaDescription,
             metaKeywords: data.data.metaKeywords,
             colorPalette: data.data.colorPalette,
@@ -77,6 +139,10 @@ export default function SettingsPage() {
 
     fetchSettings();
   }, []);
+
+  const hasChanges = savedSettings
+    ? JSON.stringify(settings) !== JSON.stringify(savedSettings)
+    : false;
 
   /**
    * save all settings
@@ -93,10 +159,11 @@ export default function SettingsPage() {
       const data = await res.json();
 
       if (data.success) {
-        alert("settings saved successfully");
+        toast("settings saved successfully", "success");
+        setSavedSettings({ ...settings });
       }
-    } catch (error) {
-      alert("failed to save settings");
+    } catch {
+      toast("failed to save settings", "error");
     } finally {
       setSaving(false);
     }
@@ -128,12 +195,16 @@ export default function SettingsPage() {
         </div>
         <button
           onClick={handleSave}
-          disabled={saving}
-          className="flex items-center gap-2 px-6 py-3 bg-olive text-white rounded-xl hover:bg-olive/90 transition-colors disabled:opacity-50"
+          disabled={saving || !hasChanges}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all ${
+            hasChanges
+              ? "bg-olive text-white hover:bg-olive/90 shadow-md"
+              : "bg-gray-100 text-gray-400 cursor-not-allowed"
+          } disabled:opacity-60`}
         >
-          <Save size={18} />
+          <Save size={16} />
           <span className="hidden sm:inline">
-            {saving ? "saving..." : "save all"}
+            {saving ? "saving..." : hasChanges ? "save changes" : "no changes"}
           </span>
         </button>
       </div>
@@ -219,6 +290,100 @@ export default function SettingsPage() {
                 placeholder="https://milkride.com/..."
               />
             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">
+              footer tagline
+            </label>
+            <input
+              type="text"
+              value={settings.footerTagline}
+              onChange={(e) =>
+                setSettings({ ...settings, footerTagline: e.target.value })
+              }
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20"
+              placeholder="ancient wisdom for a modern world."
+            />
+          </div>
+
+          <div className="space-y-3">
+            <label className="block text-sm font-bold text-gray-700">
+              social links
+            </label>
+            {(["instagram", "facebook", "twitter"] as const).map((platform) => (
+              <div key={platform} className="relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400 uppercase tracking-wider w-16">
+                  {platform}
+                </span>
+                <input
+                  type="url"
+                  value={settings.socialLinks[platform]}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      socialLinks: {
+                        ...settings.socialLinks,
+                        [platform]: e.target.value,
+                      },
+                    })
+                  }
+                  className="w-full pl-24 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 text-sm"
+                  placeholder={`https://${platform}.com/yourhandle`}
+                />
+              </div>
+            ))}
+          </div>
+
+          <div className="border-t border-gray-100 pt-5 space-y-3">
+            <label className="block text-sm font-bold text-gray-700">
+              contact details
+            </label>
+            {(
+              [
+                {
+                  key: "phone",
+                  label: "Phone",
+                  placeholder: "+91 xxxxx xxxxx",
+                },
+                {
+                  key: "email",
+                  label: "Email",
+                  placeholder: "hello@yoursite.com",
+                },
+                {
+                  key: "location",
+                  label: "Location",
+                  placeholder: "city, state",
+                },
+                {
+                  key: "hours",
+                  label: "Business Hours",
+                  placeholder: "mon-sat, 9am-6pm",
+                },
+              ] as const
+            ).map(({ key, label, placeholder }) => (
+              <div key={key}>
+                <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wide">
+                  {label}
+                </label>
+                <input
+                  type="text"
+                  value={settings.contactInfo[key]}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      contactInfo: {
+                        ...settings.contactInfo,
+                        [key]: e.target.value,
+                      },
+                    })
+                  }
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 text-sm"
+                  placeholder={placeholder}
+                />
+              </div>
+            ))}
           </div>
         </div>
       )}
@@ -312,6 +477,106 @@ export default function SettingsPage() {
           ))}
         </div>
       )}
+      {/* live color preview */}
+      <div className="mt-4 pt-4 border-t border-gray-100">
+        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
+          preview
+        </p>
+        <div
+          className="rounded-2xl overflow-hidden border border-gray-100 shadow-sm"
+          style={{ background: settings.colorPalette.background }}
+        >
+          {/* navbar preview */}
+          <div className="px-4 py-3 bg-white border-b border-gray-100 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div
+                className="w-6 h-6 rounded-lg flex items-center justify-center"
+                style={{ background: settings.colorPalette.primary }}
+              >
+                <div className="w-3 h-3 bg-white rounded-sm opacity-80" />
+              </div>
+              <span
+                className="text-xs font-bold"
+                style={{ color: settings.colorPalette.secondary }}
+              >
+                urban veda
+              </span>
+            </div>
+            <div className="flex gap-3">
+              {["home", "juices", "about"].map((l) => (
+                <span
+                  key={l}
+                  className="text-[9px] font-bold uppercase tracking-wider text-gray-400"
+                >
+                  {l}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* hero preview */}
+          <div className="px-4 py-5 space-y-3">
+            <h3
+              className="text-sm font-bold font-serif leading-tight"
+              style={{ color: settings.colorPalette.secondary }}
+            >
+              modern life. ancient wisdom.
+            </h3>
+            <p className="text-[10px] text-gray-500 leading-relaxed">
+              freshly cold-pressed herbal juices delivered daily.
+            </p>
+            <div className="flex gap-2">
+              <div
+                className="px-3 py-1.5 rounded-full text-white text-[10px] font-bold"
+                style={{ background: settings.colorPalette.primary }}
+              >
+                trial my pack
+              </div>
+              <div
+                className="px-3 py-1.5 rounded-full text-[10px] font-bold border border-gray-200"
+                style={{ color: settings.colorPalette.secondary }}
+              >
+                join community
+              </div>
+            </div>
+          </div>
+
+          {/* card preview */}
+          <div className="px-4 pb-4">
+            <div className="bg-white rounded-xl p-3 border border-gray-100 shadow-sm">
+              <div className="flex items-center gap-2.5">
+                <div
+                  className="w-8 h-8 rounded-lg"
+                  style={{ background: `${settings.colorPalette.accent}40` }}
+                ></div>
+                <div>
+                  <p
+                    className="text-[10px] font-bold"
+                    style={{ color: settings.colorPalette.secondary }}
+                  >
+                    ayuboost
+                  </p>
+                  <div
+                    className="h-1.5 rounded-full mt-1 w-16"
+                    style={{ background: `${settings.colorPalette.primary}30` }}
+                  >
+                    <div
+                      className="h-full w-2/3 rounded-full"
+                      style={{ background: settings.colorPalette.primary }}
+                    />
+                  </div>
+                </div>
+                <span
+                  className="ml-auto text-[9px] font-bold px-2 py-0.5 rounded-full text-white"
+                  style={{ background: settings.colorPalette.primary }}
+                >
+                  popular
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

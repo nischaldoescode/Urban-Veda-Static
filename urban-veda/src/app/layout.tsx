@@ -54,6 +54,12 @@ interface LayoutConfig {
   logoName: string;
   logoImage?: string;
   whatsappLink: string;
+  footerTagline?: string;
+  socialLinks?: {
+    instagram?: string;
+    facebook?: string;
+    twitter?: string;
+  };
 }
 
 /**
@@ -73,6 +79,8 @@ export default function RootLayout({
     logoName: "Urban Veda",
     logoImage: undefined,
     whatsappLink: "https://chat.whatsapp.com/HGAz9W01xJsHpIHnGUn38M",
+    footerTagline: "ancient wisdom for a modern world.",
+    socialLinks: { instagram: "#", facebook: "#", twitter: "#" },
   });
 
   const isAdminRoute = pathname?.startsWith("/admin");
@@ -92,6 +100,8 @@ export default function RootLayout({
             logoName: data.data.logoName,
             logoImage: data.data.logoImage,
             whatsappLink: data.data.whatsappLink,
+            footerTagline: data.data.footerTagline,
+            socialLinks: data.data.socialLinks,
           });
         }
       } catch (error) {
@@ -113,7 +123,7 @@ export default function RootLayout({
         )}
 
         {/* main content - admin layout handles its own wrapper */}
-        <main className={!isAdminRoute ? "min-h-screen pb-20 lg:pb-0" : ""}>
+        <main className={!isAdminRoute ? "min-h-screen pb-24 lg:pb-0" : ""}>
           {children}
         </main>
 

@@ -1,19 +1,28 @@
 // featured products preview with hover effects
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import Image from 'next/image';
-import Link from 'next/link';
-import { ArrowRight, Sparkles } from 'lucide-react';
-import { Juice } from '@/types';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, Sparkles } from "lucide-react";
+import { Juice } from "@/types";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 interface ProductPreviewProps {
   juices: Juice[];
+  config?: {
+    productPreviewLabel?: string;
+    productPreviewHeadline?: string;
+    productPreviewSubtext?: string;
+    productCardExploreText?: string;
+  };
 }
 
-export default function ProductPreview({ juices }: ProductPreviewProps) {
+export default function ProductPreview({
+  juices,
+  config,
+}: ProductPreviewProps) {
   return (
     <section className="py-20 lg:py-32 bg-gradient-to-b from-sage-bg to-white px-6">
       <div className="max-w-7xl mx-auto">
@@ -26,13 +35,14 @@ export default function ProductPreview({ juices }: ProductPreviewProps) {
             transition={{ duration: 0.8 }}
           >
             <span className="inline-block text-olive font-bold tracking-[0.2em] uppercase text-xs mb-4">
-              signature collection
+              {config?.productPreviewLabel || "signature collection"}
             </span>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-sage-dark font-serif">
-              fresh every morning
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-sage-dark font-serif whitespace-pre-line">
+              {config?.productPreviewHeadline || "fresh every morning"}
             </h2>
-            <p className="text-gray-500 mt-3 text-lg">
-              100% preservative-free. delivered to sobha city.
+            <p className="text-gray-500 mt-3 text-lg whitespace-pre-line">
+              {config?.productPreviewSubtext ||
+                "100% preservative-free. delivered to sobha city."}
             </p>
           </motion.div>
 
@@ -44,12 +54,15 @@ export default function ProductPreview({ juices }: ProductPreviewProps) {
             className="hidden lg:block"
           >
             <Link href="/products">
-              <Button 
+              <Button
                 variant="outline"
                 className="border-2 border-olive text-olive hover:bg-olive hover:text-white font-bold px-6 py-3 rounded-full group"
               >
                 view all juices
-                <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={16} />
+                <ArrowRight
+                  className="ml-2 group-hover:translate-x-1 transition-transform"
+                  size={16}
+                />
               </Button>
             </Link>
           </motion.div>
@@ -77,7 +90,7 @@ export default function ProductPreview({ juices }: ProductPreviewProps) {
                         sizes="(max-width: 768px) 100vw, 50vw"
                         className="object-cover group-hover:scale-110 transition-transform duration-700"
                       />
-                      
+
                       {/* hover overlay */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
                         <Badge className="bg-white/90 text-olive backdrop-blur-sm border-none">
@@ -98,11 +111,14 @@ export default function ProductPreview({ juices }: ProductPreviewProps) {
                       <p className="text-sm text-gray-600 line-clamp-3 leading-relaxed">
                         {juice.description}
                       </p>
-                      
+
                       <div className="pt-4">
                         <span className="inline-flex items-center text-olive font-bold group-hover:gap-2 transition-all">
-                          explore blend
-                          <ArrowRight className="ml-1 group-hover:translate-x-1 transition-transform" size={16} />
+                          {config?.productCardExploreText || "explore blend"}
+                          <ArrowRight
+                            className="ml-1 group-hover:translate-x-1 transition-transform"
+                            size={16}
+                          />
                         </span>
                       </div>
                     </div>
@@ -122,7 +138,7 @@ export default function ProductPreview({ juices }: ProductPreviewProps) {
           className="lg:hidden mt-12 text-center"
         >
           <Link href="/products">
-            <Button 
+            <Button
               variant="outline"
               className="border-2 border-olive text-olive hover:bg-olive hover:text-white font-bold px-8 py-4 rounded-full"
             >

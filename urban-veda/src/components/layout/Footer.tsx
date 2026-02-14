@@ -9,6 +9,12 @@ interface FooterProps {
   config: {
     logoName: string;
     whatsappLink: string;
+    footerTagline?: string;
+    socialLinks?: {
+      instagram?: string;
+      facebook?: string;
+      twitter?: string;
+    };
   };
 }
 
@@ -92,7 +98,7 @@ export default function Footer({ config }: FooterProps) {
               className="flex items-center space-x-4"
             >
               <a
-                href="#"
+                href={config.socialLinks?.instagram || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-gray-100 hover:bg-olive hover:text-white p-3 rounded-xl transition-all duration-300"
@@ -167,8 +173,8 @@ export default function Footer({ config }: FooterProps) {
           className="mt-16 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4"
         >
           <p className="text-sm text-gray-500 text-center md:text-left">
-            © {currentYear} {config.logoName}. ancient wisdom for a modern
-            world.
+            © {currentYear} {config.logoName}.{" "}
+            {config.footerTagline || "ancient wisdom for a modern world."}
           </p>
 
           <Link

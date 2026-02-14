@@ -1,17 +1,47 @@
-// admin login endpoint
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import connectDB from "@/lib/mongodb";
-import Admin from "@/lib/models/Admin";
 import { verifyPassword, generateToken } from "@/lib/auth";
+import mongoose from "mongoose";
+
+// define schema inline to avoid any model caching issues
+const AdminSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  passwordHash: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
+});
+
+function getAdminModel() {
+  return mongoose.models.Admin || mongoose.model("Admin", AdminSchema);
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const { username, password } = await request.json();
+    const body = await request.json();
+    const { username, password } = body;
+
+    // console.log("=== LOGIN DEBUG ===");
+    // console.log("Username:", username);
+    // console.log("Password length:", password?.length);
 
     await connectDB();
 
+    const Admin = getAdminModel();
+
+    // log which database we're connected to
+    // console.log("DB name:", mongoose.connection.db?.databaseName);
+    // console.log("Looking for username:", username);
+
+    // find all admins to debug
+    const allAdmins = await Admin.find({});
+    // console.log("Total admins in collection:", allAdmins.length);
+    // console.log(
+    //   "Admin usernames:",
+    //   allAdmins.map((a: any) => a.username),
+    // );
+
     const admin = await Admin.findOne({ username });
+    // console.log("findOne result:", admin ? "FOUND" : "NOT FOUND");
 
     if (!admin) {
       return NextResponse.json(
@@ -21,6 +51,7 @@ export async function POST(request: NextRequest) {
     }
 
     const isValid = await verifyPassword(password, admin.passwordHash);
+    // console.log("Password valid:", isValid);
 
     if (!isValid) {
       return NextResponse.json(
@@ -36,7 +67,7 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      maxAge: 60 * 60 * 24 * 7,
     });
 
     return NextResponse.json({

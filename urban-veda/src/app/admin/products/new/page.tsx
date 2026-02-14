@@ -15,6 +15,8 @@ import {
   Package,
 } from 'lucide-react';
 
+import { useToastContext } from '@/components/ui/toast-provider';
+
 export default function NewProductPage() {
   const router = useRouter();
   const [uploading, setUploading] = useState(false);
@@ -30,6 +32,7 @@ export default function NewProductPage() {
     isActive: true,
   });
 
+  const { toast } = useToastContext();
   /**
    * handle image upload to cloudinary
    */
@@ -53,7 +56,7 @@ export default function NewProductPage() {
         });
       }
     } catch (error) {
-      alert('image upload failed');
+      toast('image upload failed', 'error')
     } finally {
       setUploading(false);
     }
@@ -65,7 +68,7 @@ export default function NewProductPage() {
   const handleSave = async () => {
     // validate
     if (!product.name || !product.image) {
-      alert('please fill in product name and upload an image');
+      toast('please fill in product name and upload an image', 'warning')
       return;
     }
 
@@ -80,13 +83,13 @@ export default function NewProductPage() {
       const data = await res.json();
 
       if (data.success) {
-        alert('product created successfully!');
+        toast('product created successfully!', 'success')
         router.push('/admin/products');
       } else {
-        alert('failed to create product: ' + data.error);
+        toast('failed to create product: ' + data.error, 'error')
       }
     } catch (error) {
-      alert('failed to create product');
+      toast('failed to create product', 'error')
     } finally {
       setSaving(false);
     }

@@ -1,15 +1,15 @@
 // home page - server-side rendered with database data
-import { Metadata } from 'next';
-import Image from 'next/image';
-import Link from 'next/link';
-import connectDB from '@/lib/mongodb';
-import Config from '@/lib/models/config';
-import Juice from '@/lib/models/Juice';
-import { SiteConfig, Juice as JuiceType } from '@/types';
-import HeroSection from '@/components/home/HeroSection';
-import ChallengesSection from '@/components/home/ChallengesSection';
-import ProductPreview from '@/components/home/ProductPreview';
-import CTASection from '@/components/home/CTASection';
+import { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import connectDB from "@/lib/mongodb";
+import Config from "@/lib/models/config";
+import Juice from "@/lib/models/Juice";
+import { SiteConfig, Juice as JuiceType } from "@/types";
+import HeroSection from "@/components/home/HeroSection";
+import ChallengesSection from "@/components/home/ChallengesSection";
+import ProductPreview from "@/components/home/ProductPreview";
+import CTASection from "@/components/home/CTASection";
 
 /**
  * generate metadata for seo optimization
@@ -20,13 +20,13 @@ export async function generateMetadata(): Promise<Metadata> {
   const config = await Config.findOne().lean();
 
   return {
-    title: 'Home',
-    description: config?.metaDescription || 'Ancient wisdom for modern life',
-    keywords: config?.metaKeywords?.split(',') || [],
+    title: "Home",
+    description: config?.metaDescription || "Ancient wisdom for modern life",
+    keywords: config?.metaKeywords?.split(",") || [],
     openGraph: {
-      title: config?.heroHeadline || 'Urban Veda',
-      description: config?.heroSubtext || '',
-      images: [config?.logoImage || '/images/og-image.webp'],
+      title: config?.heroHeadline || "Urban Veda",
+      description: config?.heroSubtext || "",
+      images: [config?.logoImage || "/images/og-image.webp"],
     },
   };
 }
@@ -39,7 +39,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HomePage() {
   // connect to database
   await connectDB();
-  
+
   // fetch config and juices in parallel for performance
   const [configDoc, juicesDocs] = await Promise.all([
     Config.findOne().lean(),
@@ -50,23 +50,41 @@ export default async function HomePage() {
   ]);
 
   // serialize mongodb documents to plain objects (remove _id ObjectId)
-  const config: SiteConfig | null = configDoc ? {
-    logoName: configDoc.logoName,
-    logoImage: configDoc.logoImage,
-    heroHeadline: configDoc.heroHeadline,
-    heroSubtext: configDoc.heroSubtext,
-    whatsappLink: configDoc.whatsappLink,
-    milkRideSubscribeLink: configDoc.milkRideSubscribeLink,
-    announcement: configDoc.announcement,
-    metaDescription: configDoc.metaDescription,
-    metaKeywords: configDoc.metaKeywords,
-    colorPalette: configDoc.colorPalette,
-    aboutPage: configDoc.aboutPage,
-    philosophyPage: configDoc.philosophyPage,
-  } : null;
+  const config: SiteConfig | null = configDoc
+    ? {
+        logoName: configDoc.logoName,
+        logoImage: configDoc.logoImage,
+        heroHeadline: configDoc.heroHeadline,
+        heroSubtext: configDoc.heroSubtext,
+        heroStatLabel: configDoc.heroStatLabel,
+        heroStatValue: configDoc.heroStatValue,
+        whatsappLink: configDoc.whatsappLink,
+        milkRideSubscribeLink: configDoc.milkRideSubscribeLink,
+        announcement: configDoc.announcement,
+        metaDescription: configDoc.metaDescription,
+        metaKeywords: configDoc.metaKeywords,
+        colorPalette: configDoc.colorPalette,
+        aboutPage: configDoc.aboutPage,
+        philosophyPage: configDoc.philosophyPage,
+        challenges: configDoc.challenges || [],
+        footerTagline: configDoc.footerTagline,
+        socialLinks: configDoc.socialLinks,
+        contactInfo: configDoc.contactInfo,
+        productPreviewLabel: configDoc.productPreviewLabel,
+        productPreviewHeadline: configDoc.productPreviewHeadline,
+        productPreviewSubtext: configDoc.productPreviewSubtext,
+        challengesSectionLabel: configDoc.challengesSectionLabel,
+        challengesSectionHeadline: configDoc.challengesSectionHeadline,
+        challengesSectionSubtext: configDoc.challengesSectionSubtext,
+        ctaHeadline: configDoc.ctaHeadline,
+        ctaSubtext: configDoc.ctaSubtext,
+        productCardBadgeText: configDoc.productCardBadgeText,
+        productCardExploreText: configDoc.productCardExploreText,
+      }
+    : null;
 
   // serialize juices array
-  const juices: JuiceType[] = juicesDocs.map(doc => ({
+  const juices: JuiceType[] = juicesDocs.map((doc) => ({
     _id: doc._id.toString(), // convert ObjectId to string
     name: doc.name,
     ingredients: doc.ingredients,
@@ -94,10 +112,15 @@ export default async function HomePage() {
       <HeroSection config={config} />
 
       {/* lifestyle challenges section */}
-      <ChallengesSection />
+      <ChallengesSection
+        challenges={config.challenges?.length ? config.challenges : undefined}
+        sectionLabel={config.challengesSectionLabel}
+        sectionHeadline={config.challengesSectionHeadline}
+        sectionSubtext={config.challengesSectionSubtext}
+      />
 
       {/* featured products preview */}
-      <ProductPreview juices={juices} />
+      <ProductPreview juices={juices} config={config} />
 
       {/* call to action quote */}
       <CTASection />

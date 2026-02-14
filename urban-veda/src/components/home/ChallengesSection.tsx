@@ -1,4 +1,3 @@
-// lifestyle challenges section with stagger animation
 "use client";
 
 import { motion } from "framer-motion";
@@ -9,12 +8,44 @@ import {
   Zap,
   Brain,
   Leaf,
+  Wind,
+  Moon,
+  Droplets,
+  FlameKindling,
+  Eye,
+  Heart,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import type { Variants } from "framer-motion";
-const challenges = [
+
+// icon map for admin to reference
+export const iconMap: Record<string, React.ComponentType<any>> = {
+  Zap,
+  ShieldCheck,
+  HeartPulse,
+  Brain,
+  Leaf,
+  Sparkles,
+  Wind,
+  Moon,
+  Droplets,
+  FlameKindling,
+  Eye,
+  Heart,
+};
+
+export interface Challenge {
+  icon: string;
+  title: string;
+  description: string;
+  color: string;
+  colorHex?: string;
+  iconColor: string;
+}
+
+const defaultChallenges: Challenge[] = [
   {
-    icon: Zap,
+    icon: "Zap",
     title: "chronic fatigue",
     description:
       "long hours & screen time lead to constant tiredness. our herbs reset your energy levels naturally.",
@@ -22,7 +53,7 @@ const challenges = [
     iconColor: "text-orange-600",
   },
   {
-    icon: ShieldCheck,
+    icon: "ShieldCheck",
     title: "weak immunity",
     description:
       "pollution & stress weaken your shield. giloy and amla provide your daily insurance against falling sick.",
@@ -30,7 +61,7 @@ const challenges = [
     iconColor: "text-cyan-600",
   },
   {
-    icon: HeartPulse,
+    icon: "HeartPulse",
     title: "poor gut health",
     description:
       "irregular meals & fast food cause bloating. aloe vera & ginger restore your agni (digestive fire).",
@@ -38,7 +69,7 @@ const challenges = [
     iconColor: "text-rose-600",
   },
   {
-    icon: Brain,
+    icon: "Brain",
     title: "mental fog",
     description:
       "constant multitasking clouds your focus. brahmi and ashwagandha sharpen mental clarity.",
@@ -46,7 +77,7 @@ const challenges = [
     iconColor: "text-indigo-600",
   },
   {
-    icon: Leaf,
+    icon: "Leaf",
     title: "toxin buildup",
     description:
       "processed foods accumulate in your system. our detox blends help eliminate ama (toxins).",
@@ -54,7 +85,7 @@ const challenges = [
     iconColor: "text-emerald-600",
   },
   {
-    icon: Sparkles,
+    icon: "Sparkles",
     title: "dull skin",
     description:
       "stress and pollution take a toll on your glow. antioxidant-rich juices rejuvenate from within.",
@@ -63,87 +94,87 @@ const challenges = [
   },
 ];
 
-export default function ChallengesSection() {
+interface ChallengesSectionProps {
+  challenges?: Challenge[];
+  sectionLabel?: string;
+  sectionHeadline?: string;
+  sectionSubtext?: string;
+  colorHex?: string;
+}
+export default function ChallengesSection({
+  challenges = defaultChallenges,
+  sectionLabel,
+  sectionHeadline,
+  sectionSubtext,
+}: ChallengesSectionProps) {
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-      },
-    },
+    visible: { opacity: 1, transition: { staggerChildren: 0.12 } },
   };
 
   const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, y: 28 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: {
-        duration: 0.6,
-        ease: [0.21, 0.47, 0.32, 0.98] as [number, number, number, number],
-      },
+      transition: { duration: 0.55, ease: [0.21, 0.47, 0.32, 0.98] as any },
     },
   };
 
   return (
-    <section className="py-20 lg:py-32 bg-white px-6 overflow-hidden">
+    <section className="py-16 lg:py-24 bg-white px-4 sm:px-6 overflow-hidden">
       <div className="max-w-7xl mx-auto">
-        {/* section header */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-20"
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.7 }}
+          className="text-center mb-12 lg:mb-16"
         >
-          <span className="inline-block text-olive font-bold tracking-[0.2em] uppercase text-xs mb-4">
-            modern problems
+          <span className="inline-block text-olive font-bold tracking-[0.2em] uppercase text-[10px] sm:text-xs mb-3">
+            {sectionLabel || "modern problems"}
           </span>
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-sage-dark mb-6 font-serif">
-            lifestyle challenges
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sage-dark mb-4 font-serif whitespace-pre-line">
+            {sectionHeadline || "lifestyle challenges"}
           </h2>
-          <p className="text-lg sm:text-xl text-gray-500 max-w-2xl mx-auto italic font-medium">
-            your busy lifestyle deserves better health support
+          <p className="text-base sm:text-lg text-gray-500 max-w-xl mx-auto italic font-medium whitespace-pre-line">
+            {sectionSubtext ||
+              "your busy lifestyle deserves better health support"}
           </p>
         </motion.div>
 
-        {/* challenges grid */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
+          viewport={{ once: true, margin: "-80px" }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6"
         >
           {challenges.map((challenge, i) => {
-            const Icon = challenge.icon;
+            const Icon = iconMap[challenge.icon] || Sparkles;
 
             return (
               <motion.div key={i} variants={itemVariants}>
-                <Card className="h-full border-gray-100 hover:border-olive/20 transition-all duration-300 group overflow-hidden">
-                  <CardContent className="p-8 lg:p-10">
-                    {/* icon container with gradient */}
+                <Card className="h-full border-gray-100 hover:border-olive/30 hover:shadow-lg transition-all duration-300 group overflow-hidden cursor-default">
+                  <CardContent className="p-6 lg:p-7">
                     <div
-                      className={`mb-6 bg-gradient-to-br ${challenge.color} w-16 h-16 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300`}
+                      className={`mb-4 bg-gradient-to-br ${challenge.color} w-12 h-12 rounded-xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300`}
                     >
-                      <Icon className={challenge.iconColor} size={28} />
+                      <Icon className={challenge.iconColor} size={22} />
                     </div>
 
-                    {/* content */}
-                    <h3 className="text-xl lg:text-2xl font-bold mb-4 text-sage-dark">
+                    <h3 className="text-base lg:text-lg font-bold mb-2 text-sage-dark">
                       {challenge.title}
                     </h3>
-                    <p className="text-sm lg:text-base text-gray-600 leading-relaxed">
+                    <p className="text-sm text-gray-600 leading-relaxed">
                       {challenge.description}
                     </p>
 
-                    {/* hover indicator */}
                     <motion.div
                       initial={{ width: 0 }}
                       whileInView={{ width: "100%" }}
-                      transition={{ duration: 0.8, delay: 0.5 + i * 0.1 }}
-                      className="h-1 bg-gradient-to-r from-olive to-herbal-green mt-6 rounded-full"
+                      transition={{ duration: 0.7, delay: 0.4 + i * 0.08 }}
+                      className="h-0.5 bg-gradient-to-r from-olive to-herbal-green mt-4 rounded-full"
                     />
                   </CardContent>
                 </Card>

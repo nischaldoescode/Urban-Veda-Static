@@ -1,25 +1,10 @@
-/**
- * admin dashboard - main overview
- *
- * features:
- * - key statistics cards
- * - quick action buttons
- * - recent activity feed
- * - system status indicators
- *
- * authentication: handled by admin layout
- *
- * @component
- */
 "use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Package,
-  TrendingUp,
   Eye,
-  BarChart3,
   Plus,
   Edit,
   Settings,
@@ -27,293 +12,311 @@ import {
   ArrowRight,
   CheckCircle2,
   AlertCircle,
+  TrendingUp,
+  FileText,
+  Palette,
 } from "lucide-react";
 
 interface DashboardStats {
   totalProducts: number;
   activeProducts: number;
-  totalViews: number;
-  pendingUpdates: number;
+  inactiveProducts: number;
+  popularProducts: number;
 }
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState<DashboardStats>({
-    totalProducts: 0,
-    activeProducts: 0,
-    totalViews: 0,
-    pendingUpdates: 0,
-  });
+  const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [dbStatus, setDbStatus] = useState<"checking" | "healthy" | "error">(
+    "checking",
+  );
 
-  /**
-   * fetch dashboard statistics from api
-   */
   useEffect(() => {
     async function fetchStats() {
       try {
-        const res = await fetch("/api/admin/dashboard");
+        const res = await fetch("/api/admin/dashboard", {
+          credentials: "include",
+        });
         const data = await res.json();
-
         if (data.success) {
           setStats(data.stats);
+          setDbStatus("healthy");
+        } else {
+          setDbStatus("error");
         }
-      } catch (error) {
-        console.error("stats fetch error:", error);
+      } catch {
+        setDbStatus("error");
       } finally {
         setLoading(false);
       }
     }
-
     fetchStats();
   }, []);
 
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <div className="w-12 h-12 border-4 border-olive border-t-transparent rounded-full animate-spin" />
+        <div className="w-10 h-10 border-4 border-olive border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="p-4 sm:p-8 max-w-7xl mx-auto">
-      {/* page header */}
-      <div className="mb-8">
-        <h1 className="text-3xl sm:text-4xl font-bold text-sage-dark font-serif mb-2">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
+      <div className="mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-sage-dark font-serif mb-1">
           dashboard
         </h1>
-        <p className="text-gray-500">overview of your urban veda store</p>
+        <p className="text-gray-500 text-sm">
+          overview of your urban veda store
+        </p>
       </div>
 
-      {/* statistics cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+      {/* stats grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
         <StatCard
-          icon={<Package className="text-olive" size={24} />}
+          icon={<Package className="text-olive" size={20} />}
           label="total products"
-          value={stats.totalProducts}
-          change="+2 this month"
-          trend="up"
+          value={stats?.totalProducts ?? "—"}
+          bg="bg-olive/5"
         />
         <StatCard
-          icon={<TrendingUp className="text-green-600" size={24} />}
-          label="active products"
-          value={stats.activeProducts}
-          change="all live"
-          trend="neutral"
+          icon={<Eye className="text-green-600" size={20} />}
+          label="active / visible"
+          value={
+            stats ? `${stats.activeProducts} / ${stats.totalProducts}` : "—"
+          }
+          bg="bg-green-50"
         />
         <StatCard
-          icon={<Eye className="text-blue-600" size={24} />}
-          label="page views"
-          value={stats.totalViews}
-          change="+12% vs last week"
-          trend="up"
+          icon={<TrendingUp className="text-blue-600" size={20} />}
+          label="popular"
+          value={stats?.popularProducts ?? "—"}
+          bg="bg-blue-50"
         />
         <StatCard
-          icon={<BarChart3 className="text-purple-600" size={24} />}
-          label="pending updates"
-          value={stats.pendingUpdates}
-          change="awaiting review"
-          trend="neutral"
+          icon={<AlertCircle className="text-orange-500" size={20} />}
+          label="hidden"
+          value={stats?.inactiveProducts ?? "—"}
+          bg="bg-orange-50"
         />
       </div>
 
-      {/* main content grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-        {/* quick actions - takes 2 columns on large screens */}
-        <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6">
-          <h2 className="text-xl sm:text-2xl font-bold text-sage-dark mb-4 sm:mb-6 font-serif">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        {/* quick actions */}
+        <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 p-5">
+          <h2 className="text-lg font-bold text-sage-dark mb-4 font-serif">
             quick actions
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-            <QuickActionCard
-              icon={<Plus size={20} />}
-              title="add new product"
-              description="create a new juice product"
-              href="/admin/products/new"
-            />
-            <QuickActionCard
-              icon={<ImageIcon size={20} />}
-              title="upload images"
-              description="manage media library"
-              href="/admin/media"
-            />
-            <QuickActionCard
-              icon={<Edit size={20} />}
-              title="edit pages"
-              description="update about, philosophy"
-              href="/admin/pages"
-            />
-            <QuickActionCard
-              icon={<Settings size={20} />}
-              title="site settings"
-              description="configure your store"
-              href="/admin/settings"
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {[
+              {
+                icon: <Plus size={18} />,
+                title: "add new product",
+                desc: "create a new juice product",
+                href: "/admin/products/new",
+              },
+              {
+                icon: <ImageIcon size={18} />,
+                title: "upload images",
+                desc: "manage media library",
+                href: "/admin/media",
+              },
+              {
+                icon: <Edit size={18} />,
+                title: "edit pages",
+                desc: "update about, philosophy",
+                href: "/admin/pages",
+              },
+              {
+                icon: <Settings size={18} />,
+                title: "site settings",
+                desc: "configure your store",
+                href: "/admin/settings",
+              },
+              {
+                icon: <Package size={18} />,
+                title: "manage products",
+                desc: "edit or hide products",
+                href: "/admin/products",
+              },
+            ].map((a) => (
+              <Link
+                key={a.href}
+                href={a.href}
+                className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-olive/5 rounded-xl transition-all group border border-transparent hover:border-olive/20"
+              >
+                <div className="bg-white p-2 rounded-lg group-hover:bg-olive/10 transition-colors text-gray-600">
+                  {a.icon}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold text-gray-900 text-sm">{a.title}</p>
+                  <p className="text-xs text-gray-400 truncate">{a.desc}</p>
+                </div>
+                <ArrowRight
+                  size={14}
+                  className="text-gray-300 group-hover:text-olive group-hover:translate-x-0.5 transition-all flex-shrink-0"
+                />
+              </Link>
+            ))}
           </div>
         </div>
 
-        {/* system status - takes 1 column */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6">
-          <h2 className="text-xl sm:text-2xl font-bold text-sage-dark mb-4 sm:mb-6 font-serif">
+        {/* system status */}
+        <div className="bg-white rounded-2xl border border-gray-100 p-5">
+          <h2 className="text-lg font-bold text-sage-dark mb-4 font-serif">
             system status
           </h2>
-          <div className="space-y-3 sm:space-y-4">
+          <div className="space-y-2.5">
             <StatusItem
               label="database"
-              status="healthy"
-              icon={<CheckCircle2 className="text-green-600" size={18} />}
-            />
-            <StatusItem
-              label="cloudinary"
-              status="operational"
-              icon={<CheckCircle2 className="text-green-600" size={18} />}
-            />
-            <StatusItem
-              label="performance"
-              status="excellent"
-              icon={<CheckCircle2 className="text-green-600" size={18} />}
-            />
-            <StatusItem
-              label="updates"
-              status={stats.pendingUpdates > 0 ? "pending" : "up to date"}
-              icon={
-                stats.pendingUpdates > 0 ? (
-                  <AlertCircle className="text-orange-500" size={18} />
-                ) : (
-                  <CheckCircle2 className="text-green-600" size={18} />
-                )
+              status={
+                dbStatus === "healthy"
+                  ? "healthy"
+                  : dbStatus === "error"
+                    ? "error"
+                    : "checking..."
               }
+              ok={dbStatus === "healthy"}
+            />
+            <StatusItem label="cloudinary cdn" status="configured" ok={true} />
+            <StatusItem
+              label="active products"
+              status={stats ? `${stats.activeProducts} live` : "loading..."}
+              ok={true}
+            />
+            <StatusItem
+              label="hidden products"
+              status={
+                stats
+                  ? stats.inactiveProducts > 0
+                    ? `${stats.inactiveProducts} hidden`
+                    : "none hidden"
+                  : "loading..."
+              }
+              ok={stats ? stats.inactiveProducts === 0 : true}
             />
           </div>
-        </div>
-      </div>
 
-      {/* recent activity */}
-      <div className="mt-6 sm:mt-8 bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6">
-        <h2 className="text-xl sm:text-2xl font-bold text-sage-dark mb-4 sm:mb-6 font-serif">
-          recent activity
-        </h2>
-        <div className="space-y-2 sm:space-y-3">
-          <ActivityItem
-            action="product updated"
-            item="ayuboost"
-            time="2 hours ago"
-            type="edit"
-          />
-          <ActivityItem
-            action="image uploaded"
-            item="hero-background.webp"
-            time="5 hours ago"
-            type="upload"
-          />
-          <ActivityItem
-            action="page modified"
-            item="about page"
-            time="1 day ago"
-            type="edit"
-          />
-          <ActivityItem
-            action="product created"
-            item="diabetes care"
-            time="3 days ago"
-            type="create"
-          />
+          {/* products breakdown */}
+          {stats && (
+            <div className="mt-5 pt-4 border-t border-gray-100">
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
+                product breakdown
+              </p>
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-gray-600">active</span>
+                  <div className="flex items-center gap-2">
+                    <div className="h-1.5 bg-olive/20 rounded-full w-20 overflow-hidden">
+                      <div
+                        className="h-full bg-olive rounded-full transition-all"
+                        style={{
+                          width:
+                            stats.totalProducts > 0
+                              ? `${(stats.activeProducts / stats.totalProducts) * 100}%`
+                              : "0%",
+                        }}
+                      />
+                    </div>
+                    <span className="text-xs font-bold text-gray-700 w-8 text-right">
+                      {stats.activeProducts}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-gray-600">popular</span>
+                  <div className="flex items-center gap-2">
+                    <div className="h-1.5 bg-blue-100 rounded-full w-20 overflow-hidden">
+                      <div
+                        className="h-full bg-blue-500 rounded-full transition-all"
+                        style={{
+                          width:
+                            stats.totalProducts > 0
+                              ? `${(stats.popularProducts / stats.totalProducts) * 100}%`
+                              : "0%",
+                        }}
+                      />
+                    </div>
+                    <span className="text-xs font-bold text-gray-700 w-8 text-right">
+                      {stats.popularProducts}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-gray-600">hidden</span>
+                  <div className="flex items-center gap-2">
+                    <div className="h-1.5 bg-orange-100 rounded-full w-20 overflow-hidden">
+                      <div
+                        className="h-full bg-orange-400 rounded-full transition-all"
+                        style={{
+                          width:
+                            stats.totalProducts > 0
+                              ? `${(stats.inactiveProducts / stats.totalProducts) * 100}%`
+                              : "0%",
+                        }}
+                      />
+                    </div>
+                    <span className="text-xs font-bold text-gray-700 w-8 text-right">
+                      {stats.inactiveProducts}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-/**
- * statistic card component
- */
-function StatCard({ icon, label, value, change, trend }: any) {
+function StatCard({
+  icon,
+  label,
+  value,
+  bg,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string | number;
+  bg: string;
+}) {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 hover:shadow-md transition-shadow">
-      <div className="flex items-center justify-between mb-3 sm:mb-4">
-        <div className="bg-gray-50 p-2 sm:p-3 rounded-xl">{icon}</div>
-        {trend === "up" && (
-          <span className="text-xs font-semibold text-green-600 bg-green-50 px-2 py-1 rounded-full">
-            ↑
-          </span>
-        )}
-      </div>
-      <div className="space-y-1">
-        <p className="text-2xl sm:text-3xl font-bold text-sage-dark">{value}</p>
-        <p className="text-xs sm:text-sm font-semibold text-gray-400 uppercase tracking-wider">
-          {label}
-        </p>
-        <p className="text-xs text-gray-500">{change}</p>
-      </div>
-    </div>
-  );
-}
-
-/**
- * quick action card component
- */
-function QuickActionCard({ icon, title, description, href }: any) {
-  return (
-    <Link
-      href={href}
-      className="flex flex-col p-3 sm:p-4 bg-gray-50 hover:bg-olive/5 rounded-xl transition-all group border border-transparent hover:border-olive/20"
-    >
-      <div className="flex items-center justify-between mb-2 sm:mb-3">
-        <div className="bg-white p-2 rounded-lg group-hover:bg-olive/10 transition-colors">
-          {icon}
-        </div>
-        <ArrowRight
-          size={16}
-          className="text-gray-400 group-hover:text-olive group-hover:translate-x-1 transition-all"
-        />
-      </div>
-      <h3 className="font-bold text-gray-900 mb-1 text-sm sm:text-base">
-        {title}
-      </h3>
-      <p className="text-xs text-gray-500">{description}</p>
-    </Link>
-  );
-}
-
-/**
- * status item component
- */
-function StatusItem({ label, status, icon }: any) {
-  return (
-    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-      <div className="flex items-center space-x-2 sm:space-x-3">
-        {icon}
-        <span className="text-xs sm:text-sm font-semibold text-gray-700">
-          {label}
-        </span>
-      </div>
-      <span className="text-xs font-medium text-gray-500">{status}</span>
-    </div>
-  );
-}
-
-/**
- * activity feed item component
- */
-function ActivityItem({ action, item, time, type }: any) {
-  const colors = {
-    edit: "bg-blue-500",
-    upload: "bg-green-500",
-    create: "bg-purple-500",
-    delete: "bg-red-500",
-  };
-
-  return (
-    <div className="flex items-start gap-3 p-3 hover:bg-gray-50 rounded-lg transition-colors">
+    <div className="bg-white rounded-xl border border-gray-100 p-4 hover:shadow-sm transition-shadow">
       <div
-        className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${colors[type as keyof typeof colors]}`}
-      />
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-gray-700 truncate">
-          {action}: <span className="text-olive">{item}</span>
-        </p>
-        <p className="text-xs text-gray-400 mt-1">{time}</p>
+        className={`${bg} w-9 h-9 rounded-lg flex items-center justify-center mb-3`}
+      >
+        {icon}
       </div>
+      <p className="text-xl sm:text-2xl font-bold text-sage-dark">{value}</p>
+      <p className="text-[10px] sm:text-xs font-semibold text-gray-400 uppercase tracking-wider mt-0.5">
+        {label}
+      </p>
+    </div>
+  );
+}
+
+function StatusItem({
+  label,
+  status,
+  ok,
+}: {
+  label: string;
+  status: string;
+  ok: boolean;
+}) {
+  return (
+    <div className="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg">
+      <div className="flex items-center gap-2">
+        {ok ? (
+          <CheckCircle2 className="text-green-600 flex-shrink-0" size={15} />
+        ) : (
+          <AlertCircle className="text-orange-500 flex-shrink-0" size={15} />
+        )}
+        <span className="text-xs font-semibold text-gray-700">{label}</span>
+      </div>
+      <span className="text-xs text-gray-500">{status}</span>
     </div>
   );
 }

@@ -24,24 +24,24 @@ export default async function PhilosophyPage() {
   return (
     <div className="min-h-screen bg-sage-bg">
       {/* header section */}
-      <section className="py-32 px-6 text-center">
-        <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
-          <span className="text-olive font-bold tracking-[0.2em] uppercase text-xs">
+      <section className="pt-28 sm:pt-32 pb-10 sm:pb-12 px-4 sm:px-6 text-center">
+        <div className="max-w-3xl mx-auto space-y-4">
+          <span className="text-olive font-bold tracking-[0.2em] uppercase text-[10px] sm:text-xs">
             the ethics
           </span>
-          <h1 className="text-6xl md:text-8xl font-bold text-sage-dark font-serif">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sage-dark font-serif">
             {content.headline}
           </h1>
-          <p className="text-2xl text-gray-500 italic max-w-2xl mx-auto font-serif">
+          <p className="text-base sm:text-lg text-gray-500 italic max-w-xl mx-auto font-serif">
             "{content.subtext}"
           </p>
         </div>
       </section>
 
       {/* image section with overlay text */}
-      <section className="max-w-7xl mx-auto px-6 pb-32">
-        <div className="relative group overflow-hidden rounded-[4rem] shadow-2xl">
-          <div className="relative aspect-video">
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-16 sm:pb-20">
+        <div className="relative group overflow-hidden rounded-2xl sm:rounded-3xl shadow-xl">
+          <div className="relative aspect-[16/9] sm:aspect-[16/8]">
             <Image
               src={content.image}
               alt="Philosophy"
@@ -53,8 +53,8 @@ export default async function PhilosophyPage() {
           </div>
 
           {/* overlay text */}
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center p-20 text-center">
-            <p className="text-white text-3xl md:text-4xl font-light leading-relaxed max-w-3xl">
+          <div className="absolute inset-0 bg-black/40 flex items-center justify-center p-6 sm:p-12 text-center">
+            <p className="text-white text-lg sm:text-xl md:text-2xl font-light leading-relaxed max-w-2xl">
               {content.extraText}
             </p>
           </div>

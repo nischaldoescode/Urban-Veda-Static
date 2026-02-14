@@ -1,18 +1,18 @@
 /**
  * media library manager
- * 
+ *
  * features:
  * - view all uploaded images
  * - upload new images to cloudinary
  * - copy image urls
  * - delete unused images
  * - search and filter
- * 
+ *
  * @requires authentication
  */
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   Upload,
   Copy,
@@ -20,7 +20,8 @@ import {
   Search,
   Image as ImageIcon,
   CheckCircle2,
-} from 'lucide-react';
+} from "lucide-react";
+import { useToastContext } from "@/components/ui/toast-provider";
 
 interface MediaItem {
   id: string;
@@ -34,8 +35,9 @@ export default function MediaLibrary() {
   const [media, setMedia] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
+  const { toast, confirm } = useToastContext();
 
   /**
    * fetch all media items
@@ -43,23 +45,7 @@ export default function MediaLibrary() {
    * for now, we'll use placeholder data
    */
   useEffect(() => {
-    // simulated media items
-    const placeholderMedia: MediaItem[] = [
-      {
-        id: '1',
-        url: 'https://images.unsplash.com/photo-1556760544-74068564f056?auto=format&fit=crop&q=80&w=600',
-        filename: 'hero-herbs.webp',
-        uploadedAt: new Date(),
-      },
-      {
-        id: '2',
-        url: 'https://images.unsplash.com/photo-1543332164-6e82f355badc?auto=format&fit=crop&q=80&w=600',
-        filename: 'about-page.webp',
-        uploadedAt: new Date(),
-      },
-    ];
-
-    setMedia(placeholderMedia);
+    setMedia([]);
     setLoading(false);
   }, []);
 
@@ -76,10 +62,10 @@ export default function MediaLibrary() {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const formData = new FormData();
-        formData.append('file', file);
+        formData.append("file", file);
 
-        const res = await fetch('/api/upload', {
-          method: 'POST',
+        const res = await fetch("/api/upload", {
+          method: "POST",
           body: formData,
         });
 
@@ -97,9 +83,12 @@ export default function MediaLibrary() {
       }
 
       setMedia([...uploadedItems, ...media]);
-      alert(`uploaded ${uploadedItems.length} image(s) successfully`);
-    } catch (error) {
-      alert('upload failed');
+      toast(
+        `uploaded ${uploadedItems.length} image(s) successfully`,
+        "success",
+      );
+    } catch {
+      toast("upload failed", "error");
     } finally {
       setUploading(false);
     }
@@ -117,13 +106,20 @@ export default function MediaLibrary() {
   /**
    * delete media item
    */
-  const handleDelete = (id: string) => {
-    if (!confirm('delete this image?')) return;
-    setMedia(media.filter(item => item.id !== id));
+  const handleDelete = async (id: string) => {
+    const ok = await confirm({
+      title: "delete image",
+      message: "remove this image from the library?",
+      confirmLabel: "delete",
+      danger: true,
+    });
+    if (!ok) return;
+    setMedia(media.filter((item) => item.id !== id));
+    toast("image deleted", "success");
   };
 
-  const filteredMedia = media.filter(item =>
-    item.filename.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredMedia = media.filter((item) =>
+    item.filename.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   if (loading) {
@@ -141,9 +137,7 @@ export default function MediaLibrary() {
         <h1 className="text-3xl sm:text-4xl font-bold text-sage-dark font-serif mb-2">
           media library
         </h1>
-        <p className="text-gray-500">
-          manage your images and media files
-        </p>
+        <p className="text-gray-500">manage your images and media files</p>
       </div>
 
       {/* upload section */}
@@ -154,7 +148,7 @@ export default function MediaLibrary() {
           </div>
           <div className="text-center">
             <p className="text-lg font-bold text-gray-900 mb-1">
-              {uploading ? 'uploading...' : 'click to upload'}
+              {uploading ? "uploading..." : "click to upload"}
             </p>
             <p className="text-sm text-gray-500">
               or drag and drop images here
@@ -177,7 +171,10 @@ export default function MediaLibrary() {
       {/* search */}
       <div className="mb-6">
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+          <Search
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+            size={20}
+          />
           <input
             type="text"
             value={searchTerm}
@@ -195,10 +192,12 @@ export default function MediaLibrary() {
             <ImageIcon className="text-gray-400" size={32} />
           </div>
           <p className="text-gray-500 font-semibold mb-2">
-            {searchTerm ? 'no images found' : 'no images yet'}
+            {searchTerm ? "no images found" : "no images yet"}
           </p>
           <p className="text-sm text-gray-400">
-            {searchTerm ? 'try a different search term' : 'upload your first image above'}
+            {searchTerm
+              ? "try a different search term"
+              : "upload your first image above"}
           </p>
         </div>
       ) : (

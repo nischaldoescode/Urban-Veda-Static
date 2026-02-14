@@ -7,7 +7,8 @@ export interface IJuice {
   ingredients: string;
   benefits: string;
   description: string;
-  image: string; // cloudinary url in webp format
+  image: string;
+  stickerImage?: string;
   orderLink: string;
   isPopular: boolean;
   sortOrder: number;
@@ -23,6 +24,7 @@ const JuiceSchema = new Schema<IJuice>(
     benefits: { type: String, required: true },
     description: { type: String, required: true },
     image: { type: String, required: true },
+    stickerImage: { type: String, default: "" },
     orderLink: { type: String, required: true },
     isPopular: { type: Boolean, default: false },
     sortOrder: { type: Number, default: 0 },

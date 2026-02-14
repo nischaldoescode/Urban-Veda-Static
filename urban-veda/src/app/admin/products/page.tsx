@@ -1,6 +1,6 @@
 /**
  * products manager page
- * 
+ *
  * features:
  * - view all juice products
  * - create new products
@@ -8,13 +8,13 @@
  * - upload product images to cloudinary
  * - toggle product visibility
  * - delete products
- * 
+ *
  * @requires authentication
  */
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   Plus,
   Edit2,
@@ -25,7 +25,8 @@ import {
   Eye,
   EyeOff,
   Package,
-} from 'lucide-react';
+} from "lucide-react";
+import { useToastContext } from "@/components/ui/toast-provider";
 
 interface Product {
   _id: string;
@@ -34,6 +35,7 @@ interface Product {
   benefits: string;
   description: string;
   image: string;
+  stickerImage?: string;
   orderLink: string;
   isPopular: boolean;
   isActive: boolean;
@@ -41,6 +43,7 @@ interface Product {
 
 export default function ProductsManager() {
   const router = useRouter();
+  const { toast, confirm } = useToastContext();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -52,14 +55,14 @@ export default function ProductsManager() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const res = await fetch('/api/juices');
+        const res = await fetch("/api/juices");
         const data = await res.json();
-        
+
         if (data.success) {
           setProducts(data.data);
         }
       } catch (error) {
-        console.error('fetch products error:', error);
+        console.error("fetch products error:", error);
       } finally {
         setLoading(false);
       }
@@ -75,23 +78,23 @@ export default function ProductsManager() {
     setUploading(true);
     try {
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append("file", file);
 
-      const res = await fetch('/api/upload', {
-        method: 'POST',
+      const res = await fetch("/api/upload", {
+        method: "POST",
         body: formData,
       });
 
       const data = await res.json();
-      
+
       if (data.success && editingProduct) {
         setEditingProduct({
           ...editingProduct,
           image: data.data.url,
         });
       }
-    } catch (error) {
-      alert('image upload failed');
+    } catch {
+      toast("image upload failed", "error");
     } finally {
       setUploading(false);
     }
@@ -105,12 +108,12 @@ export default function ProductsManager() {
 
     try {
       const isNew = !editingProduct._id;
-      const url = isNew ? '/api/juices' : `/api/juices/${editingProduct._id}`;
-      const method = isNew ? 'POST' : 'PUT';
+      const url = isNew ? "/api/juices" : `/api/juices/${editingProduct._id}`;
+      const method = isNew ? "POST" : "PUT";
 
       const res = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(editingProduct),
       });
 
@@ -120,13 +123,15 @@ export default function ProductsManager() {
         if (isNew) {
           setProducts([...products, data.data]);
         } else {
-          setProducts(products.map(p => p._id === data.data._id ? data.data : p));
+          setProducts(
+            products.map((p) => (p._id === data.data._id ? data.data : p)),
+          );
         }
         setEditingProduct(null);
-        alert('product saved successfully');
+        toast("product saved successfully", "success");
       }
     } catch (error) {
-      alert('failed to save product');
+      toast("failed to save product", "error");
     }
   };
 
@@ -134,18 +139,25 @@ export default function ProductsManager() {
    * delete product
    */
   const handleDelete = async (id: string) => {
-    if (!confirm('delete this product?')) return;
+    const ok = await confirm({
+      title: "delete product",
+      message:
+        "this will permanently remove the product. this action cannot be undone.",
+      confirmLabel: "delete",
+      cancelLabel: "cancel",
+      danger: true,
+    });
+    if (!ok) return;
 
     try {
-      const res = await fetch(`/api/juices/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/juices/${id}`, { method: "DELETE" });
       const data = await res.json();
-
       if (data.success) {
-        setProducts(products.filter(p => p._id !== id));
-        alert('product deleted');
+        setProducts(products.filter((p) => p._id !== id));
+        toast("product deleted", "success");
       }
-    } catch (error) {
-      alert('delete failed');
+    } catch {
+      toast("delete failed", "error");
     }
   };
 
@@ -154,13 +166,14 @@ export default function ProductsManager() {
    */
   const createNew = () => {
     setEditingProduct({
-      _id: '',
-      name: '',
-      ingredients: '',
-      benefits: '',
-      description: '',
-      image: '',
-      orderLink: 'https://chat.whatsapp.com/HGAz9W01xJsHpIHnGUn38M',
+      _id: "",
+      name: "",
+      ingredients: "",
+      benefits: "",
+      description: "",
+      image: "",
+      stickerImage: "",
+      orderLink: "https://chat.whatsapp.com/HGAz9W01xJsHpIHnGUn38M",
       isPopular: false,
       isActive: true,
     });
@@ -182,9 +195,7 @@ export default function ProductsManager() {
           <h1 className="text-3xl sm:text-4xl font-bold text-sage-dark font-serif mb-2">
             products
           </h1>
-          <p className="text-gray-500">
-            manage your juice products
-          </p>
+          <p className="text-gray-500">manage your juice products</p>
         </div>
         <button
           onClick={createNew}
@@ -260,7 +271,7 @@ export default function ProductsManager() {
             {/* modal header */}
             <div className="p-6 border-b flex items-center justify-between">
               <h2 className="text-2xl font-bold text-sage-dark font-serif">
-                {editingProduct._id ? 'edit product' : 'new product'}
+                {editingProduct._id ? "edit product" : "new product"}
               </h2>
               <button
                 onClick={() => setEditingProduct(null)}
@@ -280,7 +291,12 @@ export default function ProductsManager() {
                 <input
                   type="text"
                   value={editingProduct.name}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
+                  onChange={(e) =>
+                    setEditingProduct({
+                      ...editingProduct,
+                      name: e.target.value,
+                    })
+                  }
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20"
                   placeholder="ayuboost"
                 />
@@ -294,7 +310,12 @@ export default function ProductsManager() {
                 <input
                   type="text"
                   value={editingProduct.ingredients}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, ingredients: e.target.value })}
+                  onChange={(e) =>
+                    setEditingProduct({
+                      ...editingProduct,
+                      ingredients: e.target.value,
+                    })
+                  }
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20"
                   placeholder="amla, aloe vera, moringa"
                 />
@@ -308,7 +329,12 @@ export default function ProductsManager() {
                 <input
                   type="text"
                   value={editingProduct.benefits}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, benefits: e.target.value })}
+                  onChange={(e) =>
+                    setEditingProduct({
+                      ...editingProduct,
+                      benefits: e.target.value,
+                    })
+                  }
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20"
                   placeholder="immunity & vitality"
                 />
@@ -321,7 +347,12 @@ export default function ProductsManager() {
                 </label>
                 <textarea
                   value={editingProduct.description}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })}
+                  onChange={(e) =>
+                    setEditingProduct({
+                      ...editingProduct,
+                      description: e.target.value,
+                    })
+                  }
                   rows={4}
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 resize-none"
                   placeholder="detailed product description..."
@@ -345,11 +376,61 @@ export default function ProductsManager() {
                 <label className="flex items-center justify-center gap-2 px-4 py-3 bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl hover:bg-gray-100 cursor-pointer transition-colors">
                   <Upload size={20} />
                   <span className="font-semibold text-gray-700">
-                    {uploading ? 'uploading...' : 'upload image'}
+                    {uploading ? "uploading..." : "upload image"}
                   </span>
                   <input
                     type="file"
                     accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleImageUpload(file);
+                    }}
+                    className="hidden"
+                    disabled={uploading}
+                  />
+                </label>
+              </div>
+
+              {/* sticker image upload */}
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">
+                  sticker image{" "}
+                  <span className="text-gray-400 font-normal text-xs">
+                    (optional — shown as 3D overlay)
+                  </span>
+                </label>
+                {editingProduct.stickerImage && (
+                  <div className="mb-3 relative w-24 h-24">
+                    <img
+                      src={editingProduct.stickerImage}
+                      alt="sticker preview"
+                      className="w-full h-full object-contain rounded-xl border border-gray-100"
+                    />
+                    <button
+                      onClick={() =>
+                        setEditingProduct({
+                          ...editingProduct,
+                          stickerImage: "",
+                        })
+                      }
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold"
+                    >
+                      ×
+                    </button>
+                  </div>
+                )}
+                <label className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl hover:bg-gray-100 cursor-pointer transition-colors text-sm">
+                  <Upload size={16} />
+                  <span className="font-semibold text-gray-700">
+                    {uploading
+                      ? "uploading..."
+                      : editingProduct.stickerImage
+                        ? "change sticker"
+                        : "upload sticker (png with transparent bg)"}
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/png,image/webp"
                     onChange={(e) => {
                       const file = e.target.files?.[0];
                       if (file) handleImageUpload(file);
@@ -366,7 +447,12 @@ export default function ProductsManager() {
                   <input
                     type="checkbox"
                     checked={editingProduct.isPopular}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, isPopular: e.target.checked })}
+                    onChange={(e) =>
+                      setEditingProduct({
+                        ...editingProduct,
+                        isPopular: e.target.checked,
+                      })
+                    }
                     className="w-5 h-5 rounded border-gray-300 text-olive focus:ring-olive"
                   />
                   <span className="text-sm font-semibold text-gray-700">
@@ -378,7 +464,12 @@ export default function ProductsManager() {
                   <input
                     type="checkbox"
                     checked={editingProduct.isActive}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, isActive: e.target.checked })}
+                    onChange={(e) =>
+                      setEditingProduct({
+                        ...editingProduct,
+                        isActive: e.target.checked,
+                      })
+                    }
                     className="w-5 h-5 rounded border-gray-300 text-olive focus:ring-olive"
                   />
                   <span className="text-sm font-semibold text-gray-700">

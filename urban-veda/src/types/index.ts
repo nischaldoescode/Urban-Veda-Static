@@ -7,6 +7,7 @@ export interface Juice {
   benefits: string;
   description: string;
   image: string;
+  stickerImage?: string;
   orderLink: string;
   isPopular: boolean;
   sortOrder: number;
@@ -34,6 +35,8 @@ export interface SiteConfig {
   logoImage?: string;
   heroHeadline: string;
   heroSubtext: string;
+  heroStatLabel?: string;
+  heroStatValue?: string;
   whatsappLink: string;
   milkRideSubscribeLink: string;
   announcement: string;
@@ -42,6 +45,42 @@ export interface SiteConfig {
   colorPalette: ColorPalette;
   aboutPage: SectionContent;
   philosophyPage: SectionContent;
+  challenges?: Array<{
+    icon: string;
+    title: string;
+    description: string;
+    color: string;
+    iconColor: string;
+  }>;
+  footerTagline?: string;
+  socialLinks?: {
+    instagram?: string;
+    facebook?: string;
+    twitter?: string;
+  };
+  contactInfo?: {
+    phone?: string;
+    email?: string;
+    location?: string;
+    hours?: string;
+  };
+
+  productOrderNote?: string;
+  productPreviewLabel?: string;
+  productPreviewHeadline?: string;
+  productPreviewSubtext?: string;
+  challengesSectionLabel?: string;
+  challengesSectionHeadline?: string;
+  challengesSectionSubtext?: string;
+  productsPageLabel?: string;
+  productsPageHeadline?: string;
+  productsPageSubtext?: string;
+  productsPageSubscribeLabel?: string;
+  ctaHeadline?: string;
+  ctaSubtext?: string;
+  productCardBadgeText?: string;
+  productCardExploreText?: string;
+
   updatedAt?: Date;
 }
 
