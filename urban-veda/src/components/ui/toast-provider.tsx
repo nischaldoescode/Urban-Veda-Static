@@ -136,7 +136,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                 exit={{ opacity: 0, scale: 0.95, y: 8 }}
                 transition={{ duration: 0.22, ease: [0.21, 0.47, 0.32, 0.98] }}
                 onClick={(e) => e.stopPropagation()}
-                className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm"
+                className="bg-white rounded-xl sm:rounded-2xl shadow-2xl p-4 sm:p-6 w-full max-w-sm mx-auto"
               >
                 {/* icon */}
                 <div

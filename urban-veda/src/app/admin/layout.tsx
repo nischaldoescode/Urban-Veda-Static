@@ -47,7 +47,7 @@ export default function AdminLayout({
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-const [isDesktop, setIsDesktop] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -56,7 +56,7 @@ const [isDesktop, setIsDesktop] = useState(false);
     setIsMounted(true);
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
-  }, []); 
+  }, []);
 
   // close drawer when route changes
   useEffect(() => {
@@ -230,28 +230,37 @@ const [isDesktop, setIsDesktop] = useState(false);
           style={{ marginLeft: isDesktop ? "224px" : "0" }}
         >
           {/* mobile top bar */}
+          {/* mobile top bar */}
           {!isDesktop && (
-            <header className="h-13 bg-white border-b border-gray-200 flex items-center justify-between px-4 sticky top-0 z-30">
-              <button
-                onClick={() => setDrawerOpen(true)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <Menu size={18} />
-              </button>
-              <div className="flex items-center gap-1.5">
-                <div className="bg-olive p-1 rounded-md text-white">
-                  <Leaf size={13} />
+            <header className="h-14 bg-white border-b border-gray-200 flex items-center justify-between px-4 sticky top-0 z-30">
+              <div className="flex items-center gap-2">
+                <div className="bg-olive p-1.5 rounded-md text-white">
+                  <Leaf size={14} />
                 </div>
-                <span className="font-serif text-sm font-bold text-sage-dark">
-                  urban veda
-                </span>
+                <div>
+                  <span className="font-serif text-sm font-bold text-sage-dark block leading-none">
+                    urban veda
+                  </span>
+                  <span className="text-[9px] text-gray-400 uppercase tracking-widest">
+                    admin panel
+                  </span>
+                </div>
               </div>
-              <button
-                onClick={handleLogout}
-                className="p-2 hover:bg-red-50 rounded-lg transition-colors text-red-400"
-              >
-                <LogOut size={16} />
-              </button>
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/"
+                  target="_blank"
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-500"
+                >
+                  <Home size={16} />
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="p-2 hover:bg-red-50 rounded-lg transition-colors text-red-500"
+                >
+                  <LogOut size={16} />
+                </button>
+              </div>
             </header>
           )}
 

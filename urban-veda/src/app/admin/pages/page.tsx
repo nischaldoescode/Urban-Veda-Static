@@ -448,33 +448,33 @@ export default function PagesEditor() {
 
   // ── MAIN RENDER ─────────────────────────────────────────────────────────
   return (
-    <div className="p-4 sm:p-6 max-w-4xl mx-auto overflow-x-hidden">
+    <div className="w-full max-w-4xl mx-auto px-3 py-4 sm:px-6 sm:py-6">
       {/* header */}
-      <div className="flex items-center justify-between mb-6 gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
         <div className="min-w-0">
-          <h1 className="text-2xl sm:text-3xl font-bold text-sage-dark font-serif truncate">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-sage-dark font-serif">
             pages content
           </h1>
-          <p className="text-gray-500 text-sm mt-0.5">
+          <p className="text-gray-500 text-xs sm:text-sm mt-1">
             edit your site's main pages
           </p>
         </div>
 
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           {/* preview button */}
           <button
             onClick={() => setShowPreview(true)}
-            className="flex items-center gap-1.5 px-3 sm:px-4 py-2.5 rounded-xl font-semibold text-sm transition-colors border bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200"
+            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2.5 rounded-xl font-semibold text-xs sm:text-sm transition-colors border bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200"
           >
-            <Eye size={15} />
-            <span className="hidden sm:inline">preview</span>
+            <Eye size={14} />
+            <span>preview</span>
           </button>
 
-          {/* save button — greyed when no changes */}
+          {/* save button */}
           <button
             onClick={handleSave}
             disabled={saving || !hasChanges}
-            className={`flex items-center gap-1.5 px-3 sm:px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+            className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
               hasChanges
                 ? "bg-olive text-white hover:bg-olive/90 shadow-sm"
                 : "bg-gray-100 text-gray-400 cursor-not-allowed"
@@ -484,46 +484,46 @@ export default function PagesEditor() {
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                className="w-4 h-4 border-2 border-current border-t-transparent rounded-full"
+                className="w-3.5 h-3.5 sm:w-4 sm:h-4 border-2 border-current border-t-transparent rounded-full"
               />
             ) : hasChanges ? (
-              <Save size={15} />
+              <Save size={14} />
             ) : (
-              <CheckCircle2 size={15} />
+              <CheckCircle2 size={14} />
             )}
-            <span className="hidden sm:inline">
+            <span>
               {saving ? "saving..." : hasChanges ? "save changes" : "saved"}
             </span>
           </button>
         </div>
       </div>
 
-      {/* tabs — horizontal scroll on small screens */}
-      <div className="flex gap-1.5 mb-5 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
+      {/* tabs */}
+      <div className="flex gap-1.5 mb-4 overflow-x-auto pb-2 scrollbar-hide">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           return (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-semibold whitespace-nowrap text-sm transition-all flex-shrink-0 ${
+              className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl font-semibold whitespace-nowrap text-xs sm:text-sm transition-all flex-shrink-0 ${
                 activeTab === tab.id
                   ? "bg-olive text-white shadow-sm"
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
-              <Icon size={15} />
+              <Icon size={14} className="sm:w-[15px] sm:h-[15px]" />
               <span>{tab.name}</span>
             </button>
           );
         })}
       </div>
 
-      {/* ── HERO TAB ── */}
+      {/* HERO TAB */}
       {activeTab === "hero" && (
-        <div className="bg-white rounded-2xl border border-gray-100 p-5 space-y-5">
+        <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 p-3 sm:p-5 space-y-4 sm:space-y-5">
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5 sm:mb-2">
               hero headline
             </label>
             <input
@@ -535,7 +535,7 @@ export default function PagesEditor() {
                   hero: { ...p.hero, headline: e.target.value },
                 }))
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 text-sm"
+              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 text-sm"
               placeholder="modern life. ancient wisdom."
             />
           </div>
@@ -589,9 +589,9 @@ export default function PagesEditor() {
         </div>
       )}
 
-      {/* ── SECTIONS TAB ── */}
+      {/* SECTIONS TAB */}
       {activeTab === "sections" && (
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {[
             {
               group: "product preview (home)",
@@ -688,14 +688,14 @@ export default function PagesEditor() {
           ].map((section) => (
             <div
               key={section.group}
-              className="bg-white rounded-2xl border border-gray-100 p-5 space-y-4"
+              className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 p-3 sm:p-5 space-y-3 sm:space-y-4"
             >
-              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 pb-3">
+              <h3 className="text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 pb-2 sm:pb-3">
                 {section.group}
               </h3>
               {section.fields.map((field) => (
                 <div key={field.key}>
-                  <label className="block text-xs font-bold text-gray-600 mb-1.5">
+                  <label className="block text-[10px] sm:text-xs font-bold text-gray-600 mb-1 sm:mb-1.5">
                     {field.label}
                   </label>
                   <input
@@ -704,7 +704,7 @@ export default function PagesEditor() {
                     onChange={(e) =>
                       setContent((p) => ({ ...p, [field.key]: e.target.value }))
                     }
-                    className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-olive/20"
+                    className="w-full px-2.5 sm:px-3 py-2 sm:py-2.5 border border-gray-200 rounded-lg sm:rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-olive/20"
                     placeholder={field.placeholder}
                   />
                 </div>
@@ -714,11 +714,11 @@ export default function PagesEditor() {
         </div>
       )}
 
-      {/* ── CHALLENGES TAB ── */}
+      {/* CHALLENGES TAB */}
       {activeTab === "challenges" && (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-500">
+        <div className="space-y-3 sm:space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
+            <p className="text-xs sm:text-sm text-gray-500">
               edit the lifestyle challenge cards on the home page
             </p>
             <button
@@ -736,7 +736,7 @@ export default function PagesEditor() {
                   challenges: [...p.challenges, newChallenge],
                 }));
               }}
-              className="flex items-center gap-1.5 px-4 py-2 bg-olive text-white rounded-xl text-sm font-semibold hover:bg-olive/90 flex-shrink-0"
+              className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2 bg-olive text-white rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold hover:bg-olive/90"
             >
               <Plus size={14} />
               add card
@@ -746,10 +746,10 @@ export default function PagesEditor() {
           {content.challenges.map((challenge, idx) => (
             <div
               key={idx}
-              className="bg-white rounded-2xl border border-gray-100 p-5 space-y-4"
+              className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 p-3 sm:p-5 space-y-3 sm:space-y-4"
             >
               <div className="flex items-center justify-between">
-                <span className="text-sm font-bold text-gray-700">
+                <span className="text-xs sm:text-sm font-bold text-gray-700">
                   card {idx + 1}
                 </span>
                 <button
@@ -880,11 +880,11 @@ export default function PagesEditor() {
         </div>
       )}
 
-      {/* ── ABOUT TAB ── */}
+      {/* ABOUT TAB */}
       {activeTab === "about" && (
-        <div className="bg-white rounded-2xl border border-gray-100 p-5 space-y-5">
+        <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 p-3 sm:p-5 space-y-4 sm:space-y-5">
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5 sm:mb-2">
               page headline
             </label>
             <input
@@ -912,7 +912,7 @@ export default function PagesEditor() {
                   about: { ...p.about, subtext: e.target.value },
                 }))
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 resize-none text-sm"
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 text-sm"
             />
           </div>
           <div>
@@ -928,14 +928,13 @@ export default function PagesEditor() {
                   about: { ...p.about, extraText: e.target.value },
                 }))
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 resize-none text-sm"
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 text-sm"
             />
           </div>
 
-          {/* feature cards */}
           <div>
-            <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-bold text-gray-700">
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
+              <label className="text-xs sm:text-sm font-bold text-gray-700">
                 feature cards
               </label>
               <button
@@ -955,16 +954,16 @@ export default function PagesEditor() {
                     } as any,
                   }))
                 }
-                className="flex items-center gap-1 px-3 py-1.5 bg-olive text-white rounded-lg text-xs font-semibold hover:bg-olive/90"
+                className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 bg-olive text-white rounded-lg text-[10px] sm:text-xs font-semibold hover:bg-olive/90"
               >
-                <Plus size={12} /> add card
+                <Plus size={11} className="sm:w-3 sm:h-3" /> add card
               </button>
             </div>
             {((content.about as any).features || defaultAboutFeatures).map(
               (feature: any, idx: number) => (
                 <div
                   key={idx}
-                  className="bg-gray-50 rounded-xl p-4 mb-3 space-y-3"
+                  className="bg-gray-50 rounded-lg sm:rounded-xl p-3 sm:p-4 mb-2 sm:mb-3 space-y-2 sm:space-y-3"
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-gray-600">
@@ -1005,7 +1004,7 @@ export default function PagesEditor() {
                             about: { ...p.about, features: u } as any,
                           }));
                         }}
-                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-olive/20"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 text-sm"
                       />
                     </div>
                     <div>
@@ -1056,7 +1055,7 @@ export default function PagesEditor() {
                         about: { ...p.about, features: u } as any,
                       }));
                     }}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-olive/20 resize-none"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 text-sm"
                   />
                 </div>
               ),
@@ -1065,11 +1064,11 @@ export default function PagesEditor() {
 
           {/* image upload */}
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5 sm:mb-2">
               hero image
             </label>
             {content.about.image && (
-              <div className="mb-3 relative aspect-[16/9] rounded-xl overflow-hidden">
+              <div className="mb-2 sm:mb-3 relative aspect-[16/9] rounded-lg sm:rounded-xl overflow-hidden">
                 <img
                   src={content.about.image}
                   alt="about"
@@ -1077,9 +1076,9 @@ export default function PagesEditor() {
                 />
               </div>
             )}
-            <label className="flex items-center justify-center gap-2 px-4 py-3 bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl hover:bg-gray-100 cursor-pointer transition-colors">
-              <Upload size={18} />
-              <span className="font-semibold text-gray-700 text-sm">
+            <label className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg sm:rounded-xl hover:bg-gray-100 cursor-pointer transition-colors">
+              <Upload size={16} className="sm:w-[18px] sm:h-[18px]" />
+              <span className="font-semibold text-gray-700 text-xs sm:text-sm">
                 {uploading ? "uploading..." : "upload image"}
               </span>
               <input
@@ -1097,11 +1096,11 @@ export default function PagesEditor() {
         </div>
       )}
 
-      {/* ── PHILOSOPHY TAB ── */}
+      {/* PHILOSOPHY TAB */}
       {activeTab === "philosophy" && (
-        <div className="bg-white rounded-2xl border border-gray-100 p-5 space-y-5">
+        <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 p-3 sm:p-5 space-y-4 sm:space-y-5">
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5 sm:mb-2">
               page title
             </label>
             <input
@@ -1113,11 +1112,11 @@ export default function PagesEditor() {
                   philosophy: { ...p.philosophy, headline: e.target.value },
                 }))
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 text-sm"
+              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 text-xs sm:text-sm"
             />
           </div>
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5 sm:mb-2">
               mission statement
             </label>
             <textarea
@@ -1129,11 +1128,11 @@ export default function PagesEditor() {
                   philosophy: { ...p.philosophy, subtext: e.target.value },
                 }))
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 resize-none text-sm"
+              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 resize-none text-xs sm:text-sm"
             />
           </div>
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5 sm:mb-2">
               commitment text (overlay on image)
             </label>
             <textarea
@@ -1145,15 +1144,15 @@ export default function PagesEditor() {
                   philosophy: { ...p.philosophy, extraText: e.target.value },
                 }))
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 resize-none text-sm"
+              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 resize-none text-xs sm:text-sm"
             />
           </div>
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5 sm:mb-2">
               background image
             </label>
             {content.philosophy.image && (
-              <div className="mb-3 relative aspect-video rounded-xl overflow-hidden">
+              <div className="mb-2 sm:mb-3 relative aspect-video rounded-lg sm:rounded-xl overflow-hidden">
                 <img
                   src={content.philosophy.image}
                   alt="philosophy"
@@ -1161,9 +1160,9 @@ export default function PagesEditor() {
                 />
               </div>
             )}
-            <label className="flex items-center justify-center gap-2 px-4 py-3 bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl hover:bg-gray-100 cursor-pointer transition-colors">
-              <Upload size={18} />
-              <span className="font-semibold text-gray-700 text-sm">
+            <label className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg sm:rounded-xl hover:bg-gray-100 cursor-pointer transition-colors">
+              <Upload size={16} className="sm:w-[18px] sm:h-[18px]" />
+              <span className="font-semibold text-gray-700 text-xs sm:text-sm">
                 {uploading ? "uploading..." : "upload image"}
               </span>
               <input
@@ -1181,14 +1180,14 @@ export default function PagesEditor() {
         </div>
       )}
 
-      {/* ── PRODUCT ORDER NOTE TAB ── */}
+      {/* PRODUCT ORDER NOTE TAB */}
       {activeTab === "productOrderNote" && (
-        <div className="bg-white rounded-2xl border border-gray-100 p-5 space-y-4">
+        <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 p-3 sm:p-5 space-y-3 sm:space-y-4">
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-1">
+            <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1">
               product page order note
             </label>
-            <p className="text-xs text-gray-400 mb-3">
+            <p className="text-[10px] sm:text-xs text-gray-400 mb-2 sm:mb-3">
               shown at the bottom of each product detail page below the order
               button.
             </p>
@@ -1198,13 +1197,13 @@ export default function PagesEditor() {
                 setContent((p) => ({ ...p, productOrderNote: e.target.value }))
               }
               rows={4}
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 resize-none text-sm"
+              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 resize-none text-xs sm:text-sm"
               placeholder="ordering is currently handled via whatsapp for customized health goals and subscription coordination in sobha city"
             />
           </div>
           {/* live inline preview */}
-          <div className="bg-sage-bg rounded-xl p-4 text-center">
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">
+          <div className="bg-sage-bg rounded-lg sm:rounded-xl p-3 sm:p-4 text-center">
+            <p className="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5 sm:mb-2">
               preview
             </p>
             <p className="text-xs text-gray-500 italic leading-relaxed whitespace-pre-line">
@@ -1219,45 +1218,48 @@ export default function PagesEditor() {
       <AnimatePresence>
         {showPreview && (
           <>
-            {/* backdrop — also acts as flex centering container */}
+            {/* backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowPreview(false)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            >
-              {/* modal — stop click propagation so clicking inside doesn't close */}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+            />
+
+            {/* modal */}
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
               <motion.div
-                initial={{ opacity: 0, scale: 0.94, y: 16 }}
+                initial={{ opacity: 0, scale: 0.94, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 8 }}
+                exit={{ opacity: 0, scale: 0.95, y: 10 }}
                 transition={{ duration: 0.22, ease: [0.21, 0.47, 0.32, 0.98] }}
-                onClick={(e) => e.stopPropagation()}
-                className="w-full max-w-md bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden max-h-[85vh]"
+                className="w-full max-w-md bg-white rounded-xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden max-h-[85vh] sm:max-h-[80vh]"
               >
                 {/* modal header */}
-                <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 flex-shrink-0">
+                <div className="flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 border-b border-gray-100 flex-shrink-0">
                   <div>
-                    <p className="font-bold text-gray-900 text-sm">preview</p>
-                    <p className="text-[10px] text-gray-400 capitalize mt-0.5">
+                    <p className="font-bold text-gray-900 text-xs sm:text-sm">
+                      preview
+                    </p>
+                    <p className="text-[9px] sm:text-[10px] text-gray-400 capitalize mt-0.5">
                       {tabs.find((t) => t.id === activeTab)?.name || activeTab}
                     </p>
                   </div>
                   <button
                     onClick={() => setShowPreview(false)}
-                    className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+                    className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg sm:rounded-xl transition-colors"
                   >
-                    <X size={18} />
+                    <X size={16} className="sm:w-[18px] sm:h-[18px]" />
                   </button>
                 </div>
 
-                {/* modal body — scrollable */}
-                <div className="flex-1 overflow-y-auto overflow-x-hidden p-5">
+                {/* modal body */}
+                <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-5">
                   <PreviewContent />
                 </div>
               </motion.div>
-            </motion.div>
+            </div>
           </>
         )}
       </AnimatePresence>
