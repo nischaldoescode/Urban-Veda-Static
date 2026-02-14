@@ -3,8 +3,18 @@
 import { useState, useEffect, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  Save, Upload, Eye, Home as HomeIcon, Info, Sparkles,
-  Plus, Trash2, FileText, Edit3, X, CheckCircle2,
+  Save,
+  Upload,
+  Eye,
+  Home as HomeIcon,
+  Info,
+  Sparkles,
+  Plus,
+  Trash2,
+  FileText,
+  Edit3,
+  X,
+  CheckCircle2,
 } from "lucide-react";
 import { iconMap, Challenge } from "@/components/home/ChallengesSection";
 import { useToastContext } from "@/components/ui/toast-provider";
@@ -12,16 +22,42 @@ import { useToastContext } from "@/components/ui/toast-provider";
 interface PageContent {
   hero: { headline: string; subtext: string };
   challenges: Challenge[];
-  about: { headline: string; subtext: string; image: string; extraText: string };
-  philosophy: { headline: string; subtext: string; image: string; extraText: string };
+  about: {
+    headline: string;
+    subtext: string;
+    image: string;
+    extraText: string;
+  };
+  philosophy: {
+    headline: string;
+    subtext: string;
+    image: string;
+    extraText: string;
+  };
   [key: string]: any;
 }
 
 const defaultAboutFeatures = [
-  { icon: "Shield", title: "purity first", description: "no preservatives, no shortcuts. just pure herbal extracts." },
-  { icon: "Sparkles", title: "small batches", description: "handcrafted daily to ensure maximum freshness and potency." },
-  { icon: "Users", title: "community care", description: "personalized health consultations for every customer." },
-  { icon: "Eye", title: "transparent process", description: "from sourcing to delivery, complete visibility." },
+  {
+    icon: "Shield",
+    title: "purity first",
+    description: "no preservatives, no shortcuts. just pure herbal extracts.",
+  },
+  {
+    icon: "Sparkles",
+    title: "small batches",
+    description: "handcrafted daily to ensure maximum freshness and potency.",
+  },
+  {
+    icon: "Users",
+    title: "community care",
+    description: "personalized health consultations for every customer.",
+  },
+  {
+    icon: "Eye",
+    title: "transparent process",
+    description: "from sourcing to delivery, complete visibility.",
+  },
 ];
 
 const EMPTY: PageContent = {
@@ -51,7 +87,10 @@ export default function PagesEditor() {
         const data = await res.json();
         if (data.success) {
           const loaded: PageContent = {
-            hero: { headline: data.data.heroHeadline || "", subtext: data.data.heroSubtext || "" },
+            hero: {
+              headline: data.data.heroHeadline || "",
+              subtext: data.data.heroSubtext || "",
+            },
             challenges: data.data.challenges || [],
             about: data.data.aboutPage || EMPTY.about,
             philosophy: data.data.philosophyPage || EMPTY.philosophy,
@@ -62,14 +101,16 @@ export default function PagesEditor() {
             productPreviewSubtext: data.data.productPreviewSubtext || "",
             productCardExploreText: data.data.productCardExploreText || "",
             challengesSectionLabel: data.data.challengesSectionLabel || "",
-            challengesSectionHeadline: data.data.challengesSectionHeadline || "",
+            challengesSectionHeadline:
+              data.data.challengesSectionHeadline || "",
             challengesSectionSubtext: data.data.challengesSectionSubtext || "",
             ctaHeadline: data.data.ctaHeadline || "",
             ctaSubtext: data.data.ctaSubtext || "",
             productsPageLabel: data.data.productsPageLabel || "",
             productsPageHeadline: data.data.productsPageHeadline || "",
             productsPageSubtext: data.data.productsPageSubtext || "",
-            productsPageSubscribeLabel: data.data.productsPageSubscribeLabel || "",
+            productsPageSubscribeLabel:
+              data.data.productsPageSubscribeLabel || "",
             productCardBadgeText: data.data.productCardBadgeText || "",
             productOrderNote: data.data.productOrderNote || "",
           };
@@ -85,15 +126,24 @@ export default function PagesEditor() {
     fetchContent();
   }, []);
 
-  const handleImageUpload = async (file: File, section: "about" | "philosophy") => {
+  const handleImageUpload = async (
+    file: File,
+    section: "about" | "philosophy",
+  ) => {
     setUploading(true);
     try {
       const formData = new FormData();
       formData.append("file", file);
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
       const data = await res.json();
       if (data.success) {
-        setContent(prev => ({ ...prev, [section]: { ...prev[section], image: data.data.url } }));
+        setContent((prev) => ({
+          ...prev,
+          [section]: { ...prev[section], image: data.data.url },
+        }));
       }
     } catch {
       toast("image upload failed", "error");
@@ -171,7 +221,9 @@ export default function PagesEditor() {
       {activeTab === "hero" && (
         <>
           <div className="bg-sage-bg rounded-xl p-4 space-y-2">
-            <p className="text-xs font-bold text-olive uppercase tracking-widest">hero section</p>
+            <p className="text-xs font-bold text-olive uppercase tracking-widest">
+              hero section
+            </p>
             <p className="text-lg font-bold text-sage-dark font-serif leading-tight whitespace-pre-line">
               {content.hero.headline || "your headline here"}
             </p>
@@ -181,12 +233,20 @@ export default function PagesEditor() {
           </div>
           <div className="bg-white border border-gray-100 rounded-xl p-3 flex items-center justify-between">
             <div>
-              <p className="text-[9px] font-bold text-olive uppercase tracking-widest">fresh today</p>
-              <p className="text-sm font-bold text-sage-dark">morning delivery</p>
+              <p className="text-[9px] font-bold text-olive uppercase tracking-widest">
+                fresh today
+              </p>
+              <p className="text-sm font-bold text-sage-dark">
+                morning delivery
+              </p>
             </div>
             <div className="text-right bg-sage-bg rounded-lg px-3 py-2">
-              <p className="text-[9px] text-gray-400">{content.heroStatLabel || "active herbs"}</p>
-              <p className="text-xl font-bold text-sage-dark">{content.heroStatValue || "12+"}</p>
+              <p className="text-[9px] text-gray-400">
+                {content.heroStatLabel || "active herbs"}
+              </p>
+              <p className="text-xl font-bold text-sage-dark">
+                {content.heroStatValue || "12+"}
+              </p>
             </div>
           </div>
         </>
@@ -194,7 +254,9 @@ export default function PagesEditor() {
 
       {activeTab === "sections" && (
         <>
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">product preview section</p>
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+            product preview section
+          </p>
           <div className="bg-sage-bg rounded-xl p-4 space-y-1.5">
             <p className="text-[9px] font-bold text-olive uppercase tracking-widest">
               {content.productPreviewLabel || "signature collection"}
@@ -210,7 +272,9 @@ export default function PagesEditor() {
             </span>
           </div>
 
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider pt-1">challenges section</p>
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider pt-1">
+            challenges section
+          </p>
           <div className="bg-sage-bg rounded-xl p-4 space-y-1.5">
             <p className="text-[9px] font-bold text-olive uppercase tracking-widest">
               {content.challengesSectionLabel || "modern problems"}
@@ -219,11 +283,14 @@ export default function PagesEditor() {
               {content.challengesSectionHeadline || "lifestyle challenges"}
             </p>
             <p className="text-xs text-gray-500 italic whitespace-pre-line">
-              {content.challengesSectionSubtext || "your busy lifestyle deserves better health support"}
+              {content.challengesSectionSubtext ||
+                "your busy lifestyle deserves better health support"}
             </p>
           </div>
 
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider pt-1">cta section</p>
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider pt-1">
+            cta section
+          </p>
           <div className="bg-sage-dark rounded-xl p-4 space-y-1.5">
             <p className="text-[9px] font-bold text-green-400 uppercase tracking-widest">
               {content.ctaSubtext || "nature's prescription"}
@@ -233,7 +300,9 @@ export default function PagesEditor() {
             </p>
           </div>
 
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider pt-1">products page</p>
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider pt-1">
+            products page
+          </p>
           <div className="bg-sage-bg rounded-xl p-4 space-y-1.5">
             <p className="text-[9px] font-bold text-olive uppercase tracking-widest">
               {content.productsPageLabel || "signature collection"}
@@ -259,7 +328,9 @@ export default function PagesEditor() {
       {activeTab === "challenges" && (
         <>
           {content.challenges.length === 0 && (
-            <p className="text-xs text-gray-400 text-center py-4">no challenge cards yet — add some</p>
+            <p className="text-xs text-gray-400 text-center py-4">
+              no challenge cards yet — add some
+            </p>
           )}
           {content.challenges.slice(0, 6).map((c, i) => {
             const Icon = iconMap[c.icon] || iconMap["Sparkles"];
@@ -267,15 +338,26 @@ export default function PagesEditor() {
               <div
                 key={i}
                 className="rounded-xl p-3 border border-gray-100"
-                style={{ background: c.colorHex ? `${c.colorHex}22` : "#f9fafb" }}
+                style={{
+                  background: c.colorHex ? `${c.colorHex}22` : "#f9fafb",
+                }}
               >
                 <div className="flex items-start gap-2.5">
-                  <div className="p-2 rounded-lg flex-shrink-0"
-                    style={{ background: c.colorHex ? `${c.colorHex}55` : "#f3f4f6" }}>
-                    <Icon size={14} className={c.iconColor || "text-gray-600"} />
+                  <div
+                    className="p-2 rounded-lg flex-shrink-0"
+                    style={{
+                      background: c.colorHex ? `${c.colorHex}55` : "#f3f4f6",
+                    }}
+                  >
+                    <Icon
+                      size={14}
+                      className={c.iconColor || "text-gray-600"}
+                    />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-xs font-bold text-sage-dark truncate">{c.title || "title"}</p>
+                    <p className="text-xs font-bold text-sage-dark truncate">
+                      {c.title || "title"}
+                    </p>
                     <p className="text-[10px] text-gray-500 mt-0.5 leading-relaxed line-clamp-2">
                       {c.description || "description"}
                     </p>
@@ -307,17 +389,26 @@ export default function PagesEditor() {
               </p>
             )}
           </div>
-          {((content.about as any).features || defaultAboutFeatures).slice(0, 4).map((f: any, i: number) => (
-            <div key={i} className="bg-white border border-gray-100 rounded-xl p-3 flex items-center gap-2.5">
-              <div className="bg-olive/10 p-2 rounded-lg flex-shrink-0">
-                <div className="w-3 h-3 bg-olive rounded-sm opacity-60" />
+          {((content.about as any).features || defaultAboutFeatures)
+            .slice(0, 4)
+            .map((f: any, i: number) => (
+              <div
+                key={i}
+                className="bg-white border border-gray-100 rounded-xl p-3 flex items-center gap-2.5"
+              >
+                <div className="bg-olive/10 p-2 rounded-lg flex-shrink-0">
+                  <div className="w-3 h-3 bg-olive rounded-sm opacity-60" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs font-bold text-gray-800 truncate">
+                    {f.title}
+                  </p>
+                  <p className="text-[10px] text-gray-400 line-clamp-1">
+                    {f.description}
+                  </p>
+                </div>
               </div>
-              <div className="min-w-0">
-                <p className="text-xs font-bold text-gray-800 truncate">{f.title}</p>
-                <p className="text-[10px] text-gray-400 line-clamp-1">{f.description}</p>
-              </div>
-            </div>
-          ))}
+            ))}
         </>
       )}
 
@@ -343,9 +434,12 @@ export default function PagesEditor() {
 
       {activeTab === "productOrderNote" && (
         <div className="bg-sage-bg rounded-xl p-4">
-          <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider mb-2">product page note</p>
+          <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider mb-2">
+            product page note
+          </p>
           <p className="text-xs text-gray-500 italic text-center leading-relaxed whitespace-pre-line">
-            {content.productOrderNote || "ordering is currently handled via whatsapp for customized health goals and subscription coordination in sobha city"}
+            {content.productOrderNote ||
+              "ordering is currently handled via whatsapp for customized health goals and subscription coordination in sobha city"}
           </p>
         </div>
       )}
@@ -355,14 +449,15 @@ export default function PagesEditor() {
   // ── MAIN RENDER ─────────────────────────────────────────────────────────
   return (
     <div className="p-4 sm:p-6 max-w-4xl mx-auto overflow-x-hidden">
-
       {/* header */}
       <div className="flex items-center justify-between mb-6 gap-3">
         <div className="min-w-0">
           <h1 className="text-2xl sm:text-3xl font-bold text-sage-dark font-serif truncate">
             pages content
           </h1>
-          <p className="text-gray-500 text-sm mt-0.5">edit your site's main pages</p>
+          <p className="text-gray-500 text-sm mt-0.5">
+            edit your site's main pages
+          </p>
         </div>
 
         <div className="flex items-center gap-2 flex-shrink-0">
@@ -428,20 +523,34 @@ export default function PagesEditor() {
       {activeTab === "hero" && (
         <div className="bg-white rounded-2xl border border-gray-100 p-5 space-y-5">
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">hero headline</label>
+            <label className="block text-sm font-bold text-gray-700 mb-2">
+              hero headline
+            </label>
             <input
               type="text"
               value={content.hero.headline}
-              onChange={e => setContent(p => ({ ...p, hero: { ...p.hero, headline: e.target.value } }))}
+              onChange={(e) =>
+                setContent((p) => ({
+                  ...p,
+                  hero: { ...p.hero, headline: e.target.value },
+                }))
+              }
               className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 text-sm"
               placeholder="modern life. ancient wisdom."
             />
           </div>
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">hero subtext</label>
+            <label className="block text-sm font-bold text-gray-700 mb-2">
+              hero subtext
+            </label>
             <textarea
               value={content.hero.subtext}
-              onChange={e => setContent(p => ({ ...p, hero: { ...p.hero, subtext: e.target.value } }))}
+              onChange={(e) =>
+                setContent((p) => ({
+                  ...p,
+                  hero: { ...p.hero, subtext: e.target.value },
+                }))
+              }
               rows={3}
               className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 resize-none text-sm"
               placeholder="freshly cold-pressed herbal juices..."
@@ -449,21 +558,29 @@ export default function PagesEditor() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">stat label</label>
+              <label className="block text-sm font-bold text-gray-700 mb-2">
+                stat label
+              </label>
               <input
                 type="text"
                 value={content.heroStatLabel || ""}
-                onChange={e => setContent(p => ({ ...p, heroStatLabel: e.target.value }))}
+                onChange={(e) =>
+                  setContent((p) => ({ ...p, heroStatLabel: e.target.value }))
+                }
                 className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 text-sm"
                 placeholder="active herbs"
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">stat value</label>
+              <label className="block text-sm font-bold text-gray-700 mb-2">
+                stat value
+              </label>
               <input
                 type="text"
                 value={content.heroStatValue || ""}
-                onChange={e => setContent(p => ({ ...p, heroStatValue: e.target.value }))}
+                onChange={(e) =>
+                  setContent((p) => ({ ...p, heroStatValue: e.target.value }))
+                }
                 className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 text-sm"
                 placeholder="12+"
               />
@@ -479,49 +596,114 @@ export default function PagesEditor() {
             {
               group: "product preview (home)",
               fields: [
-                { key: "productPreviewLabel", label: "label", placeholder: "signature collection" },
-                { key: "productPreviewHeadline", label: "headline", placeholder: "fresh every morning" },
-                { key: "productPreviewSubtext", label: "subtext", placeholder: "100% preservative-free. delivered to sobha city." },
-                { key: "productCardExploreText", label: "explore button text", placeholder: "explore blend" },
+                {
+                  key: "productPreviewLabel",
+                  label: "label",
+                  placeholder: "signature collection",
+                },
+                {
+                  key: "productPreviewHeadline",
+                  label: "headline",
+                  placeholder: "fresh every morning",
+                },
+                {
+                  key: "productPreviewSubtext",
+                  label: "subtext",
+                  placeholder:
+                    "100% preservative-free. delivered to sobha city.",
+                },
+                {
+                  key: "productCardExploreText",
+                  label: "explore button text",
+                  placeholder: "explore blend",
+                },
               ],
             },
             {
               group: "challenges section (home)",
               fields: [
-                { key: "challengesSectionLabel", label: "label", placeholder: "modern problems" },
-                { key: "challengesSectionHeadline", label: "headline", placeholder: "lifestyle challenges" },
-                { key: "challengesSectionSubtext", label: "subtext", placeholder: "your busy lifestyle deserves better health support" },
+                {
+                  key: "challengesSectionLabel",
+                  label: "label",
+                  placeholder: "modern problems",
+                },
+                {
+                  key: "challengesSectionHeadline",
+                  label: "headline",
+                  placeholder: "lifestyle challenges",
+                },
+                {
+                  key: "challengesSectionSubtext",
+                  label: "subtext",
+                  placeholder:
+                    "your busy lifestyle deserves better health support",
+                },
               ],
             },
             {
               group: "cta section (home)",
               fields: [
-                { key: "ctaSubtext", label: "small label above", placeholder: "nature's prescription" },
-                { key: "ctaHeadline", label: "main headline", placeholder: "drink today, avoid the doctor tomorrow" },
+                {
+                  key: "ctaSubtext",
+                  label: "small label above",
+                  placeholder: "nature's prescription",
+                },
+                {
+                  key: "ctaHeadline",
+                  label: "main headline",
+                  placeholder: "drink today, avoid the doctor tomorrow",
+                },
               ],
             },
             {
               group: "products page",
               fields: [
-                { key: "productsPageLabel", label: "label", placeholder: "signature collection" },
-                { key: "productsPageHeadline", label: "headline", placeholder: "Healing Elixirs" },
-                { key: "productsPageSubtext", label: "subtext", placeholder: "sip health, skip the hospital." },
-                { key: "productsPageSubscribeLabel", label: "subscribe button text", placeholder: "Subscribe on Milk Ride" },
-                { key: "productCardBadgeText", label: "popular badge text", placeholder: "highly requested" },
+                {
+                  key: "productsPageLabel",
+                  label: "label",
+                  placeholder: "signature collection",
+                },
+                {
+                  key: "productsPageHeadline",
+                  label: "headline",
+                  placeholder: "Healing Elixirs",
+                },
+                {
+                  key: "productsPageSubtext",
+                  label: "subtext",
+                  placeholder: "sip health, skip the hospital.",
+                },
+                {
+                  key: "productsPageSubscribeLabel",
+                  label: "subscribe button text",
+                  placeholder: "Subscribe on Milk Ride",
+                },
+                {
+                  key: "productCardBadgeText",
+                  label: "popular badge text",
+                  placeholder: "highly requested",
+                },
               ],
             },
-          ].map(section => (
-            <div key={section.group} className="bg-white rounded-2xl border border-gray-100 p-5 space-y-4">
+          ].map((section) => (
+            <div
+              key={section.group}
+              className="bg-white rounded-2xl border border-gray-100 p-5 space-y-4"
+            >
               <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 pb-3">
                 {section.group}
               </h3>
-              {section.fields.map(field => (
+              {section.fields.map((field) => (
                 <div key={field.key}>
-                  <label className="block text-xs font-bold text-gray-600 mb-1.5">{field.label}</label>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5">
+                    {field.label}
+                  </label>
                   <input
                     type="text"
                     value={content[field.key] || ""}
-                    onChange={e => setContent(p => ({ ...p, [field.key]: e.target.value }))}
+                    onChange={(e) =>
+                      setContent((p) => ({ ...p, [field.key]: e.target.value }))
+                    }
                     className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-olive/20"
                     placeholder={field.placeholder}
                   />
@@ -536,15 +718,23 @@ export default function PagesEditor() {
       {activeTab === "challenges" && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-500">edit the lifestyle challenge cards on the home page</p>
+            <p className="text-sm text-gray-500">
+              edit the lifestyle challenge cards on the home page
+            </p>
             <button
               onClick={() => {
                 const newChallenge: Challenge = {
-                  icon: "Sparkles", title: "new challenge",
-                  description: "describe this challenge and how your product helps.",
-                  color: "from-gray-50 to-gray-100", iconColor: "text-gray-600",
+                  icon: "Sparkles",
+                  title: "new challenge",
+                  description:
+                    "describe this challenge and how your product helps.",
+                  color: "from-gray-50 to-gray-100",
+                  iconColor: "text-gray-600",
                 };
-                setContent(p => ({ ...p, challenges: [...p.challenges, newChallenge] }));
+                setContent((p) => ({
+                  ...p,
+                  challenges: [...p.challenges, newChallenge],
+                }));
               }}
               className="flex items-center gap-1.5 px-4 py-2 bg-olive text-white rounded-xl text-sm font-semibold hover:bg-olive/90 flex-shrink-0"
             >
@@ -554,11 +744,21 @@ export default function PagesEditor() {
           </div>
 
           {content.challenges.map((challenge, idx) => (
-            <div key={idx} className="bg-white rounded-2xl border border-gray-100 p-5 space-y-4">
+            <div
+              key={idx}
+              className="bg-white rounded-2xl border border-gray-100 p-5 space-y-4"
+            >
               <div className="flex items-center justify-between">
-                <span className="text-sm font-bold text-gray-700">card {idx + 1}</span>
+                <span className="text-sm font-bold text-gray-700">
+                  card {idx + 1}
+                </span>
                 <button
-                  onClick={() => setContent(p => ({ ...p, challenges: p.challenges.filter((_, i) => i !== idx) }))}
+                  onClick={() =>
+                    setContent((p) => ({
+                      ...p,
+                      challenges: p.challenges.filter((_, i) => i !== idx),
+                    }))
+                  }
                   className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                 >
                   <Trash2 size={14} />
@@ -567,42 +767,52 @@ export default function PagesEditor() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-gray-600 mb-1.5">title</label>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5">
+                    title
+                  </label>
                   <input
                     type="text"
                     value={challenge.title}
-                    onChange={e => {
+                    onChange={(e) => {
                       const u = [...content.challenges];
                       u[idx] = { ...u[idx], title: e.target.value };
-                      setContent(p => ({ ...p, challenges: u }));
+                      setContent((p) => ({ ...p, challenges: u }));
                     }}
                     className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-olive/20"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-600 mb-1.5">icon</label>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5">
+                    icon
+                  </label>
                   <select
                     value={challenge.icon}
-                    onChange={e => {
+                    onChange={(e) => {
                       const u = [...content.challenges];
                       u[idx] = { ...u[idx], icon: e.target.value };
-                      setContent(p => ({ ...p, challenges: u }));
+                      setContent((p) => ({ ...p, challenges: u }));
                     }}
                     className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-olive/20 bg-white"
                   >
-                    {Object.keys(iconMap).map(k => <option key={k} value={k}>{k}</option>)}
+                    {Object.keys(iconMap).map((k) => (
+                      <option key={k} value={k}>
+                        {k}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-600 mb-1.5">description</label>
+                <label className="block text-xs font-bold text-gray-600 mb-1.5">
+                  description
+                </label>
                 <textarea
                   value={challenge.description}
-                  onChange={e => {
+                  onChange={(e) => {
                     const u = [...content.challenges];
                     u[idx] = { ...u[idx], description: e.target.value };
-                    setContent(p => ({ ...p, challenges: u }));
+                    setContent((p) => ({ ...p, challenges: u }));
                   }}
                   rows={2}
                   className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-olive/20 resize-none"
@@ -611,27 +821,37 @@ export default function PagesEditor() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-gray-600 mb-1.5">card background color</label>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5">
+                    card background color
+                  </label>
                   <div className="flex items-center gap-2">
                     <input
                       type="color"
                       value={(challenge as any).colorHex || "#fefce8"}
-                      onChange={e => {
+                      onChange={(e) => {
                         const hex = e.target.value;
                         const u = [...content.challenges];
-                        u[idx] = { ...u[idx], colorHex: hex, color: `from-[${hex}] to-[${hex}]` } as any;
-                        setContent(p => ({ ...p, challenges: u }));
+                        u[idx] = {
+                          ...u[idx],
+                          colorHex: hex,
+                          color: `from-[${hex}] to-[${hex}]`,
+                        } as any;
+                        setContent((p) => ({ ...p, challenges: u }));
                       }}
                       className="w-10 h-10 rounded-xl border-2 border-gray-200 cursor-pointer flex-shrink-0 p-0.5"
                     />
                     <input
                       type="text"
                       value={(challenge as any).colorHex || "#fefce8"}
-                      onChange={e => {
+                      onChange={(e) => {
                         const hex = e.target.value;
                         const u = [...content.challenges];
-                        u[idx] = { ...u[idx], colorHex: hex, color: `from-[${hex}] to-[${hex}]` } as any;
-                        setContent(p => ({ ...p, challenges: u }));
+                        u[idx] = {
+                          ...u[idx],
+                          colorHex: hex,
+                          color: `from-[${hex}] to-[${hex}]`,
+                        } as any;
+                        setContent((p) => ({ ...p, challenges: u }));
                       }}
                       className="flex-1 min-w-0 px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-olive/20 font-mono"
                       placeholder="#fefce8"
@@ -639,14 +859,16 @@ export default function PagesEditor() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-600 mb-1.5">icon color (tailwind)</label>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5">
+                    icon color (tailwind)
+                  </label>
                   <input
                     type="text"
                     value={challenge.iconColor}
-                    onChange={e => {
+                    onChange={(e) => {
                       const u = [...content.challenges];
                       u[idx] = { ...u[idx], iconColor: e.target.value };
-                      setContent(p => ({ ...p, challenges: u }));
+                      setContent((p) => ({ ...p, challenges: u }));
                     }}
                     className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-olive/20 font-mono"
                     placeholder="text-orange-600"
@@ -662,96 +884,214 @@ export default function PagesEditor() {
       {activeTab === "about" && (
         <div className="bg-white rounded-2xl border border-gray-100 p-5 space-y-5">
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">page headline</label>
-            <input type="text" value={content.about.headline}
-              onChange={e => setContent(p => ({ ...p, about: { ...p.about, headline: e.target.value } }))}
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 text-sm" />
+            <label className="block text-sm font-bold text-gray-700 mb-2">
+              page headline
+            </label>
+            <input
+              type="text"
+              value={content.about.headline}
+              onChange={(e) =>
+                setContent((p) => ({
+                  ...p,
+                  about: { ...p.about, headline: e.target.value },
+                }))
+              }
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 text-sm"
+            />
           </div>
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">story text</label>
-            <textarea value={content.about.subtext} rows={5}
-              onChange={e => setContent(p => ({ ...p, about: { ...p.about, subtext: e.target.value } }))}
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 resize-none text-sm" />
+            <label className="block text-sm font-bold text-gray-700 mb-2">
+              story text
+            </label>
+            <textarea
+              value={content.about.subtext}
+              rows={5}
+              onChange={(e) =>
+                setContent((p) => ({
+                  ...p,
+                  about: { ...p.about, subtext: e.target.value },
+                }))
+              }
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 resize-none text-sm"
+            />
           </div>
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">highlight quote</label>
-            <textarea value={content.about.extraText} rows={3}
-              onChange={e => setContent(p => ({ ...p, about: { ...p.about, extraText: e.target.value } }))}
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 resize-none text-sm" />
+            <label className="block text-sm font-bold text-gray-700 mb-2">
+              highlight quote
+            </label>
+            <textarea
+              value={content.about.extraText}
+              rows={3}
+              onChange={(e) =>
+                setContent((p) => ({
+                  ...p,
+                  about: { ...p.about, extraText: e.target.value },
+                }))
+              }
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 resize-none text-sm"
+            />
           </div>
 
           {/* feature cards */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-bold text-gray-700">feature cards</label>
+              <label className="text-sm font-bold text-gray-700">
+                feature cards
+              </label>
               <button
-                onClick={() => setContent(p => ({
-                  ...p, about: { ...p.about, features: [...((p.about as any).features || []), { icon: "Leaf", title: "new feature", description: "describe this feature." }] } as any
-                }))}
+                onClick={() =>
+                  setContent((p) => ({
+                    ...p,
+                    about: {
+                      ...p.about,
+                      features: [
+                        ...((p.about as any).features || []),
+                        {
+                          icon: "Leaf",
+                          title: "new feature",
+                          description: "describe this feature.",
+                        },
+                      ],
+                    } as any,
+                  }))
+                }
                 className="flex items-center gap-1 px-3 py-1.5 bg-olive text-white rounded-lg text-xs font-semibold hover:bg-olive/90"
               >
                 <Plus size={12} /> add card
               </button>
             </div>
-            {((content.about as any).features || defaultAboutFeatures).map((feature: any, idx: number) => (
-              <div key={idx} className="bg-gray-50 rounded-xl p-4 mb-3 space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-gray-600">card {idx + 1}</span>
-                  <button onClick={() => setContent(p => ({
-                    ...p, about: { ...p.about, features: ((p.about as any).features || []).filter((_: any, i: number) => i !== idx) } as any
-                  }))} className="p-1 text-red-400 hover:text-red-600 rounded">
-                    <Trash2 size={12} />
-                  </button>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-bold text-gray-600 mb-1">title</label>
-                    <input type="text" value={feature.title}
-                      onChange={e => {
-                        const u = [...((content.about as any).features || [])];
-                        u[idx] = { ...u[idx], title: e.target.value };
-                        setContent(p => ({ ...p, about: { ...p.about, features: u } as any }));
-                      }}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-olive/20" />
+            {((content.about as any).features || defaultAboutFeatures).map(
+              (feature: any, idx: number) => (
+                <div
+                  key={idx}
+                  className="bg-gray-50 rounded-xl p-4 mb-3 space-y-3"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-gray-600">
+                      card {idx + 1}
+                    </span>
+                    <button
+                      onClick={() =>
+                        setContent((p) => ({
+                          ...p,
+                          about: {
+                            ...p.about,
+                            features: ((p.about as any).features || []).filter(
+                              (_: any, i: number) => i !== idx,
+                            ),
+                          } as any,
+                        }))
+                      }
+                      className="p-1 text-red-400 hover:text-red-600 rounded"
+                    >
+                      <Trash2 size={12} />
+                    </button>
                   </div>
-                  <div>
-                    <label className="block text-xs font-bold text-gray-600 mb-1">icon</label>
-                    <select value={feature.icon}
-                      onChange={e => {
-                        const u = [...((content.about as any).features || [])];
-                        u[idx] = { ...u[idx], icon: e.target.value };
-                        setContent(p => ({ ...p, about: { ...p.about, features: u } as any }));
-                      }}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs bg-white focus:outline-none focus:ring-1 focus:ring-olive/20">
-                      {["Leaf","Shield","Users","Eye","Sparkles","Heart","Zap","ShieldCheck","FlameKindling","Star"].map(k => (
-                        <option key={k} value={k}>{k}</option>
-                      ))}
-                    </select>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-bold text-gray-600 mb-1">
+                        title
+                      </label>
+                      <input
+                        type="text"
+                        value={feature.title}
+                        onChange={(e) => {
+                          const u = [
+                            ...((content.about as any).features || []),
+                          ];
+                          u[idx] = { ...u[idx], title: e.target.value };
+                          setContent((p) => ({
+                            ...p,
+                            about: { ...p.about, features: u } as any,
+                          }));
+                        }}
+                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-olive/20"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-600 mb-1">
+                        icon
+                      </label>
+                      <select
+                        value={feature.icon}
+                        onChange={(e) => {
+                          const u = [
+                            ...((content.about as any).features || []),
+                          ];
+                          u[idx] = { ...u[idx], icon: e.target.value };
+                          setContent((p) => ({
+                            ...p,
+                            about: { ...p.about, features: u } as any,
+                          }));
+                        }}
+                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs bg-white focus:outline-none focus:ring-1 focus:ring-olive/20"
+                      >
+                        {[
+                          "Leaf",
+                          "Shield",
+                          "Users",
+                          "Eye",
+                          "Sparkles",
+                          "Heart",
+                          "Zap",
+                          "ShieldCheck",
+                          "FlameKindling",
+                          "Star",
+                        ].map((k) => (
+                          <option key={k} value={k}>
+                            {k}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
+                  <textarea
+                    value={feature.description}
+                    rows={2}
+                    onChange={(e) => {
+                      const u = [...((content.about as any).features || [])];
+                      u[idx] = { ...u[idx], description: e.target.value };
+                      setContent((p) => ({
+                        ...p,
+                        about: { ...p.about, features: u } as any,
+                      }));
+                    }}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-olive/20 resize-none"
+                  />
                 </div>
-                <textarea value={feature.description} rows={2}
-                  onChange={e => {
-                    const u = [...((content.about as any).features || [])];
-                    u[idx] = { ...u[idx], description: e.target.value };
-                    setContent(p => ({ ...p, about: { ...p.about, features: u } as any }));
-                  }}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-olive/20 resize-none" />
-              </div>
-            ))}
+              ),
+            )}
           </div>
 
           {/* image upload */}
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">hero image</label>
+            <label className="block text-sm font-bold text-gray-700 mb-2">
+              hero image
+            </label>
             {content.about.image && (
               <div className="mb-3 relative aspect-[16/9] rounded-xl overflow-hidden">
-                <img src={content.about.image} alt="about" className="w-full h-full object-cover" />
+                <img
+                  src={content.about.image}
+                  alt="about"
+                  className="w-full h-full object-cover"
+                />
               </div>
             )}
             <label className="flex items-center justify-center gap-2 px-4 py-3 bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl hover:bg-gray-100 cursor-pointer transition-colors">
               <Upload size={18} />
-              <span className="font-semibold text-gray-700 text-sm">{uploading ? "uploading..." : "upload image"}</span>
-              <input type="file" accept="image/*" onChange={e => { const f = e.target.files?.[0]; if (f) handleImageUpload(f, "about"); }} className="hidden" disabled={uploading} />
+              <span className="font-semibold text-gray-700 text-sm">
+                {uploading ? "uploading..." : "upload image"}
+              </span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) handleImageUpload(f, "about");
+                }}
+                className="hidden"
+                disabled={uploading}
+              />
             </label>
           </div>
         </div>
@@ -761,34 +1101,81 @@ export default function PagesEditor() {
       {activeTab === "philosophy" && (
         <div className="bg-white rounded-2xl border border-gray-100 p-5 space-y-5">
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">page title</label>
-            <input type="text" value={content.philosophy.headline}
-              onChange={e => setContent(p => ({ ...p, philosophy: { ...p.philosophy, headline: e.target.value } }))}
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 text-sm" />
+            <label className="block text-sm font-bold text-gray-700 mb-2">
+              page title
+            </label>
+            <input
+              type="text"
+              value={content.philosophy.headline}
+              onChange={(e) =>
+                setContent((p) => ({
+                  ...p,
+                  philosophy: { ...p.philosophy, headline: e.target.value },
+                }))
+              }
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 text-sm"
+            />
           </div>
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">mission statement</label>
-            <textarea value={content.philosophy.subtext} rows={5}
-              onChange={e => setContent(p => ({ ...p, philosophy: { ...p.philosophy, subtext: e.target.value } }))}
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 resize-none text-sm" />
+            <label className="block text-sm font-bold text-gray-700 mb-2">
+              mission statement
+            </label>
+            <textarea
+              value={content.philosophy.subtext}
+              rows={5}
+              onChange={(e) =>
+                setContent((p) => ({
+                  ...p,
+                  philosophy: { ...p.philosophy, subtext: e.target.value },
+                }))
+              }
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 resize-none text-sm"
+            />
           </div>
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">commitment text (overlay on image)</label>
-            <textarea value={content.philosophy.extraText} rows={3}
-              onChange={e => setContent(p => ({ ...p, philosophy: { ...p.philosophy, extraText: e.target.value } }))}
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 resize-none text-sm" />
+            <label className="block text-sm font-bold text-gray-700 mb-2">
+              commitment text (overlay on image)
+            </label>
+            <textarea
+              value={content.philosophy.extraText}
+              rows={3}
+              onChange={(e) =>
+                setContent((p) => ({
+                  ...p,
+                  philosophy: { ...p.philosophy, extraText: e.target.value },
+                }))
+              }
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 resize-none text-sm"
+            />
           </div>
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">background image</label>
+            <label className="block text-sm font-bold text-gray-700 mb-2">
+              background image
+            </label>
             {content.philosophy.image && (
               <div className="mb-3 relative aspect-video rounded-xl overflow-hidden">
-                <img src={content.philosophy.image} alt="philosophy" className="w-full h-full object-cover" />
+                <img
+                  src={content.philosophy.image}
+                  alt="philosophy"
+                  className="w-full h-full object-cover"
+                />
               </div>
             )}
             <label className="flex items-center justify-center gap-2 px-4 py-3 bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl hover:bg-gray-100 cursor-pointer transition-colors">
               <Upload size={18} />
-              <span className="font-semibold text-gray-700 text-sm">{uploading ? "uploading..." : "upload image"}</span>
-              <input type="file" accept="image/*" onChange={e => { const f = e.target.files?.[0]; if (f) handleImageUpload(f, "philosophy"); }} className="hidden" disabled={uploading} />
+              <span className="font-semibold text-gray-700 text-sm">
+                {uploading ? "uploading..." : "upload image"}
+              </span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) handleImageUpload(f, "philosophy");
+                }}
+                className="hidden"
+                disabled={uploading}
+              />
             </label>
           </div>
         </div>
@@ -798,13 +1185,18 @@ export default function PagesEditor() {
       {activeTab === "productOrderNote" && (
         <div className="bg-white rounded-2xl border border-gray-100 p-5 space-y-4">
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-1">product page order note</label>
+            <label className="block text-sm font-bold text-gray-700 mb-1">
+              product page order note
+            </label>
             <p className="text-xs text-gray-400 mb-3">
-              shown at the bottom of each product detail page below the order button.
+              shown at the bottom of each product detail page below the order
+              button.
             </p>
             <textarea
               value={content.productOrderNote || ""}
-              onChange={e => setContent(p => ({ ...p, productOrderNote: e.target.value }))}
+              onChange={(e) =>
+                setContent((p) => ({ ...p, productOrderNote: e.target.value }))
+              }
               rows={4}
               className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 resize-none text-sm"
               placeholder="ordering is currently handled via whatsapp for customized health goals and subscription coordination in sobha city"
@@ -812,9 +1204,12 @@ export default function PagesEditor() {
           </div>
           {/* live inline preview */}
           <div className="bg-sage-bg rounded-xl p-4 text-center">
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">preview</p>
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">
+              preview
+            </p>
             <p className="text-xs text-gray-500 italic leading-relaxed whitespace-pre-line">
-              {content.productOrderNote || "ordering is currently handled via whatsapp for customized health goals and subscription coordination in sobha city"}
+              {content.productOrderNote ||
+                "ordering is currently handled via whatsapp for customized health goals and subscription coordination in sobha city"}
             </p>
           </div>
         </div>
@@ -824,43 +1219,44 @@ export default function PagesEditor() {
       <AnimatePresence>
         {showPreview && (
           <>
-            {/* backdrop */}
+            {/* backdrop — also acts as flex centering container */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowPreview(false)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
-            />
-
-            {/* modal */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.94, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              transition={{ duration: 0.22, ease: [0.21, 0.47, 0.32, 0.98] }}
-              className="fixed inset-4 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-full sm:max-w-md z-50 bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden max-h-[90vh] sm:max-h-[80vh]"
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
             >
-              {/* modal header */}
-              <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 flex-shrink-0">
-                <div>
-                  <p className="font-bold text-gray-900 text-sm">preview</p>
-                  <p className="text-[10px] text-gray-400 capitalize mt-0.5">
-                    {tabs.find(t => t.id === activeTab)?.name || activeTab}
-                  </p>
+              {/* modal — stop click propagation so clicking inside doesn't close */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.94, y: 16 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 8 }}
+                transition={{ duration: 0.22, ease: [0.21, 0.47, 0.32, 0.98] }}
+                onClick={(e) => e.stopPropagation()}
+                className="w-full max-w-md bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden max-h-[85vh]"
+              >
+                {/* modal header */}
+                <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 flex-shrink-0">
+                  <div>
+                    <p className="font-bold text-gray-900 text-sm">preview</p>
+                    <p className="text-[10px] text-gray-400 capitalize mt-0.5">
+                      {tabs.find((t) => t.id === activeTab)?.name || activeTab}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setShowPreview(false)}
+                    className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+                  >
+                    <X size={18} />
+                  </button>
                 </div>
-                <button
-                  onClick={() => setShowPreview(false)}
-                  className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
-                >
-                  <X size={18} />
-                </button>
-              </div>
 
-              {/* modal body — scrollable */}
-              <div className="flex-1 overflow-y-auto overflow-x-hidden p-5">
-                <PreviewContent />
-              </div>
+                {/* modal body — scrollable */}
+                <div className="flex-1 overflow-y-auto overflow-x-hidden p-5">
+                  <PreviewContent />
+                </div>
+              </motion.div>
             </motion.div>
           </>
         )}

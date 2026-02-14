@@ -47,15 +47,16 @@ export default function AdminLayout({
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isDesktop, setIsDesktop] = useState(false);
+const [isDesktop, setIsDesktop] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
-  // track screen size in JS — most reliable way to prevent framer motion conflicts
   useEffect(() => {
     const check = () => setIsDesktop(window.innerWidth >= 1024);
     check();
+    setIsMounted(true);
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
-  }, []);
+  }, []); 
 
   // close drawer when route changes
   useEffect(() => {
@@ -104,6 +105,7 @@ export default function AdminLayout({
   }
 
   if (!isAuthenticated) return null;
+  if (!isMounted) return null;
 
   const SidebarContent = ({ onClose }: { onClose?: () => void }) => (
     <>
