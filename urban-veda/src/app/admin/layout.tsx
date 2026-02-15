@@ -33,7 +33,7 @@ const mobileNavItems = [
   { name: "dash", path: "/admin", icon: LayoutDashboard },
   { name: "products", path: "/admin/products", icon: Package },
   { name: "pages", path: "/admin/pages", icon: FileText },
-  { name: "media", path: "/admin/media", icon: ImageIcon },
+  { name: "nav", path: "/admin/navigation", icon: NavIcon },
   { name: "settings", path: "/admin/settings", icon: Settings },
 ];
 

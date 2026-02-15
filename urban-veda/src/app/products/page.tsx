@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Leaf } from "lucide-react";
+import ScrollReveal from "@/components/shared/ScrollReveal";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://urbanveda.com"),
@@ -32,28 +33,36 @@ export default async function ProductsPage() {
       <div className="relative bg-gradient-to-br from-sage-bg via-white to-olive/5 pt-32 pb-16 sm:pb-20 px-4 sm:px-6 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(85,107,47,0.06)_0%,_transparent_60%)]" />
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <div className="inline-flex items-center gap-2 bg-olive/10 text-olive border border-olive/20 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-4">
-            <Leaf size={12} />
-            {(config as any)?.productsPageLabel || "signature collection"}
-          </div>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-sage-dark font-serif mb-4 whitespace-pre-line">
-            {(config as any)?.productsPageHeadline || "Healing Elixirs"}
-          </h1>
-          <p className="text-base sm:text-lg text-gray-500 max-w-xl mx-auto italic font-medium mb-8 whitespace-pre-line">
-            {(config as any)?.productsPageSubtext ||
-              "sip health, skip the hospital. nature's medicine with no side effects."}
-          </p>
+          <ScrollReveal delay={0}>
+            <div className="inline-flex items-center gap-2 bg-olive/10 text-olive border border-olive/20 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-4">
+              <Leaf size={12} />
+              {(config as any)?.productsPageLabel || "signature collection"}
+            </div>
+          </ScrollReveal>
+          <ScrollReveal delay={0.1}>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-sage-dark font-serif mb-4 whitespace-pre-line">
+              {(config as any)?.productsPageHeadline || "Healing Elixirs"}
+            </h1>
+          </ScrollReveal>
+          <ScrollReveal delay={0.2}>
+            <p className="text-base sm:text-lg text-gray-500 max-w-xl mx-auto italic font-medium mb-8 whitespace-pre-line">
+              {(config as any)?.productsPageSubtext ||
+                "sip health, skip the hospital."}
+            </p>
+          </ScrollReveal>
           {config?.milkRideSubscribeLink && (
-            <a
-              href={config.milkRideSubscribeLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-olive text-white px-5 py-2.5 rounded-full font-semibold hover:bg-olive/90 transition-all text-sm shadow-lg"
-            >
-              {(config as any)?.productsPageSubscribeLabel ||
-                "Subscribe on Milk Ride"}
-              <ArrowRight size={14} />
-            </a>
+            <ScrollReveal delay={0.3}>
+              <a
+                href={config.milkRideSubscribeLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-olive text-white px-5 py-2.5 rounded-full font-semibold hover:bg-olive/90 transition-all text-sm shadow-lg"
+              >
+                {(config as any)?.productsPageSubscribeLabel ||
+                  "Subscribe on Milk Ride"}
+                <ArrowRight size={14} />
+              </a>
+            </ScrollReveal>
           )}
         </div>
 
@@ -77,79 +86,81 @@ export default async function ProductsPage() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
               {juices.map((juice, i) => (
-                <Link
-                  key={juice._id.toString()}
-                  href={`/products/${juice._id}`}
-                >
-                  <div className="group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-olive/20 hover:shadow-2xl transition-all duration-400 cursor-pointer">
-                    {/* image */}
-                    <div className="relative aspect-[3/3.5] overflow-hidden bg-sage-bg">
-                      <Image
-                        src={juice.image}
-                        alt={juice.name}
-                        fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        className="object-cover transition-transform duration-700 group-hover:scale-108"
-                        priority={juice.isPopular}
-                      />
+                <ScrollReveal key={juice._id.toString()} delay={i * 0.08}>
+                  <Link
+                    key={juice._id.toString()}
+                    href={`/products/${juice._id}`}
+                  >
+                    <div className="group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-olive/20 hover:shadow-2xl transition-all duration-400 cursor-pointer">
+                      {/* image */}
+                      <div className="relative aspect-[3/3.5] overflow-hidden bg-sage-bg">
+                        <Image
+                          src={juice.image}
+                          alt={juice.name}
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          className="object-cover transition-transform duration-700 group-hover:scale-108"
+                          priority={juice.isPopular}
+                        />
 
-                      {/* overlay on hover */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        {/* overlay on hover */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                      {/* badges */}
-                      <div className="absolute top-4 left-4 flex flex-col gap-2">
-                        {juice.isPopular && (
-                          <Badge className="bg-olive text-white border-none text-[10px] font-bold px-2.5 py-1 shadow-md">
-                            ✦{" "}
-                            {(config as any)?.productCardBadgeText ||
-                              "highly requested"}
-                          </Badge>
-                        )}
-                      </div>
+                        {/* badges */}
+                        <div className="absolute top-4 left-4 flex flex-col gap-2">
+                          {juice.isPopular && (
+                            <Badge className="bg-olive text-white border-none text-[10px] font-bold px-2.5 py-1 shadow-md">
+                              ✦{" "}
+                              {(config as any)?.productCardBadgeText ||
+                                "highly requested"}
+                            </Badge>
+                          )}
+                        </div>
 
-                      {/* hover explore text */}
-                      <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-2 group-hover:translate-y-0">
-                        <span className="bg-white/95 backdrop-blur-sm text-olive font-bold text-xs px-4 py-2 rounded-full shadow-lg flex items-center gap-1.5">
-                          <Sparkles size={11} />
-                          {(config as any)?.productCardExploreText ||
-                            "explore blend"}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* content */}
-                    <div className="p-5 sm:p-6">
-                      <div className="flex items-start justify-between gap-3 mb-2">
-                        <h3 className="text-xl sm:text-2xl font-bold text-sage-dark font-serif group-hover:text-olive transition-colors leading-tight">
-                          {juice.name}
-                        </h3>
-                      </div>
-                      <p className="text-gray-500 italic text-xs sm:text-sm mb-3 line-clamp-1">
-                        {juice.benefits}
-                      </p>
-
-                      {/* ingredients preview */}
-                      <div className="flex flex-wrap gap-1.5">
-                        {juice.ingredients
-                          .split(",")
-                          .slice(0, 3)
-                          .map((ing, idx) => (
-                            <span
-                              key={idx}
-                              className="text-[10px] font-medium bg-olive/8 text-olive px-2 py-0.5 rounded-full border border-olive/15"
-                            >
-                              {ing.trim()}
-                            </span>
-                          ))}
-                        {juice.ingredients.split(",").length > 3 && (
-                          <span className="text-[10px] font-medium bg-gray-50 text-gray-400 px-2 py-0.5 rounded-full border border-gray-100">
-                            +{juice.ingredients.split(",").length - 3} more
+                        {/* hover explore text */}
+                        <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-2 group-hover:translate-y-0">
+                          <span className="bg-white/95 backdrop-blur-sm text-olive font-bold text-xs px-4 py-2 rounded-full shadow-lg flex items-center gap-1.5">
+                            <Sparkles size={11} />
+                            {(config as any)?.productCardExploreText ||
+                              "explore blend"}
                           </span>
-                        )}
+                        </div>
+                      </div>
+
+                      {/* content */}
+                      <div className="p-5 sm:p-6">
+                        <div className="flex items-start justify-between gap-3 mb-2">
+                          <h3 className="text-xl sm:text-2xl font-bold text-sage-dark font-serif group-hover:text-olive transition-colors leading-tight">
+                            {juice.name}
+                          </h3>
+                        </div>
+                        <p className="text-gray-500 italic text-xs sm:text-sm mb-3 line-clamp-1">
+                          {juice.benefits}
+                        </p>
+
+                        {/* ingredients preview */}
+                        <div className="flex flex-wrap gap-1.5">
+                          {juice.ingredients
+                            .split(",")
+                            .slice(0, 3)
+                            .map((ing, idx) => (
+                              <span
+                                key={idx}
+                                className="text-[10px] font-medium bg-olive/8 text-olive px-2 py-0.5 rounded-full border border-olive/15"
+                              >
+                                {ing.trim()}
+                              </span>
+                            ))}
+                          {juice.ingredients.split(",").length > 3 && (
+                            <span className="text-[10px] font-medium bg-gray-50 text-gray-400 px-2 py-0.5 rounded-full border border-gray-100">
+                              +{juice.ingredients.split(",").length - 3} more
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Link>
+                  </Link>
+                </ScrollReveal>
               ))}
             </div>
           )}

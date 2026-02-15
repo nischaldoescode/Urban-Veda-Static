@@ -37,6 +37,7 @@ export interface SiteConfig {
   heroSubtext: string;
   heroStatLabel?: string;
   heroStatValue?: string;
+  heroImage?: string;
   whatsappLink: string;
   milkRideSubscribeLink: string;
   announcement: string;
@@ -45,6 +46,10 @@ export interface SiteConfig {
   colorPalette: ColorPalette;
   aboutPage: SectionContent;
   philosophyPage: SectionContent;
+  philosophyCtaHeadline?: string;
+  philosophyCtaSubtext?: string;
+  philosophyCtaBody?: string;
+  philosophyCtaTextColor?: string;
   challenges?: Array<{
     icon: string;
     title: string;

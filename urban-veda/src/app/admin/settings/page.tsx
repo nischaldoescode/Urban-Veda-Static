@@ -13,11 +13,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Save, Link as LinkIcon, Palette, Globe } from "lucide-react";
+import { Save, Link as LinkIcon, Palette, Globe, Upload } from "lucide-react";
 import { useToastContext } from "@/components/ui/toast-provider";
 
 interface Settings {
   logoName: string;
+  logoImage: string;
   whatsappLink: string;
   milkRideSubscribeLink: string;
   footerTagline: string;
@@ -48,6 +49,7 @@ export default function SettingsPage() {
     whatsappLink: "",
     milkRideSubscribeLink: "",
     footerTagline: "",
+    logoImage: "",
     socialLinks: {
       instagram: "#",
       facebook: "#",
@@ -87,19 +89,20 @@ export default function SettingsPage() {
         const data = await res.json();
 
         if (data.success) {
-          setSettings({
+          const loaded: Settings = {
             logoName: data.data.logoName,
             whatsappLink: data.data.whatsappLink,
             milkRideSubscribeLink: data.data.milkRideSubscribeLink,
             footerTagline:
               data.data.footerTagline || "ancient wisdom for a modern world.",
+            logoImage: data.data.logoImage || "",
             socialLinks: data.data.socialLinks || {
               instagram: "#",
               facebook: "#",
               twitter: "#",
             },
-            metaDescription: data.data.metaDescription,
-            metaKeywords: data.data.metaKeywords,
+            metaDescription: data.data.metaDescription || "",
+            metaKeywords: data.data.metaKeywords || "",
             colorPalette: data.data.colorPalette,
             contactInfo: data.data.contactInfo || {
               phone: "+91 81234 56789",
@@ -107,28 +110,9 @@ export default function SettingsPage() {
               location: "sobha city, bangalore",
               hours: "mon-sat, 8am-8pm",
             },
-          });
-          // track original to detect changes
-          setSavedSettings({
-            logoName: data.data.logoName,
-            whatsappLink: data.data.whatsappLink,
-            milkRideSubscribeLink: data.data.milkRideSubscribeLink,
-            footerTagline: data.data.footerTagline || "",
-            socialLinks: data.data.socialLinks || {
-              instagram: "#",
-              facebook: "#",
-              twitter: "#",
-            },
-            contactInfo: data.data.contactInfo || {
-              phone: "",
-              email: "",
-              location: "",
-              hours: "",
-            },
-            metaDescription: data.data.metaDescription,
-            metaKeywords: data.data.metaKeywords,
-            colorPalette: data.data.colorPalette,
-          });
+          };
+          setSettings(loaded);
+          setSavedSettings(structuredClone(loaded)); // guaranteed identical
         }
       } catch (error) {
         console.error("fetch settings error:", error);
@@ -245,6 +229,61 @@ export default function SettingsPage() {
               }
               className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20"
             />
+          </div>
+
+          {/* logo image */}
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">
+              logo image
+            </label>
+            <p className="text-xs text-gray-400 mb-3">
+              upload a custom logo image (replaces the leaf icon)
+            </p>
+            {settings.logoImage && (
+              <div className="mb-3 flex items-center gap-3">
+                <div className="w-14 h-14 rounded-xl border border-gray-100 bg-gray-50 flex items-center justify-center overflow-hidden">
+                  <img
+                    src={settings.logoImage}
+                    alt="logo"
+                    className="w-full h-full object-contain p-1"
+                  />
+                </div>
+                <button
+                  onClick={() => setSettings((s) => ({ ...s, logoImage: "" }))}
+                  className="text-xs text-red-500 hover:text-red-600 font-semibold"
+                >
+                  remove logo
+                </button>
+              </div>
+            )}
+            <label className="flex items-center justify-center gap-2 px-4 py-3 bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl hover:bg-gray-100 cursor-pointer transition-colors">
+              <Upload size={18} className="text-gray-400" />
+              <span className="text-sm font-semibold text-gray-600">
+                {settings.logoImage ? "replace logo" : "upload logo image"}
+              </span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={async (e) => {
+                  const f = e.target.files?.[0];
+                  if (!f) return;
+                  try {
+                    const fd = new FormData();
+                    fd.append("file", f);
+                    const res = await fetch("/api/upload", {
+                      method: "POST",
+                      body: fd,
+                    });
+                    const data = await res.json();
+                    if (data.success)
+                      setSettings((s) => ({ ...s, logoImage: data.data.url }));
+                  } catch {
+                    toast("upload failed", "error");
+                  }
+                }}
+                className="hidden"
+              />
+            </label>
           </div>
 
           <div>

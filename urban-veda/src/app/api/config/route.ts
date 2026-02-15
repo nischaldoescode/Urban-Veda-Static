@@ -65,7 +65,7 @@ export async function PUT(request: NextRequest) {
     const config = await Config.findOneAndUpdate(
       {},
       { ...updates, updatedAt: new Date() },
-      { new: true, upsert: true },
+      { returnDocument: "after", upsert: true },
     );
 
     // revalidate all pages that use config

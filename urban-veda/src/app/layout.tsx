@@ -47,6 +47,18 @@ const playfair = Playfair_Display({
 });
 
 /**
+ * navigation item interface
+ * defines shape of navigation links fetched from database
+ */
+interface NavItem {
+  id: string;
+  name: string;
+  path: string;
+  order: number;
+  isVisible: boolean;
+}
+
+/**
  * layout configuration interface
  * defines shape of config object fetched from api
  */
@@ -55,6 +67,7 @@ interface LayoutConfig {
   logoImage?: string;
   whatsappLink: string;
   footerTagline?: string;
+  navItems?: NavItem[];
   socialLinks?: {
     instagram?: string;
     facebook?: string;
@@ -80,6 +93,7 @@ export default function RootLayout({
     logoImage: undefined,
     whatsappLink: "https://chat.whatsapp.com/HGAz9W01xJsHpIHnGUn38M",
     footerTagline: "ancient wisdom for a modern world.",
+    navItems: undefined,
     socialLinks: { instagram: "#", facebook: "#", twitter: "#" },
   });
 
@@ -102,6 +116,7 @@ export default function RootLayout({
             whatsappLink: data.data.whatsappLink,
             footerTagline: data.data.footerTagline,
             socialLinks: data.data.socialLinks,
+            navItems: data.data.navItems,
           });
         }
       } catch (error) {
@@ -118,7 +133,11 @@ export default function RootLayout({
         {/* only show public nav if NOT on admin routes */}
         {!isAdminRoute && (
           <>
-            <Navigation config={config} onMobileMenuOpen={() => {}} />
+            <Navigation
+              config={config}
+              navItems={config.navItems}
+              onMobileMenuOpen={() => {}}
+            />
           </>
         )}
 

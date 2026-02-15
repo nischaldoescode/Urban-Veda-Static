@@ -29,6 +29,7 @@ interface MediaItem {
   filename: string;
   uploadedAt: Date;
   size?: number;
+  source?: string;
 }
 
 export default function MediaLibrary() {
@@ -45,8 +46,111 @@ export default function MediaLibrary() {
    * for now, we'll use placeholder data
    */
   useEffect(() => {
-    setMedia([]);
-    setLoading(false);
+    async function loadMedia() {
+      const items: MediaItem[] = [];
+      let id = 1;
+
+      // load from config (page images)
+      try {
+        const res = await fetch("/api/config");
+        const data = await res.json();
+        if (data.success) {
+          const c = data.data;
+          if (c.heroImage)
+            items.push({
+              id: String(id++),
+              url: c.heroImage,
+              filename: "hero background",
+              uploadedAt: new Date(),
+              source: "hero",
+            });
+          if (c.logoImage)
+            items.push({
+              id: String(id++),
+              url: c.logoImage,
+              filename: "site logo",
+              uploadedAt: new Date(),
+              source: "logo",
+            });
+          if (c.aboutPage?.image)
+            items.push({
+              id: String(id++),
+              url: c.aboutPage.image,
+              filename: "about page image",
+              uploadedAt: new Date(),
+              source: "about",
+            });
+          if (c.philosophyPage?.image)
+            items.push({
+              id: String(id++),
+              url: c.philosophyPage.image,
+              filename: "philosophy image",
+              uploadedAt: new Date(),
+              source: "philosophy",
+            });
+        }
+      } catch (e) {
+        console.log("config media load failed", e);
+      }
+
+      // load from products (try both /api/products and /api/juices)
+      try {
+        const res = await fetch("/api/products");
+        const data = await res.json();
+        if (data.success && Array.isArray(data.data)) {
+          data.data.forEach((j: any) => {
+            if (j.image)
+              items.push({
+                id: String(id++),
+                url: j.image,
+                filename: j.name || "product",
+                uploadedAt: new Date(j.createdAt || Date.now()),
+                source: "product",
+              });
+            if (j.stickerImage)
+              items.push({
+                id: String(id++),
+                url: j.stickerImage,
+                filename: `${j.name || "product"} sticker`,
+                uploadedAt: new Date(j.createdAt || Date.now()),
+                source: "sticker",
+              });
+          });
+        }
+      } catch {
+        // try alternate route
+        try {
+          const res = await fetch("/api/juices");
+          const data = await res.json();
+          if (data.success && Array.isArray(data.data)) {
+            data.data.forEach((j: any) => {
+              if (j.image)
+                items.push({
+                  id: String(id++),
+                  url: j.image,
+                  filename: j.name || "product",
+                  uploadedAt: new Date(j.createdAt || Date.now()),
+                  source: "product",
+                });
+              if (j.stickerImage)
+                items.push({
+                  id: String(id++),
+                  url: j.stickerImage,
+                  filename: `${j.name || "product"} sticker`,
+                  uploadedAt: new Date(j.createdAt || Date.now()),
+                  source: "sticker",
+                });
+            });
+          }
+        } catch (e2) {
+          console.log("products load failed", e2);
+        }
+      }
+
+      setMedia(items);
+      setLoading(false);
+    }
+    loadMedia();
   }, []);
 
   /**
@@ -140,32 +244,14 @@ export default function MediaLibrary() {
         <p className="text-gray-500">manage your images and media files</p>
       </div>
 
-      {/* upload section */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
-        <label className="flex flex-col items-center justify-center gap-4 px-6 py-12 bg-gradient-to-br from-gray-50 to-olive/5 border-2 border-dashed border-gray-300 rounded-xl hover:border-olive/50 cursor-pointer transition-all group">
-          <div className="bg-white p-4 rounded-2xl shadow-sm group-hover:shadow-md transition-shadow">
-            <Upload className="text-olive" size={32} />
-          </div>
-          <div className="text-center">
-            <p className="text-lg font-bold text-gray-900 mb-1">
-              {uploading ? "uploading..." : "click to upload"}
-            </p>
-            <p className="text-sm text-gray-500">
-              or drag and drop images here
-            </p>
-            <p className="text-xs text-gray-400 mt-2">
-              jpg, png, webp, gif • max 10mb
-            </p>
-          </div>
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={(e) => handleUpload(e.target.files)}
-            className="hidden"
-            disabled={uploading}
-          />
-        </label>
+      <div className="bg-amber-50 border border-amber-100 rounded-xl p-4 text-sm text-amber-800">
+        <p className="font-bold mb-1">how to add images</p>
+        <p className="text-xs text-amber-700 leading-relaxed">
+          upload images from their specific sections: hero image from{" "}
+          <strong>Pages → Home Hero</strong>, product images from{" "}
+          <strong>Products</strong>, logo from <strong>Settings</strong>. images
+          uploaded here won't be used anywhere automatically.
+        </p>
       </div>
 
       {/* search */}
@@ -245,6 +331,12 @@ export default function MediaLibrary() {
                   {item.uploadedAt.toLocaleDateString()}
                 </p>
               </div>
+
+              {item.source && (
+                <span className="text-[9px] text-gray-400 uppercase tracking-wider">
+                  {item.source}
+                </span>
+              )}
             </div>
           ))}
         </div>

@@ -13,15 +13,24 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Leaf } from "lucide-react";
 
+interface NavItem {
+  id: string;
+  name: string;
+  path: string;
+  order: number;
+  isVisible: boolean;
+}
+
 interface NavigationProps {
   config: {
     logoName: string;
     logoImage?: string;
   };
-  onMobileMenuOpen: () => void; // kept for compatibility but not used
+  navItems?: NavItem[];
+  onMobileMenuOpen: () => void; // kept for compatibility, not used in this component
 }
 
-export default function Navigation({ config }: NavigationProps) {
+export default function Navigation({ config, navItems }: NavigationProps) {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -35,13 +44,34 @@ export default function Navigation({ config }: NavigationProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navLinks = [
-    { name: "home", path: "/" },
-    { name: "juices", path: "/products" },
-    { name: "philosophy", path: "/philosophy" },
-    { name: "about", path: "/about" },
-    { name: "contact", path: "/contact" },
-  ];
+  const navLinks =
+    navItems && navItems.length > 0
+      ? navItems.filter((i) => i.isVisible).sort((a, b) => a.order - b.order)
+      : [
+          { id: "1", name: "home", path: "/", order: 1, isVisible: true },
+          {
+            id: "2",
+            name: "juices",
+            path: "/products",
+            order: 2,
+            isVisible: true,
+          },
+          {
+            id: "3",
+            name: "philosophy",
+            path: "/philosophy",
+            order: 3,
+            isVisible: true,
+          },
+          { id: "4", name: "about", path: "/about", order: 4, isVisible: true },
+          {
+            id: "5",
+            name: "contact",
+            path: "/contact",
+            order: 5,
+            isVisible: true,
+          },
+        ];
 
   return (
     <motion.nav
@@ -88,7 +118,11 @@ export default function Navigation({ config }: NavigationProps) {
             const isActive = pathname === link.path;
 
             return (
-              <Link key={link.path} href={link.path} className="relative group">
+              <Link
+                key={link.id || link.path}
+                href={link.path}
+                className="relative group"
+              >
                 <span
                   className={`text-sm font-bold tracking-widest uppercase transition-colors ${
                     isActive

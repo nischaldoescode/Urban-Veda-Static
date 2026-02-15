@@ -80,6 +80,7 @@ export default async function HomePage() {
         ctaSubtext: configDoc.ctaSubtext,
         productCardBadgeText: configDoc.productCardBadgeText,
         productCardExploreText: configDoc.productCardExploreText,
+        heroImage: configDoc.heroImage,
       }
     : null;
 

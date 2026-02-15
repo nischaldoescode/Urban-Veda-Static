@@ -4,10 +4,12 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Leaf, Instagram, Facebook, Twitter } from "lucide-react";
+import Image from "next/image";
 
 interface FooterProps {
   config: {
     logoName: string;
+    logoImage?: string;
     whatsappLink: string;
     footerTagline?: string;
     socialLinks?: {
@@ -70,14 +72,24 @@ export default function Footer({ config }: FooterProps) {
               transition={{ duration: 0.6 }}
               className="flex items-center space-x-3"
             >
-              <div className="bg-olive p-2.5 rounded-xl text-white">
-                <Leaf size={24} />
-              </div>
+              {config.logoImage ? (
+                <div className="relative w-10 h-10 flex-shrink-0">
+                  <Image
+                    src={config.logoImage}
+                    alt={config.logoName}
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+              ) : (
+                <div className="bg-olive p-2.5 rounded-xl text-white flex-shrink-0">
+                  <Leaf size={24} />
+                </div>
+              )}
               <span className="font-serif text-3xl font-bold text-sage-dark">
                 {config.logoName}
               </span>
             </motion.div>
-
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}

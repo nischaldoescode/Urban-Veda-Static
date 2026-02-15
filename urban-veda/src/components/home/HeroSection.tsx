@@ -183,14 +183,18 @@ export default function HeroSection({ config }: HeroSectionProps) {
                 style={{ scale: useTransform(scrollY, [0, 600], [1, 1.18]) }}
                 className="absolute inset-0"
               >
-                <Image
-                  src="https://images.unsplash.com/photo-1556760544-74068564f056?auto=format&fit=crop&q=80&w=1200"
-                  alt="Fresh Herbal Ingredients"
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-cover"
-                  priority
-                />
+                {config.heroImage ? (
+                  <Image
+                    src={config.heroImage}
+                    alt="Fresh Herbal Ingredients"
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-cover"
+                    priority
+                  />
+                ) : (
+                  <div className="absolute inset-0 bg-gradient-to-br from-sage-bg via-olive/10 to-herbal-green/20" />
+                )}
               </motion.div>
 
               {/* gradient overlay */}

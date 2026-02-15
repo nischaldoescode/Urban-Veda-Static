@@ -27,7 +27,7 @@ export async function PUT(
     const config = await Config.findOneAndUpdate(
       {},
       { [field]: value, updatedAt: new Date() },
-      { new: true, upsert: true }
+      { returnDocument: "after", upsert: true }
     );
 
     revalidatePath('/', 'layout');

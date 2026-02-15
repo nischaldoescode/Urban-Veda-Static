@@ -19,6 +19,15 @@ export interface IConfig {
     accent: string;
     background: string;
   };
+  heroImage?: string;
+  navItems?: Array<{
+    id: string;
+    name: string;
+    path: string;
+    order: number;
+    isVisible: boolean;
+  }>;
+
   aboutPage: {
     headline: string;
     subtext: string;
@@ -36,6 +45,12 @@ export interface IConfig {
     image: string;
     extraText?: string;
   };
+
+  philosophyCtaHeadline?: string;
+  philosophyCtaSubtext?: string;
+  philosophyCtaBody?: string;
+  philosophyCtaTextColor?: string;
+
   challenges?: Array<{
     icon: string;
     title: string;
@@ -100,6 +115,32 @@ const ConfigSchema = new Schema<IConfig>({
   heroStatLabel: { type: String, default: "active herbs" },
   heroStatValue: { type: String, default: "12+" },
 
+  heroImage: { type: String, default: "" },
+  navItems: {
+    type: [
+      {
+        id: { type: String },
+        name: { type: String },
+        path: { type: String },
+        order: { type: Number },
+        isVisible: { type: Boolean, default: true },
+      },
+    ],
+    default: [
+      { id: "1", name: "home", path: "/", order: 1, isVisible: true },
+      { id: "2", name: "juices", path: "/products", order: 2, isVisible: true },
+      {
+        id: "3",
+        name: "philosophy",
+        path: "/philosophy",
+        order: 3,
+        isVisible: true,
+      },
+      { id: "4", name: "about", path: "/about", order: 4, isVisible: true },
+      { id: "5", name: "contact", path: "/contact", order: 5, isVisible: true },
+    ],
+  },
+
   whatsappLink: { type: String, required: true },
   milkRideSubscribeLink: {
     type: String,
@@ -134,6 +175,18 @@ const ConfigSchema = new Schema<IConfig>({
     image: { type: String, required: true },
     extraText: { type: String },
   },
+  philosophyCtaHeadline: {
+    type: String,
+    default: "drink today, avoid the doctor tomorrow",
+  },
+  philosophyCtaSubtext: { type: String, default: "nature's prescription" },
+  philosophyCtaBody: {
+    type: String,
+    default:
+      "rooted in ayurveda. proven by consistency. no miracle claims, just honest herbs working daily.",
+  },
+  philosophyCtaTextColor: { type: String, default: "#ffffff" },
+
   footerTagline: {
     type: String,
     default: "ancient wisdom for a modern world.",
