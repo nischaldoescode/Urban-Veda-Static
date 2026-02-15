@@ -38,6 +38,21 @@ export interface SiteConfig {
   heroStatLabel?: string;
   heroStatValue?: string;
   heroImage?: string;
+  heroBadgeText?: string; // "exclusive for sobha city residents"
+  heroButtonText?: string; // "trial my pack"
+  heroSecondaryButtonText?: string; // "join community"
+
+  // Trust Pills
+  trustPill1?: string; // "100% organic"
+  trustPill2?: string; // "no preservatives"
+  trustPill3?: string; // "daily fresh"
+
+  // Scroll Reveal CTA (below hero)
+  scrollCtaHeadline?: string;
+  scrollCtaSubtext?: string;
+  scrollCtaBgColor?: string;
+  scrollCtaTextColor?: string;
+  scrollCtaBrushColor?: string;
   whatsappLink: string;
   milkRideSubscribeLink: string;
   announcement: string;
@@ -50,6 +65,7 @@ export interface SiteConfig {
   philosophyCtaSubtext?: string;
   philosophyCtaBody?: string;
   philosophyCtaTextColor?: string;
+
   challenges?: Array<{
     icon: string;
     title: string;

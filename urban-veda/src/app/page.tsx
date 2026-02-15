@@ -81,6 +81,9 @@ export default async function HomePage() {
         productCardBadgeText: configDoc.productCardBadgeText,
         productCardExploreText: configDoc.productCardExploreText,
         heroImage: configDoc.heroImage,
+        scrollCtaBgColor: configDoc.scrollCtaBgColor,
+        scrollCtaBrushColor: configDoc.scrollCtaBrushColor,
+        scrollCtaTextColor: configDoc.scrollCtaTextColor,
       }
     : null;
 

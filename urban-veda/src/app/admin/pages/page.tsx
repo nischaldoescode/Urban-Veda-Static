@@ -65,6 +65,17 @@ const EMPTY: PageContent = {
   challenges: [],
   about: { headline: "", subtext: "", image: "", extraText: "" },
   philosophy: { headline: "", subtext: "", image: "", extraText: "" },
+  heroBadgeText: "",
+  heroButtonText: "",
+  heroSecondaryButtonText: "",
+  trustPill1: "",
+  trustPill2: "",
+  trustPill3: "",
+  scrollCtaHeadline: "",
+  scrollCtaSubtext: "",
+  scrollCtaBgColor: "#2d3e2d",
+  scrollCtaTextColor: "#f7f9f7",
+  scrollCtaBrushColor: "#8fbc8f",
 };
 
 export default function PagesEditor() {
@@ -118,6 +129,17 @@ export default function PagesEditor() {
             philosophyCtaBody: data.data.philosophyCtaBody || "",
             philosophyCtaTextColor:
               data.data.philosophyCtaTextColor || "#ffffff",
+            heroBadgeText: data.data.heroBadgeText || "",
+            heroButtonText: data.data.heroButtonText || "",
+            heroSecondaryButtonText: data.data.heroSecondaryButtonText || "",
+            trustPill1: data.data.trustPill1 || "",
+            trustPill2: data.data.trustPill2 || "",
+            trustPill3: data.data.trustPill3 || "",
+            scrollCtaHeadline: data.data.scrollCtaHeadline || "",
+            scrollCtaSubtext: data.data.scrollCtaSubtext || "",
+            scrollCtaBgColor: data.data.scrollCtaBgColor || "#2d3e2d",
+            scrollCtaTextColor: data.data.scrollCtaTextColor || "#f7f9f7",
+            scrollCtaBrushColor: data.data.scrollCtaBrushColor || "#8fbc8f",
           };
           setContent(loaded);
           setSavedContent(structuredClone(loaded));
@@ -210,6 +232,8 @@ export default function PagesEditor() {
 
   const tabs = [
     { id: "hero", name: "hero", icon: HomeIcon },
+    { id: "heroAdvanced", name: "hero details", icon: Edit3 }, // NEW
+    { id: "scrollCta", name: "scroll cta", icon: Sparkles },
     { id: "sections", name: "sections", icon: FileText },
     { id: "challenges", name: "challenges", icon: Sparkles },
     { id: "about", name: "about", icon: Info },
@@ -338,6 +362,91 @@ export default function PagesEditor() {
           })}
         </>
       )}
+
+      {/* Hero Advanced Tab */}
+      {activeTab === "heroAdvanced" && (
+        <div className="bg-sage-bg rounded-xl p-4 space-y-3">
+          <div className="bg-white rounded-xl p-3 border border-gray-100">
+            <p className="text-xs font-bold text-olive uppercase tracking-widest mb-2">
+              hero badge
+            </p>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-gray-200 shadow-sm">
+              <span className="text-xs font-bold text-gray-800">
+                {content.heroBadgeText || "exclusive for sobha city residents"}
+              </span>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-3 border border-gray-100 space-y-2">
+            <p className="text-xs font-bold text-olive uppercase tracking-widest mb-1">
+              buttons
+            </p>
+            <div className="flex gap-2">
+              <div className="flex-1 px-3 py-2 bg-olive text-white rounded-full text-center text-xs font-bold">
+                {content.heroButtonText || "trial my pack"}
+              </div>
+              <div className="flex-1 px-3 py-2 bg-white border border-gray-200 rounded-full text-center text-xs font-bold text-sage-dark">
+                {content.heroSecondaryButtonText || "join community"}
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-3 border border-gray-100">
+            <p className="text-xs font-bold text-olive uppercase tracking-widest mb-2">
+              trust pills
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {[
+                content.trustPill1 || "100% organic",
+                content.trustPill2 || "no preservatives",
+                content.trustPill3 || "daily fresh",
+              ].map((pill, i) => (
+                <div
+                  key={i}
+                  className="px-2 py-1 bg-gray-50 rounded-full text-[10px] font-semibold text-gray-600 border border-gray-100"
+                >
+                  {pill}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Scroll CTA Tab */}
+      {activeTab === "scrollCta" && (
+        <div
+          className="rounded-xl p-6 text-center"
+          style={{ backgroundColor: content.scrollCtaBgColor || "#4a5d4a" }}
+        >
+          <p
+            className="text-[10px] font-bold uppercase tracking-widest mb-3"
+            style={{
+              color: content.scrollCtaTextColor
+                ? `${content.scrollCtaTextColor}99`
+                : "#f7f9f799",
+            }}
+          >
+            {content.scrollCtaSubtext || "ancient wisdom"}
+          </p>
+          <p
+            className="text-lg font-serif italic leading-tight"
+            style={{ color: content.scrollCtaTextColor || "#f7f9f7" }}
+          >
+            <span
+              className="inline-block px-2 py-0.5 rounded"
+              style={{
+                backgroundColor: `${content.scrollCtaBrushColor || "#6b9b6b"}55`,
+              }}
+            >
+              {content.scrollCtaHeadline?.split(" ")[0] || "nature"}
+            </span>{" "}
+            {content.scrollCtaHeadline?.split(" ").slice(1).join(" ") ||
+              "doesn't rush, yet everything is accomplished"}
+          </p>
+        </div>
+      )}
+
       {activeTab === "about" && (
         <div className="bg-sage-bg rounded-xl p-4 space-y-1.5">
           <p className="text-base font-bold text-sage-dark font-serif">

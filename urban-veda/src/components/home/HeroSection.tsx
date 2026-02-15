@@ -1,7 +1,10 @@
+/**
+ * fully responsive storytelling hero section
+ * with minimal gap and enhanced colors
+ */
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -12,254 +15,269 @@ import {
   Zap,
 } from "lucide-react";
 import { SiteConfig } from "@/types";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useRef } from "react";
+import ScrollReveal from "@/components/shared/ScrollReveal";
+import AnimatedBrush from "@/components/shared/AnimatedBrush";
 
 interface HeroSectionProps {
   config: SiteConfig;
 }
 
 export default function HeroSection({ config }: HeroSectionProps) {
-  const { scrollY } = useScroll();
-  const containerRef = useRef<HTMLElement>(null);
+  const heroRef = useRef<HTMLElement>(null);
+  const ctaRef = useRef<HTMLElement>(null);
 
-  const imageY = useTransform(scrollY, [0, 500], [0, 80]);
-  const textY = useTransform(scrollY, [0, 500], [0, 60]);
-  const opacity = useTransform(scrollY, [0, 400], [1, 0]);
+  const { scrollYProgress: heroProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+
+  const { scrollYProgress: ctaProgress } = useScroll({
+    target: ctaRef,
+    offset: ["start end", "start start"],
+  });
+
+  const imageOpacity = useTransform(heroProgress, [0, 0.5, 1], [0.7, 0.4, 0.2]);
+  const imageScale = useTransform(heroProgress, [0, 1], [1, 1.15]);
+  const contentY = useTransform(heroProgress, [0, 1], [0, -150]);
+  const contentOpacity = useTransform(heroProgress, [0, 0.5, 1], [1, 0.7, 0]);
+
+  const ctaY = useTransform(ctaProgress, [0, 1], [100, 0]);
+  const ctaOpacity = useTransform(ctaProgress, [0, 0.5, 1], [0, 0.5, 1]);
+  const ctaScale = useTransform(ctaProgress, [0, 1], [0.95, 1]);
+
+  const trustPills = [
+    { icon: Leaf, label: config.trustPill1 || "100% organic" },
+    { icon: Shield, label: config.trustPill2 || "no preservatives" },
+    { icon: Zap, label: config.trustPill3 || "daily fresh" },
+  ];
 
   return (
-    <section
-      ref={containerRef}
-      className="relative min-h-screen flex items-center overflow-hidden pt-20"
-    >
-      {/* layered background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-sage-bg via-white to-olive/5" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(85,107,47,0.08)_0%,_transparent_60%)]" />
+    <>
+      {/* main hero section */}
+      <section
+        ref={heroRef}
+        className="relative min-h-[100svh] flex items-center justify-center overflow-hidden pt-16 sm:pt-20"
+      >
+        <motion.div
+          style={{
+            opacity: imageOpacity,
+            scale: imageScale,
+          }}
+          className="absolute inset-0"
+        >
+          {config.heroImage ? (
+            <div
+              className="absolute inset-0 bg-cover bg-center bg-no-repeat w-full h-full"
+              style={{
+                backgroundImage: `url(${config.heroImage})`,
+              }}
+            />
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-sage-bg via-olive/5 to-herbal-green/10" />
+          )}
 
-      {/* animated blobs */}
-      <motion.div
-        animate={{ y: [0, -24, 0], rotate: [0, 6, 0], scale: [1, 1.05, 1] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-24 right-8 w-48 h-48 bg-olive/8 rounded-full blur-3xl pointer-events-none"
-      />
-      <motion.div
-        animate={{ y: [0, 24, 0], rotate: [0, -6, 0], scale: [1, 1.08, 1] }}
-        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-32 left-4 w-56 h-56 bg-herbal-green/8 rounded-full blur-3xl pointer-events-none"
-      />
-      <motion.div
-        animate={{ y: [0, -16, 0] }}
-        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-1/2 left-1/3 w-32 h-32 bg-olive/5 rounded-full blur-2xl pointer-events-none"
-      />
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-12 lg:py-16 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          {/* text content */}
           <motion.div
-            style={{ y: textY, opacity }}
-            className="space-y-6 z-10 order-2 lg:order-1"
-          >
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.1 }}
-            >
-              <Badge className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-olive/10 text-olive border-olive/20 font-semibold tracking-wide text-xs">
-                <Sparkles size={13} />
-                exclusive for sobha city residents
-              </Badge>
-            </motion.div>
+            style={{
+              opacity: useTransform(heroProgress, [0, 1], [1, 0.3]),
+            }}
+            className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/20 sm:from-black/60 sm:via-black/30 sm:to-transparent"
+          />
+        </motion.div>
 
-            <motion.h1
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-sage-dark leading-[1.1] font-serif"
-            >
+        <motion.div
+          style={{
+            y: contentY,
+            opacity: contentOpacity,
+          }}
+          className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 text-center"
+        >
+          <ScrollReveal delay={0.1}>
+            <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/90 backdrop-blur-sm border border-gray-200/50 shadow-lg mb-6 sm:mb-8">
+              <Sparkles className="text-olive flex-shrink-0" size={14} />
+              <span className="text-xs sm:text-sm font-bold text-gray-800 tracking-wide">
+                {config.heroBadgeText || "exclusive for sobha city residents"}
+              </span>
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal delay={0.2}>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-[1.1] sm:leading-tight font-serif mb-4 sm:mb-6 drop-shadow-2xl px-2">
               {config.heroHeadline.split(" ").map((word, i) => (
                 <motion.span
                   key={i}
-                  initial={{ opacity: 0, y: 16 }}
+                  initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.3 + i * 0.08 }}
-                  className="inline-block mr-2 sm:mr-3"
+                  transition={{ duration: 0.5, delay: 0.3 + i * 0.1 }}
+                  className="inline-block mr-3 sm:mr-4"
                 >
                   {word}
                 </motion.span>
               ))}
-            </motion.h1>
+            </h1>
+          </ScrollReveal>
 
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.5 }}
-              className="text-base sm:text-lg text-gray-600 max-w-lg leading-relaxed font-light"
-            >
+          <ScrollReveal delay={0.4}>
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white/90 max-w-xs sm:max-w-md md:max-w-lg lg:max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed drop-shadow-lg px-4">
               {config.heroSubtext}
-            </motion.p>
+            </p>
+          </ScrollReveal>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.65 }}
-              className="flex flex-col sm:flex-row gap-3 pt-2"
-            >
-              <Link href="/products">
-                <Button
-                  size="lg"
-                  className="w-full sm:w-auto bg-olive hover:bg-olive/90 text-white font-bold px-6 py-5 rounded-full text-sm group shadow-lg hover:shadow-xl transition-all"
-                >
-                  trial my pack
+          <ScrollReveal delay={0.5}>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-8 sm:mb-12 px-4">
+              <Link href="/products" className="w-full sm:w-auto">
+                <button className="w-full sm:w-auto group px-6 sm:px-8 py-3 sm:py-4 bg-olive hover:bg-olive/90 text-white font-bold rounded-full shadow-xl hover:shadow-2xl transition-all flex items-center gap-2 justify-center text-sm sm:text-base">
+                  <span>{config.heroButtonText || "trial my pack"}</span>
                   <ArrowRight
-                    className="ml-2 group-hover:translate-x-1 transition-transform"
-                    size={16}
+                    className="group-hover:translate-x-1 transition-transform flex-shrink-0"
+                    size={18}
                   />
-                </Button>
+                </button>
               </Link>
 
               <a
                 href={config.whatsappLink}
                 target="_blank"
                 rel="noopener noreferrer"
+                className="w-full sm:w-auto"
               >
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="w-full sm:w-auto border-2 border-gray-200 hover:border-olive hover:bg-olive/5 text-sage-dark font-bold px-6 py-5 rounded-full text-sm"
-                >
-                  <MessageCircle className="mr-2 text-green-600" size={16} />
-                  join community
-                </Button>
+                <button className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-white/90 backdrop-blur-sm hover:bg-white text-sage-dark font-bold rounded-full shadow-lg hover:shadow-xl transition-all flex items-center gap-2 justify-center border-2 border-transparent hover:border-olive/20 text-sm sm:text-base">
+                  <MessageCircle
+                    className="text-green-600 flex-shrink-0"
+                    size={18}
+                  />
+                  <span>
+                    {config.heroSecondaryButtonText || "join community"}
+                  </span>
+                </button>
               </a>
-            </motion.div>
+            </div>
+          </ScrollReveal>
 
-            {/* trust pills */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.7, delay: 0.8 }}
-              className="flex flex-wrap items-center gap-3 pt-2"
-            >
-              {[
-                { icon: Leaf, label: "100% organic" },
-                { icon: Shield, label: "no preservatives" },
-                { icon: Zap, label: "daily fresh" },
-              ].map(({ icon: Icon, label }) => (
-                <div
+          <ScrollReveal delay={0.6}>
+            <div className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4 px-4">
+              {trustPills.map(({ icon: Icon, label }, i) => (
+                <motion.div
                   key={label}
-                  className="flex items-center gap-1.5 bg-white/80 border border-gray-100 px-3 py-1.5 rounded-full shadow-sm"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4, delay: 0.7 + i * 0.1 }}
+                  className="flex items-center gap-1.5 sm:gap-2 bg-white/95 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-md border border-gray-100"
                 >
-                  <Icon size={12} className="text-olive" />
-                  <span className="text-xs font-semibold text-gray-600">
+                  <Icon
+                    size={12}
+                    className="text-olive flex-shrink-0 sm:w-3.5 sm:h-3.5"
+                  />
+                  <span className="text-xs sm:text-sm font-semibold text-gray-700 whitespace-nowrap">
                     {label}
                   </span>
-                </div>
+                </motion.div>
               ))}
-            </motion.div>
-          </motion.div>
+            </div>
+          </ScrollReveal>
+        </motion.div>
 
-          {/* hero image with 3D tilt effect */}
-          <motion.div
-            style={{ y: imageY }}
-            initial={{ opacity: 0, scale: 0.92 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.4 }}
-            className="relative order-1 lg:order-2"
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: 1,
+            delay: 1,
+            repeat: Infinity,
+            repeatType: "reverse",
+          }}
+          className="hidden sm:block absolute bottom-8 sm:bottom-12 left-1/2 -translate-x-1/2 z-10"
+        >
+          <div className="w-5 h-8 sm:w-6 sm:h-10 border-2 border-white/50 rounded-full flex items-start justify-center p-1.5 sm:p-2">
+            <motion.div
+              animate={{ y: [0, 12, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+              className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-white rounded-full"
+            />
+          </div>
+        </motion.div>
+      </section>
+
+      <div className="h-1" />
+
+      {/* scroll-reveal cta section */}
+      <motion.section
+        ref={ctaRef}
+        style={{
+          y: ctaY,
+          opacity: ctaOpacity,
+          scale: ctaScale,
+          backgroundColor: config.scrollCtaBgColor || "#2f4538",
+        }}
+        className="relative min-h-screen flex items-center justify-center overflow-hidden py-16 sm:py-20"
+      >
+        <motion.div
+          animate={{
+            scale: [1, 1.1, 1],
+            opacity: [0.05, 0.08, 0.05],
+          }}
+          transition={{ duration: 8, repeat: Infinity }}
+          className="absolute top-0 right-0 w-48 h-48 sm:w-64 sm:h-64 md:w-96 md:h-96 bg-white rounded-full blur-3xl"
+        />
+        <motion.div
+          animate={{
+            scale: [1, 1.15, 1],
+            opacity: [0.05, 0.08, 0.05],
+          }}
+          transition={{ duration: 10, repeat: Infinity, delay: 1 }}
+          className="absolute bottom-0 left-0 w-48 h-48 sm:w-64 sm:h-64 md:w-96 md:h-96 bg-white rounded-full blur-3xl"
+        />
+
+        <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: false, amount: 0.5 }}
+            transition={{ duration: 0.6 }}
+            className="text-[10px] sm:text-xs md:text-sm font-bold uppercase tracking-wider sm:tracking-widest mb-4 sm:mb-6"
+            style={{
+              color: config.scrollCtaTextColor
+                ? `${config.scrollCtaTextColor}99`
+                : "#e8f0e899",
+            }}
           >
-            {/* glow */}
-            <div className="absolute -inset-6 bg-gradient-to-br from-olive/15 to-herbal-green/15 rounded-[4rem] blur-3xl opacity-40 animate-pulse" />
+            {config.scrollCtaSubtext || "ancient wisdom"}
+          </motion.p>
 
-            {/* 3D card wrapper with parallax zoom */}
-            <motion.div
-              whileHover={{ rotateY: -4, rotateX: 2, scale: 1.01 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              style={{ transformStyle: "preserve-3d", perspective: 1000 }}
-              className="relative rounded-[2.5rem] sm:rounded-[3rem] overflow-hidden shadow-2xl aspect-[4/5] sm:aspect-[4/4.5] lg:aspect-[4/5]"
-            >
-              {/* parallax inner image — zooms in as page scrolls */}
-              <motion.div
-                style={{ scale: useTransform(scrollY, [0, 600], [1, 1.18]) }}
-                className="absolute inset-0"
-              >
-                {config.heroImage ? (
-                  <Image
-                    src={config.heroImage}
-                    alt="Fresh Herbal Ingredients"
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 50vw"
-                    className="object-cover"
-                    priority
-                  />
-                ) : (
-                  <div className="absolute inset-0 bg-gradient-to-br from-sage-bg via-olive/10 to-herbal-green/20" />
-                )}
-              </motion.div>
-
-              {/* gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-
-              {/* bottom badge — pb ensures it doesn't cut off */}
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 1 }}
-                className="absolute bottom-0 left-0 right-0 p-4 sm:p-5"
-              >
-                <div className="bg-white/95 backdrop-blur-xl p-3.5 sm:p-4 rounded-2xl shadow-xl">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-[10px] font-bold text-olive uppercase tracking-widest mb-0.5">
-                        {config.heroStatLabel ? "fresh today" : "fresh today"}
-                      </p>
-                      <p className="text-base sm:text-lg font-bold text-sage-dark">
-                        morning delivery
-                      </p>
-                    </div>
-                    <div className="bg-olive/10 p-2 rounded-xl">
-                      <Sparkles className="text-olive" size={18} />
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </motion.div>
-
-            {/* floating badge top right */}
-            <motion.div
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -top-4 -right-2 sm:-right-6 bg-white p-3 rounded-2xl shadow-lg hidden sm:block z-10"
-            >
-              <Sparkles className="text-olive" size={24} />
-            </motion.div>
-
-            {/* floating stat card */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7, delay: 1.2 }}
-              className="absolute -left-4 sm:-left-8 top-1/3 bg-white rounded-2xl shadow-lg p-3 sm:p-4 hidden sm:block z-10"
-            >
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">
-                {config.heroStatLabel || "active herbs"}
-              </p>
-              <p className="text-2xl font-bold text-sage-dark">
-                {config.heroStatValue || "12+"}
-              </p>
-              <div className="flex gap-1 mt-1.5">
-                {[...Array(5)].map((_, i) => (
-                  <div
+          <h2
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-serif italic leading-tight"
+            style={{ color: config.scrollCtaTextColor || "#e8f0e8" }}
+          >
+            {(
+              config.scrollCtaHeadline ||
+              "nature doesn't rush, yet everything is accomplished"
+            )
+              .split(" ")
+              .map((word, i) =>
+                i === 0 || i === 5 ? (
+                  <AnimatedBrush
                     key={i}
-                    className="w-1.5 h-4 bg-olive/30 rounded-full"
-                    style={{ height: `${8 + i * 4}px` }}
-                  />
-                ))}
-              </div>
-            </motion.div>
-          </motion.div>
+                    brushColor={config.scrollCtaBrushColor || "#6b8e6f"}
+                    delay={i * 0.1}
+                  >
+                    {word}
+                  </AnimatedBrush>
+                ) : (
+                  <motion.span
+                    key={i}
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: false }}
+                    transition={{ duration: 0.5, delay: i * 0.1 }}
+                    className="inline-block mx-2 sm:mx-3"
+                  >
+                    {word}
+                  </motion.span>
+                ),
+              )}
+          </h2>
         </div>
-      </div>
-    </section>
+      </motion.section>
+    </>
   );
 }
