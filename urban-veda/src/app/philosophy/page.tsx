@@ -1,11 +1,16 @@
-// philosophy page - server-side rendered
+// philosophy page - server component
+// ALL motion elements are in PhilosophyAnimations.tsx (client component)
+// Server components cannot use motion.* directly
 import { Metadata } from "next";
 import Image from "next/image";
 import connectDB from "@/lib/mongodb";
 import Config from "@/lib/models/config";
 import { SiteConfig } from "@/types";
 import PhilosophyCTA from "@/components/philosophy/PhilosophyCTA";
-import ScrollReveal from "@/components/shared/ScrollReveal";
+import {
+  PhilosophyHeroText,
+  PhilosophyCommitment,
+} from "@/components/philosophy/PhilosophyAnimations";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://urbanveda.com"),
@@ -23,65 +28,74 @@ export default async function PhilosophyPage() {
 
   return (
     <div className="min-h-screen bg-sage-bg">
-      {/* header section */}
-      <section className="pt-28 sm:pt-32 pb-10 sm:pb-12 px-4 sm:px-6 text-center">
-        <div className="max-w-3xl mx-auto space-y-4">
-          <ScrollReveal delay={0}>
-            <span className="text-olive font-bold tracking-[0.2em] uppercase text-[10px] sm:text-xs">
-              the ethics
-            </span>
-          </ScrollReveal>
-          <ScrollReveal delay={0.1}>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sage-dark font-serif">
-              {content.headline}
-            </h1>
-          </ScrollReveal>
-          <ScrollReveal delay={0.2}>
-            <p className="text-base sm:text-lg text-gray-500 italic max-w-xl mx-auto font-serif">
-              "{content.subtext}"
-            </p>
-          </ScrollReveal>
-        </div>
+      {/*
+       * HERO SECTION
+       *
+       * mt-16 sm:mt-20 pushes the section below the fixed navbar
+       * (navbar is h-16=64px mobile, h-20=80px desktop).
+       *
+       * min-h-[85vh] sm:min-h-[90vh] — increased from 70/80vh so the
+       * image appears tall and full, not cropped into a small box.
+       *
+       * flex-col justify-end — headline sits at the bottom over the dark gradient.
+       * The image fills the full section via next/image fill + object-cover.
+       */}
+      <section className="relative min-h-[108vh] sm:min-h-[106vh] flex flex-col justify-end overflow-hidden mt-20 sm:mt-22">
+        {/* full-bleed background image — fills entire section, no aspect-ratio crop */}
+        <Image
+          src={content.image}
+          alt="Philosophy"
+          fill
+          sizes="100vw"
+          className="object-cover object-center"
+          priority
+        />
+
+        {/* gradient overlay: transparent top → dark bottom so text is readable */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/10" />
+
+        {/*
+         * PhilosophyHeroText is a CLIENT component — contains:
+         * - animated label pill (slides down from top)
+         * - animated h1 headline (fades + slides up)
+         * - animated subtext (fades + slides up, delayed)
+         * All use once:false so they replay on every rescroll
+         */}
+        <PhilosophyHeroText
+          headline={content.headline}
+          subtext={content.subtext}
+        />
       </section>
 
-      {/* image section with overlay text */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-16 sm:pb-20">
-        <ScrollReveal delay={0.1}>
-          <div className="relative group overflow-hidden rounded-2xl sm:rounded-3xl shadow-xl">
-            <div className="relative aspect-[16/9] sm:aspect-[16/8]">
-              <Image
-                src={content.image}
-                alt="Philosophy"
-                fill
-                sizes="100vw"
-                className="object-cover transition-transform duration-1000 group-hover:scale-105"
-                priority
-              />
-            </div>
-            <div className="absolute inset-0 bg-black/40 flex items-center justify-center p-6 sm:p-12 text-center">
-              <p className="text-white text-lg sm:text-xl md:text-2xl font-light leading-relaxed max-w-2xl">
-                {content.extraText}
-              </p>
-            </div>
-          </div>
-        </ScrollReveal>
-      </section>
+      {/*
+       * COMMITMENT STRIP
+       *
+       * PhilosophyCommitment is a CLIENT component — contains:
+       * - large quote mark that slides in from left
+       * - extraText that wipes in left-to-right via clipPath animation
+       * Both use once:false so they replay on every rescroll
+       */}
+      {content.extraText && (
+        <PhilosophyCommitment extraText={content.extraText} />
+      )}
 
-      {/* philosophy-specific CTA — separate from home CTA */}
-      <PhilosophyCTA
-        headline={
-          (config as any).philosophyCtaHeadline ||
-          "drink today, avoid the doctor tomorrow"
-        }
-        subtext={
-          (config as any).philosophyCtaSubtext || "nature's prescription"
-        }
-        body={
-          (config as any).philosophyCtaBody ||
-          "rooted in ayurveda. proven by consistency. no miracle claims, just honest herbs working daily."
-        }
-        textColor={(config as any).philosophyCtaTextColor || "#ffffff"}
-      />
+      {/* PHILOSOPHY CTA — already a client component, handles its own animations */}
+      <div className="pt-10 sm:pt-14">
+        <PhilosophyCTA
+          headline={
+            (config as any).philosophyCtaHeadline ||
+            "drink today, avoid the doctor tomorrow"
+          }
+          subtext={
+            (config as any).philosophyCtaSubtext || "nature's prescription"
+          }
+          body={
+            (config as any).philosophyCtaBody ||
+            "rooted in ayurveda. proven by consistency. no miracle claims, just honest herbs working daily."
+          }
+          textColor={(config as any).philosophyCtaTextColor || "#ffffff"}
+        />
+      </div>
     </div>
   );
 }

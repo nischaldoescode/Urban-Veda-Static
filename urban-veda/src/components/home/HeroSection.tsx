@@ -43,9 +43,6 @@ export default function HeroSection({ config }: HeroSectionProps) {
   const contentOpacity = useTransform(heroProgress, [0, 0.5, 1], [1, 0.7, 0]);
 
   const ctaY = useTransform(ctaProgress, [0, 1], [100, 0]);
-  const ctaOpacity = useTransform(ctaProgress, [0, 0.5, 1], [0, 0.5, 1]);
-  const ctaScale = useTransform(ctaProgress, [0, 1], [0.95, 1]);
-
   const trustPills = [
     { icon: Leaf, label: config.trustPill1 || "100% organic" },
     { icon: Shield, label: config.trustPill2 || "no preservatives" },
@@ -205,29 +202,10 @@ export default function HeroSection({ config }: HeroSectionProps) {
         ref={ctaRef}
         style={{
           y: ctaY,
-          opacity: ctaOpacity,
-          scale: ctaScale,
           backgroundColor: config.scrollCtaBgColor || "#2f4538",
         }}
-        className="relative min-h-screen flex items-center justify-center overflow-hidden py-16 sm:py-20"
+        className="relative py-24 sm:py-32 flex items-center justify-center overflow-hidden"
       >
-        <motion.div
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.05, 0.08, 0.05],
-          }}
-          transition={{ duration: 8, repeat: Infinity }}
-          className="absolute top-0 right-0 w-48 h-48 sm:w-64 sm:h-64 md:w-96 md:h-96 bg-white rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{
-            scale: [1, 1.15, 1],
-            opacity: [0.05, 0.08, 0.05],
-          }}
-          transition={{ duration: 10, repeat: Infinity, delay: 1 }}
-          className="absolute bottom-0 left-0 w-48 h-48 sm:w-64 sm:h-64 md:w-96 md:h-96 bg-white rounded-full blur-3xl"
-        />
-
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.p
             initial={{ opacity: 0 }}
