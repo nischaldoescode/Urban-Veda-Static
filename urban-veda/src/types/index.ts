@@ -42,6 +42,8 @@ export interface SiteConfig {
   heroButtonText?: string; // "trial my pack"
   heroSecondaryButtonText?: string; // "join community"
 
+  navBgColor?: string; // optional nav background color to override default scroll effect
+
   // Trust Pills
   trustPill1?: string; // "100% organic"
   trustPill2?: string; // "no preservatives"

@@ -210,7 +210,17 @@ export default function PagesEditor() {
           productCardBadgeText: content.productCardBadgeText,
           productOrderNote: content.productOrderNote,
           heroImage: content.heroImage,
-          philosophyCtaHeadline: content.philosophyCtaHeadline,
+          heroBadgeText: content.heroBadgeText,
+          heroButtonText: content.heroButtonText,
+          heroSecondaryButtonText: content.heroSecondaryButtonText,
+          trustPill1: content.trustPill1,
+          trustPill2: content.trustPill2,
+          trustPill3: content.trustPill3,
+          scrollCtaHeadline: content.scrollCtaHeadline,
+          scrollCtaSubtext: content.scrollCtaSubtext,
+          scrollCtaBgColor: content.scrollCtaBgColor,
+          scrollCtaTextColor: content.scrollCtaTextColor,
+          scrollCtaBrushColor: content.scrollCtaBrushColor,
           philosophyCtaSubtext: content.philosophyCtaSubtext,
           philosophyCtaBody: content.philosophyCtaBody,
           philosophyCtaTextColor: content.philosophyCtaTextColor,
@@ -487,14 +497,19 @@ export default function PagesEditor() {
      */
     <div
       className="w-full overflow-x-hidden flex flex-col"
-      style={{ height: "calc(100vh - 56px)", minWidth: 0 }}
+      style={{
+        height: "calc(100vh - 56px)",
+        maxHeight: "calc(100vh - 56px)",
+        minWidth: 0,
+        contain: "strict",
+      }}
     >
       <div
-        className="w-full px-3 sm:px-5 py-4 sm:py-6 flex flex-col min-h-0 flex-1"
+        className="w-full px-3 sm:px-5 py-3 flex flex-col min-h-0 flex-1"
         style={{ minWidth: 0, maxWidth: "100%" }}
       >
         {/* ── HEADER: stacks vertically on mobile, row on sm+ ── */}
-        <div className="flex-shrink-0 mb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 w-full min-w-0">
+        <div className="flex-shrink-0 mb-3 flex flex-col md:flex-row md:items-center md:justify-between gap-2 w-full min-w-0 overflow-hidden">
           <div className="min-w-0">
             <h1 className="text-lg sm:text-2xl font-bold text-sage-dark font-serif">
               pages content
@@ -504,10 +519,10 @@ export default function PagesEditor() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2 w-full sm:w-auto flex-shrink-0">
+          <div className="flex items-center gap-2 w-full md:w-auto flex-shrink-0">
             <button
               onClick={() => setShowPreview(true)}
-              className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl font-semibold text-xs transition-colors bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-200 whitespace-nowrap"
+              className="flex-1 md:flex-none flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl font-semibold text-xs transition-colors bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-200 whitespace-nowrap"
             >
               <Eye size={13} />
               <span>preview</span>
@@ -516,7 +531,7 @@ export default function PagesEditor() {
             <button
               onClick={handleSave}
               disabled={saving || !hasChanges}
-              className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap ${
+              className={`flex-1 md:flex-none flex items-center justify-center gap-1.5 px-3 md:px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap ${
                 hasChanges
                   ? "bg-olive text-white hover:bg-olive/90 shadow-sm"
                   : "bg-gray-100 text-gray-400 cursor-not-allowed"
@@ -546,7 +561,7 @@ export default function PagesEditor() {
          * Each tab has flex-shrink-0 so it never compresses.
          */}
         <div
-          className="flex-shrink-0 flex gap-1.5 mb-3 overflow-x-auto pb-2"
+          className="flex-shrink-0 flex gap-1.5 mb-3 overflow-x-auto pb-2 min-w-0 w-full"
           style={{ WebkitOverflowScrolling: "touch" }}
         >
           {tabs.map((tab) => {
@@ -574,10 +589,13 @@ export default function PagesEditor() {
          * meaning the overflow-y-auto never kicks in and content bleeds below the viewport.
          * overflow-x-hidden clips any child that's wider than the container.
          */}
-        <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden pb-6">
+        <div
+          className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden pb-6 w-full"
+          style={{ minWidth: 0 }}
+        >
           {/* ── HERO TAB ── */}
           {activeTab === "hero" && (
-            <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 p-3 sm:p-5 space-y-4">
+            <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 p-3 sm:p-5 space-y-4 min-w-0 w-full">
               <div>
                 <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5">
                   hero headline
@@ -614,8 +632,8 @@ export default function PagesEditor() {
                 />
               </div>
 
-              {/* stat fields — side by side, these are short so grid-cols-2 is fine */}
-              <div className="grid grid-cols-2 gap-3">
+              {/* stat fields — stacks on mobile, side by side on sm+ */}
+              <div className="flex flex-col sm:grid sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-bold text-gray-700 mb-1.5">
                     stat label
@@ -714,6 +732,267 @@ export default function PagesEditor() {
                     }}
                   />
                 </label>
+              </div>
+            </div>
+          )}
+
+          {/* ── HERO ADVANCED TAB ── */}
+          {activeTab === "heroAdvanced" && (
+            <div className="space-y-3 sm:space-y-4">
+              <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 p-3 sm:p-5 space-y-4 min-w-0 w-full">
+                <h3 className="text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 pb-2">
+                  hero badge
+                </h3>
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5">
+                    badge text
+                  </label>
+                  <input
+                    type="text"
+                    value={content.heroBadgeText || ""}
+                    onChange={(e) =>
+                      setContent((p) => ({
+                        ...p,
+                        heroBadgeText: e.target.value,
+                      }))
+                    }
+                    className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 text-sm"
+                    placeholder="exclusive for sobha city residents"
+                  />
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 p-3 sm:p-5 space-y-4 min-w-0 w-full">
+                <h3 className="text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 pb-2">
+                  buttons
+                </h3>
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5">
+                    primary button text
+                  </label>
+                  <input
+                    type="text"
+                    value={content.heroButtonText || ""}
+                    onChange={(e) =>
+                      setContent((p) => ({
+                        ...p,
+                        heroButtonText: e.target.value,
+                      }))
+                    }
+                    className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 text-sm"
+                    placeholder="trial my pack"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5">
+                    secondary button text
+                  </label>
+                  <input
+                    type="text"
+                    value={content.heroSecondaryButtonText || ""}
+                    onChange={(e) =>
+                      setContent((p) => ({
+                        ...p,
+                        heroSecondaryButtonText: e.target.value,
+                      }))
+                    }
+                    className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 text-sm"
+                    placeholder="join community"
+                  />
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 p-3 sm:p-5 space-y-4 min-w-0 w-full">
+                <h3 className="text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 pb-2">
+                  trust pills
+                </h3>
+                {[
+                  { key: "trustPill1", placeholder: "100% organic" },
+                  { key: "trustPill2", placeholder: "no preservatives" },
+                  { key: "trustPill3", placeholder: "daily fresh" },
+                ].map(({ key, placeholder }, i) => (
+                  <div key={key}>
+                    <label className="block text-xs font-bold text-gray-600 mb-1.5">
+                      pill {i + 1}
+                    </label>
+                    <input
+                      type="text"
+                      value={content[key] || ""}
+                      onChange={(e) =>
+                        setContent((p) => ({ ...p, [key]: e.target.value }))
+                      }
+                      className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 text-sm"
+                      placeholder={placeholder}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── SCROLL CTA TAB ── */}
+          {activeTab === "scrollCta" && (
+            <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 p-3 sm:p-5 space-y-4 min-w-0 w-full">
+              <h3 className="text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 pb-2">
+                scroll cta section (home page)
+              </h3>
+              <div>
+                <label className="block text-xs font-bold text-gray-600 mb-1.5">
+                  small label above
+                </label>
+                <input
+                  type="text"
+                  value={content.scrollCtaSubtext || ""}
+                  onChange={(e) =>
+                    setContent((p) => ({
+                      ...p,
+                      scrollCtaSubtext: e.target.value,
+                    }))
+                  }
+                  className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 text-sm"
+                  placeholder="ancient wisdom"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-600 mb-1.5">
+                  main headline
+                  <span className="text-gray-400 font-normal ml-1 text-xs">
+                    (1st and 6th word get brush stroke)
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  value={content.scrollCtaHeadline || ""}
+                  onChange={(e) =>
+                    setContent((p) => ({
+                      ...p,
+                      scrollCtaHeadline: e.target.value,
+                    }))
+                  }
+                  className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive/20 text-sm"
+                  placeholder="nature doesn't rush, yet everything is accomplished"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-600 mb-1.5">
+                  background color
+                </label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={content.scrollCtaBgColor || "#2d3e2d"}
+                    onChange={(e) =>
+                      setContent((p) => ({
+                        ...p,
+                        scrollCtaBgColor: e.target.value,
+                      }))
+                    }
+                    className="w-10 h-10 rounded-xl border-2 border-gray-200 cursor-pointer p-0.5 flex-shrink-0"
+                  />
+                  <input
+                    type="text"
+                    value={content.scrollCtaBgColor || "#2d3e2d"}
+                    onChange={(e) =>
+                      setContent((p) => ({
+                        ...p,
+                        scrollCtaBgColor: e.target.value,
+                      }))
+                    }
+                    className="flex-1 min-w-0 px-3 py-2.5 border border-gray-200 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-olive/20"
+                    placeholder="#2d3e2d"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-600 mb-1.5">
+                  text color
+                </label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={content.scrollCtaTextColor || "#f7f9f7"}
+                    onChange={(e) =>
+                      setContent((p) => ({
+                        ...p,
+                        scrollCtaTextColor: e.target.value,
+                      }))
+                    }
+                    className="w-10 h-10 rounded-xl border-2 border-gray-200 cursor-pointer p-0.5 flex-shrink-0"
+                  />
+                  <input
+                    type="text"
+                    value={content.scrollCtaTextColor || "#f7f9f7"}
+                    onChange={(e) =>
+                      setContent((p) => ({
+                        ...p,
+                        scrollCtaTextColor: e.target.value,
+                      }))
+                    }
+                    className="flex-1 min-w-0 px-3 py-2.5 border border-gray-200 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-olive/20"
+                    placeholder="#f7f9f7"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-600 mb-1.5">
+                  brush stroke color
+                </label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={content.scrollCtaBrushColor || "#8fbc8f"}
+                    onChange={(e) =>
+                      setContent((p) => ({
+                        ...p,
+                        scrollCtaBrushColor: e.target.value,
+                      }))
+                    }
+                    className="w-10 h-10 rounded-xl border-2 border-gray-200 cursor-pointer p-0.5 flex-shrink-0"
+                  />
+                  <input
+                    type="text"
+                    value={content.scrollCtaBrushColor || "#8fbc8f"}
+                    onChange={(e) =>
+                      setContent((p) => ({
+                        ...p,
+                        scrollCtaBrushColor: e.target.value,
+                      }))
+                    }
+                    className="flex-1 min-w-0 px-3 py-2.5 border border-gray-200 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-olive/20"
+                    placeholder="#8fbc8f"
+                  />
+                </div>
+              </div>
+              {/* live preview */}
+              <div
+                className="rounded-xl p-5 text-center mt-2"
+                style={{
+                  backgroundColor: content.scrollCtaBgColor || "#2d3e2d",
+                }}
+              >
+                <p
+                  className="text-[10px] font-bold uppercase tracking-widest mb-2"
+                  style={{
+                    color: `${content.scrollCtaTextColor || "#f7f9f7"}99`,
+                  }}
+                >
+                  {content.scrollCtaSubtext || "ancient wisdom"}
+                </p>
+                <p
+                  className="text-sm font-serif italic leading-snug"
+                  style={{ color: content.scrollCtaTextColor || "#f7f9f7" }}
+                >
+                  <span
+                    className="inline-block px-1.5 py-0.5 rounded"
+                    style={{
+                      backgroundColor: `${content.scrollCtaBrushColor || "#8fbc8f"}55`,
+                    }}
+                  >
+                    {content.scrollCtaHeadline?.split(" ")[0] || "nature"}
+                  </span>{" "}
+                  {content.scrollCtaHeadline?.split(" ").slice(1).join(" ") ||
+                    "doesn't rush, yet everything is accomplished"}
+                </p>
               </div>
             </div>
           )}
@@ -1009,7 +1288,7 @@ export default function PagesEditor() {
 
           {/* ── ABOUT TAB ── */}
           {activeTab === "about" && (
-            <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 p-3 sm:p-5 space-y-4">
+            <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 p-3 sm:p-5 space-y-4 min-w-0 w-full">
               <div>
                 <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5">
                   page headline
@@ -1235,7 +1514,7 @@ export default function PagesEditor() {
 
           {/* ── PHILOSOPHY TAB ── */}
           {activeTab === "philosophy" && (
-            <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 p-3 sm:p-5 space-y-4">
+            <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 p-3 sm:p-5 space-y-4 min-w-0 w-full">
               <div>
                 <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5">
                   page title

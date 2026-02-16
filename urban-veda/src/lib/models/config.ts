@@ -4,6 +4,7 @@ import mongoose, { Schema, Model } from "mongoose";
 export interface IConfig {
   logoName: string;
   logoImage?: string;
+  navBgColor?: string;
   heroHeadline: string;
   heroSubtext: string;
   heroStatLabel?: string;
@@ -125,7 +126,7 @@ const ConfigSchema = new Schema<IConfig>({
   ],
   heroStatLabel: { type: String, default: "active herbs" },
   heroStatValue: { type: String, default: "12+" },
-
+  navBgColor: { type: String },
   heroImage: { type: String, default: "" },
   heroBadgeText: { 
     type: String, 

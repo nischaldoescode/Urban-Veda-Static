@@ -84,6 +84,7 @@ export default async function HomePage() {
         scrollCtaBgColor: configDoc.scrollCtaBgColor,
         scrollCtaBrushColor: configDoc.scrollCtaBrushColor,
         scrollCtaTextColor: configDoc.scrollCtaTextColor,
+        navBgColor: configDoc.navBgColor,
       }
     : null;
 

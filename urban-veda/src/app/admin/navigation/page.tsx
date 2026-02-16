@@ -39,6 +39,8 @@ const DEFAULT_ITEMS: NavItem[] = [
 export default function NavigationManager() {
   const [navItems, setNavItems] = useState<NavItem[]>([]);
   const [savedItems, setSavedItems] = useState<NavItem[]>([]);
+  const [navBgColor, setNavBgColor] = useState("#ffffff");
+  const [savedNavBgColor, setSavedNavBgColor] = useState("#ffffff");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
   const [editPath, setEditPath] = useState("");
@@ -48,8 +50,9 @@ export default function NavigationManager() {
   const [newName, setNewName] = useState("");
   const [newPath, setNewPath] = useState("");
   const { toast, confirm } = useToastContext();
-
-  const hasChanges = JSON.stringify(navItems) !== JSON.stringify(savedItems);
+  const hasChanges =
+    JSON.stringify(navItems) !== JSON.stringify(savedItems) ||
+    navBgColor !== savedNavBgColor;
 
   useEffect(() => {
     async function load() {
@@ -62,6 +65,10 @@ export default function NavigationManager() {
         } else {
           setNavItems(DEFAULT_ITEMS);
           setSavedItems(structuredClone(DEFAULT_ITEMS));
+        }
+        if (data.success && data.data.navBgColor) {
+          setNavBgColor(data.data.navBgColor);
+          setSavedNavBgColor(data.data.navBgColor);
         }
       } catch {
         setNavItems(DEFAULT_ITEMS);
@@ -80,12 +87,13 @@ export default function NavigationManager() {
       const res = await fetch("/api/config", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ navItems }),
+        body: JSON.stringify({ navItems, navBgColor }),
       });
       const data = await res.json();
       if (data.success) {
         toast("navigation saved successfully", "success");
         setSavedItems(structuredClone(navItems));
+        setSavedNavBgColor(navBgColor);
       } else {
         toast("failed to save navigation", "error");
       }
@@ -381,19 +389,18 @@ export default function NavigationManager() {
                     {/* on/off pill — minimal width */}
                     <button
                       onClick={() => toggleVisibility(item.id)}
-                      className={`flex-shrink-0 w-8 h-5 rounded-full transition-colors relative ${
-                        item.isVisible ? "bg-green-500" : "bg-gray-200"
-                      }`}
                       title={
                         item.isVisible
                           ? "visible — click to hide"
                           : "hidden — click to show"
                       }
+                      className={`flex-shrink-0 relative inline-flex items-center w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none ${
+                        item.isVisible ? "bg-green-500" : "bg-gray-300"
+                      }`}
                     >
-                      {/* toggle dot */}
                       <span
-                        className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-transform ${
-                          item.isVisible ? "translate-x-3.5" : "translate-x-0.5"
+                        className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-transform duration-200 ${
+                          item.isVisible ? "translate-x-4" : "translate-x-0"
                         }`}
                       />
                     </button>
@@ -428,24 +435,123 @@ export default function NavigationManager() {
           </div>
         </div>
 
-        {/* navbar preview */}
+        {/* navbar background color picker */}
+        <div className="bg-white rounded-2xl border border-gray-100 p-4 sm:p-5 space-y-4">
+          <div>
+            <h3 className="font-bold text-gray-800 text-sm mb-0.5">
+              navbar background color
+            </h3>
+            <p className="text-xs text-gray-400">
+              applies to the top navigation bar on all pages
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <input
+              type="color"
+              value={navBgColor}
+              onChange={(e) => setNavBgColor(e.target.value)}
+              className="w-10 h-10 rounded-xl border-2 border-gray-200 cursor-pointer p-0.5 flex-shrink-0"
+            />
+            <input
+              type="text"
+              value={navBgColor}
+              onChange={(e) => setNavBgColor(e.target.value)}
+              className="flex-1 min-w-0 px-3 py-2.5 border border-gray-200 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-olive/20"
+              placeholder="#ffffff"
+            />
+            <button
+              onClick={() => setNavBgColor("#ffffff")}
+              className="flex-shrink-0 px-3 py-2.5 bg-gray-100 text-gray-500 rounded-xl text-xs font-semibold hover:bg-gray-200 transition-colors"
+            >
+              reset
+            </button>
+          </div>
+        </div>
+
+        {/* desktop navbar preview */}
         <div className="bg-white rounded-2xl border border-gray-100 p-4 sm:p-5">
           <div className="flex items-center gap-2 mb-3">
             <Eye size={15} className="text-olive flex-shrink-0" />
-            <h3 className="font-bold text-gray-800 text-sm">navbar preview</h3>
+            <h3 className="font-bold text-gray-800 text-sm">
+              desktop navbar preview
+            </h3>
           </div>
-          {/* overflow-x-auto here so preview scrolls independently */}
-          <div className="flex items-center gap-0.5 overflow-x-auto pb-1 scrollbar-hide">
-            {navItems
-              .filter((item) => item.isVisible)
-              .map((item) => (
-                <span
-                  key={item.id}
-                  className="flex-shrink-0 px-2.5 sm:px-3 py-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-olive transition-colors cursor-default"
-                >
-                  {item.name}
-                </span>
-              ))}
+          <div
+            className="rounded-xl px-4 py-3 flex items-center justify-between border border-gray-100"
+            style={{ backgroundColor: navBgColor }}
+          >
+            {/* logo mockup */}
+            <div className="flex items-center gap-2">
+              <div className="bg-olive p-1 rounded-lg">
+                <div className="w-3 h-3 bg-white rounded-sm opacity-80" />
+              </div>
+              <span className="font-serif text-sm font-bold text-sage-dark">
+                urban veda
+              </span>
+            </div>
+            {/* nav links mockup */}
+            <div className="flex items-center gap-3 overflow-x-auto pb-0.5 scrollbar-hide">
+              {navItems
+                .filter((item) => item.isVisible)
+                .map((item) => (
+                  <span
+                    key={item.id}
+                    className="flex-shrink-0 text-[10px] font-bold uppercase tracking-widest text-gray-500 cursor-default"
+                  >
+                    {item.name}
+                  </span>
+                ))}
+            </div>
+          </div>
+        </div>
+
+        {/* mobile bottom tab bar preview */}
+        <div className="bg-white rounded-2xl border border-gray-100 p-4 sm:p-5">
+          <div className="flex items-center gap-2 mb-3">
+            <Eye size={15} className="text-olive flex-shrink-0" />
+            <h3 className="font-bold text-gray-800 text-sm">
+              mobile bottom tab preview
+            </h3>
+            <span className="text-[10px] text-gray-400 ml-auto">
+              shows first 5 visible items
+            </span>
+          </div>
+          {/* phone frame mockup */}
+          <div className="bg-gray-100 rounded-2xl p-3 flex flex-col items-center gap-2">
+            {/* screen content mockup */}
+            <div className="w-full bg-gray-200 rounded-xl h-16 flex items-center justify-center">
+              <span className="text-[10px] text-gray-400 font-semibold">
+                page content
+              </span>
+            </div>
+            {/* bottom nav mockup */}
+            <div
+              className="w-full rounded-2xl border border-gray-200 shadow-lg px-2 py-2 flex items-center justify-around"
+              style={{ backgroundColor: navBgColor }}
+            >
+              {navItems
+                .filter((item) => item.isVisible)
+                .slice(0, 5)
+                .map((item, i) => (
+                  <div
+                    key={item.id}
+                    className={`flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-xl ${
+                      i === 0 ? "bg-olive" : ""
+                    }`}
+                  >
+                    <div
+                      className={`w-3.5 h-3.5 rounded-sm ${i === 0 ? "bg-white" : "bg-gray-300"}`}
+                    />
+                    <span
+                      className={`text-[8px] font-bold uppercase tracking-tight ${
+                        i === 0 ? "text-white" : "text-gray-400"
+                      }`}
+                    >
+                      {item.name.slice(0, 5)}
+                    </span>
+                  </div>
+                ))}
+            </div>
           </div>
         </div>
       </div>

@@ -25,6 +25,7 @@ interface NavigationProps {
   config: {
     logoName: string;
     logoImage?: string;
+    navBgColor?: string;
   };
   navItems?: NavItem[];
   onMobileMenuOpen: () => void; // kept for compatibility, not used in this component
@@ -43,7 +44,7 @@ export default function Navigation({ config, navItems }: NavigationProps) {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
+console.log("navItems:", config.navBgColor);
   const navLinks =
     navItems && navItems.length > 0
       ? navItems.filter((i) => i.isVisible).sort((a, b) => a.order - b.order)
@@ -78,10 +79,15 @@ export default function Navigation({ config, navItems }: NavigationProps) {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6 }}
+      style={
+        config.navBgColor ? { backgroundColor: config.navBgColor } : undefined
+      }
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-        isScrolled
-          ? "bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-100"
-          : "bg-white/70 backdrop-blur-sm"
+        config.navBgColor
+          ? "backdrop-blur-xl shadow-sm border-b border-gray-100/50"
+          : isScrolled
+            ? "bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-100"
+            : "bg-white/70 backdrop-blur-sm"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between lg:justify-between">

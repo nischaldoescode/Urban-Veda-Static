@@ -187,7 +187,7 @@ export default function AdminLayout({
 
   return (
     <ToastProvider>
-      <div className="min-h-screen bg-gray-50 flex">
+      <div className="min-h-screen bg-gray-50 flex overflow-hidden">
         {/* DESKTOP SIDEBAR — only in DOM on desktop */}
         {isDesktop && (
           <aside className="w-56 bg-white border-r border-gray-200 fixed top-0 left-0 h-screen z-40 flex flex-col">
@@ -226,10 +226,9 @@ export default function AdminLayout({
 
         {/* MAIN CONTENT */}
         <div
-          className="flex-1 flex flex-col min-h-screen transition-all duration-300"
+          className="flex-1 flex flex-col min-h-screen transition-all duration-300 overflow-x-hidden"
           style={{ marginLeft: isDesktop ? "224px" : "0" }}
         >
-          {/* mobile top bar */}
           {/* mobile top bar */}
           {!isDesktop && (
             <header className="h-14 bg-white border-b border-gray-200 flex items-center justify-between px-4 sticky top-0 z-30">
@@ -265,7 +264,7 @@ export default function AdminLayout({
           )}
 
           {/* page content */}
-          <main className="flex-1 overflow-x-hidden pb-28 lg:pb-6">
+          <main className="flex-1 overflow-x-hidden overflow-y-auto pb-20 lg:pb-6">
             {children}
           </main>
 
