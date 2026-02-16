@@ -44,7 +44,7 @@ export default function Navigation({ config, navItems }: NavigationProps) {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-console.log("navItems:", config.navBgColor);
+  
   const navLinks =
     navItems && navItems.length > 0
       ? navItems.filter((i) => i.isVisible).sort((a, b) => a.order - b.order)

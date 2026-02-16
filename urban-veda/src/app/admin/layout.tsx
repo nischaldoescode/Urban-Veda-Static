@@ -34,6 +34,7 @@ const mobileNavItems = [
   { name: "products", path: "/admin/products", icon: Package },
   { name: "pages", path: "/admin/pages", icon: FileText },
   { name: "nav", path: "/admin/navigation", icon: NavIcon },
+  { name: "media", path: "/admin/media", icon: ImageIcon },
   { name: "settings", path: "/admin/settings", icon: Settings },
 ];
 

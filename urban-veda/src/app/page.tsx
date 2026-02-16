@@ -85,12 +85,18 @@ export default async function HomePage() {
         scrollCtaBrushColor: configDoc.scrollCtaBrushColor,
         scrollCtaTextColor: configDoc.scrollCtaTextColor,
         navBgColor: configDoc.navBgColor,
+        homePageBgColor: configDoc.homePageBgColor,
+        aboutPageBgColor: configDoc.aboutPageBgColor,
+        philosophyPageBgColor: configDoc.philosophyPageBgColor,
+        productsPageBgColor: configDoc.productsPageBgColor,
+        contactPageBgColor: configDoc.contactPageBgColor,
       }
     : null;
 
   // serialize juices array
   const juices: JuiceType[] = juicesDocs.map((doc) => ({
     _id: doc._id.toString(), // convert ObjectId to string
+    slug: doc.slug || "",
     name: doc.name,
     ingredients: doc.ingredients,
     benefits: doc.benefits,
@@ -112,7 +118,10 @@ export default async function HomePage() {
   }
 
   return (
-    <main className="overflow-x-hidden">
+    <main
+      className="overflow-x-hidden"
+      style={{ backgroundColor: config.homePageBgColor || "transparent" }}
+    >
       {/* hero section with dynamic content */}
       <HeroSection config={config} />
 

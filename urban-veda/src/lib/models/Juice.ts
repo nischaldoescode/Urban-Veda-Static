@@ -46,20 +46,21 @@ const JuiceSchema = new Schema<IJuiceDocument>(
   },
 );
 
-JuiceSchema.pre<IJuiceDocument>("save", function (next) {
+JuiceSchema.pre("save", async function (this: IJuiceDocument) {
   if (!this.slug || this.isModified("name")) {
     const nameWords = this.name
       .split(" ")
       .filter((word) => word.length > 0)
       .slice(0, 2);
+
     const slugBase = nameWords
       .join("-")
       .toLowerCase()
       .replace(/[^a-z0-9-]/g, "");
+
     const uniqueId = Math.random().toString(36).substring(2, 8);
     this.slug = `${slugBase}-${uniqueId}`;
   }
-  next();
 });
 
 const Juice: Model<IJuiceDocument> =

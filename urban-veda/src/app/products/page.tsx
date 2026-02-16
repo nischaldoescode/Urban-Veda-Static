@@ -28,7 +28,10 @@ export default async function ProductsPage() {
   ]);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div
+      className="min-h-screen"
+      style={{ backgroundColor: config?.productsPageBgColor || "#ffffff" }}
+    >
       {/* hero header */}
       <div className="relative bg-gradient-to-br from-sage-bg via-white to-olive/5 pt-32 pb-16 sm:pb-20 px-4 sm:px-6 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(85,107,47,0.06)_0%,_transparent_60%)]" />
@@ -36,17 +39,17 @@ export default async function ProductsPage() {
           <ScrollReveal delay={0}>
             <div className="inline-flex items-center gap-2 bg-olive/10 text-olive border border-olive/20 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-4">
               <Leaf size={12} />
-              {(config as any)?.productsPageLabel || "signature collection"}
+              {config?.productsPageLabel || "signature collection"}
             </div>
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-sage-dark font-serif mb-4 whitespace-pre-line">
-              {(config as any)?.productsPageHeadline || "Healing Elixirs"}
+              {config?.productsPageHeadline || "Healing Elixirs"}
             </h1>
           </ScrollReveal>
           <ScrollReveal delay={0.2}>
             <p className="text-base sm:text-lg text-gray-500 max-w-xl mx-auto italic font-medium mb-8 whitespace-pre-line">
-              {(config as any)?.productsPageSubtext ||
+              {config?.productsPageSubtext ||
                 "sip health, skip the hospital."}
             </p>
           </ScrollReveal>
@@ -58,8 +61,7 @@ export default async function ProductsPage() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 bg-olive text-white px-5 py-2.5 rounded-full font-semibold hover:bg-olive/90 transition-all text-sm shadow-lg"
               >
-                {(config as any)?.productsPageSubscribeLabel ||
-                  "Subscribe on Milk Ride"}
+                {config?.productsPageSubscribeLabel || "Subscribe on Milk Ride"}
                 <ArrowRight size={14} />
               </a>
             </ScrollReveal>
@@ -111,8 +113,7 @@ export default async function ProductsPage() {
                           {juice.isPopular && (
                             <Badge className="bg-olive text-white border-none text-[10px] font-bold px-2.5 py-1 shadow-md">
                               ✦{" "}
-                              {(config as any)?.productCardBadgeText ||
-                                "highly requested"}
+                              {config?.productCardBadgeText || "highly requested"}
                             </Badge>
                           )}
                         </div>
@@ -121,8 +122,7 @@ export default async function ProductsPage() {
                         <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-2 group-hover:translate-y-0">
                           <span className="bg-white/95 backdrop-blur-sm text-olive font-bold text-xs px-4 py-2 rounded-full shadow-lg flex items-center gap-1.5">
                             <Sparkles size={11} />
-                            {(config as any)?.productCardExploreText ||
-                              "explore blend"}
+                            {config?.productCardExploreText || "explore blend"}
                           </span>
                         </div>
                       </div>

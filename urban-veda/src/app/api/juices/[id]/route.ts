@@ -92,12 +92,8 @@ export async function DELETE(
     const { id } = await params;
     await connectDB();
 
-    // soft delete by setting isActive to false
-    const juice = await Juice.findByIdAndUpdate(
-      id,
-      { isActive: false },
-      { new: true },
-    );
+    // HARD DELETE - actually remove from database
+    const juice = await Juice.findByIdAndDelete(id);
 
     if (!juice) {
       return NextResponse.json(

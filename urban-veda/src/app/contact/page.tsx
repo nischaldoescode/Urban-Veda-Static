@@ -23,6 +23,7 @@ interface ContactInfo {
   location: string;
   hours: string;
   whatsappLink: string;
+  contactPageBgColor?: string;
 }
 
 export default function ContactPage() {
@@ -40,6 +41,7 @@ export default function ContactPage() {
     location: "sobha city, bangalore",
     hours: "mon-sat, 8am-8pm",
     whatsappLink: "https://chat.whatsapp.com/HGAz9W01xJsHpIHnGUn38M",
+    contactPageBgColor: undefined,
   });
 
   useEffect(() => {
@@ -54,6 +56,7 @@ export default function ContactPage() {
               data.data.contactInfo?.location || "sobha city, bangalore",
             hours: data.data.contactInfo?.hours || "mon-sat, 8am-8pm",
             whatsappLink: data.data.whatsappLink,
+            contactPageBgColor: data.data.contactPageBgColor,
           });
         }
       })
@@ -112,7 +115,15 @@ export default function ContactPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-sage-bg">
+    <div
+      className="min-h-screen"
+      style={{
+        backgroundColor: contactInfo.contactPageBgColor || "transparent",
+        backgroundImage: contactInfo.contactPageBgColor
+          ? "none"
+          : "linear-gradient(to bottom, white, #f7f9f7)",
+      }}
+    >
       <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-28 sm:pt-32 pb-16 sm:pb-20">
         <ScrollReveal delay={0.2}>
           {/* header */}

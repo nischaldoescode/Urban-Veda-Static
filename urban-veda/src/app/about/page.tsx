@@ -75,7 +75,10 @@ export default async function AboutPage() {
     : defaultFeatures;
 
   return (
-    <div className="min-h-screen bg-white">
+    <div
+      className="min-h-screen"
+      style={{ backgroundColor: config.aboutPageBgColor || "#ffffff" }}
+    >
       {/* hero */}
       <section className="relative bg-gradient-to-br from-sage-bg via-white to-olive/5 pt-32 pb-16 px-4 sm:px-6 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(85,107,47,0.06)_0%,_transparent_60%)]" />

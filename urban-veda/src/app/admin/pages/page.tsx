@@ -76,6 +76,11 @@ const EMPTY: PageContent = {
   scrollCtaBgColor: "#2d3e2d",
   scrollCtaTextColor: "#f7f9f7",
   scrollCtaBrushColor: "#8fbc8f",
+  homePageBgColor: "",
+  aboutPageBgColor: "",
+  philosophyPageBgColor: "",
+  productsPageBgColor: "",
+  contactPageBgColor: "",
 };
 
 export default function PagesEditor() {
@@ -140,6 +145,11 @@ export default function PagesEditor() {
             scrollCtaBgColor: data.data.scrollCtaBgColor || "#2d3e2d",
             scrollCtaTextColor: data.data.scrollCtaTextColor || "#f7f9f7",
             scrollCtaBrushColor: data.data.scrollCtaBrushColor || "#8fbc8f",
+            homePageBgColor: data.data.homePageBgColor || "",
+            aboutPageBgColor: data.data.aboutPageBgColor || "",
+            philosophyPageBgColor: data.data.philosophyPageBgColor || "",
+            productsPageBgColor: data.data.productsPageBgColor || "",
+            contactPageBgColor: data.data.contactPageBgColor || "",
           };
           setContent(loaded);
           setSavedContent(structuredClone(loaded));
@@ -165,6 +175,7 @@ export default function PagesEditor() {
         method: "POST",
         body: formData,
       });
+      
       const data = await res.json();
       if (data.success) {
         setContent((prev) => ({
@@ -221,12 +232,75 @@ export default function PagesEditor() {
           scrollCtaBgColor: content.scrollCtaBgColor,
           scrollCtaTextColor: content.scrollCtaTextColor,
           scrollCtaBrushColor: content.scrollCtaBrushColor,
+          homePageBgColor: content.homePageBgColor,
+          aboutPageBgColor: content.aboutPageBgColor,
+          philosophyPageBgColor: content.philosophyPageBgColor,
+          productsPageBgColor: content.productsPageBgColor,
+          contactPageBgColor: content.contactPageBgColor,
           philosophyCtaSubtext: content.philosophyCtaSubtext,
           philosophyCtaBody: content.philosophyCtaBody,
           philosophyCtaTextColor: content.philosophyCtaTextColor,
         }),
       });
+
+          const payload = {
+      heroHeadline: content.hero.headline,
+      heroSubtext: content.hero.subtext,
+      heroStatLabel: content.heroStatLabel,
+      heroStatValue: content.heroStatValue,
+      challenges: content.challenges,
+      aboutPage: content.about,
+      philosophyPage: content.philosophy,
+      productPreviewLabel: content.productPreviewLabel,
+      productPreviewHeadline: content.productPreviewHeadline,
+      productPreviewSubtext: content.productPreviewSubtext,
+      productCardExploreText: content.productCardExploreText,
+      challengesSectionLabel: content.challengesSectionLabel,
+      challengesSectionHeadline: content.challengesSectionHeadline,
+      challengesSectionSubtext: content.challengesSectionSubtext,
+      ctaHeadline: content.ctaHeadline,
+      ctaSubtext: content.ctaSubtext,
+      productsPageLabel: content.productsPageLabel,
+      productsPageHeadline: content.productsPageHeadline,
+      productsPageSubtext: content.productsPageSubtext,
+      productsPageSubscribeLabel: content.productsPageSubscribeLabel,
+      productCardBadgeText: content.productCardBadgeText,
+      productOrderNote: content.productOrderNote,
+      heroImage: content.heroImage,
+      heroBadgeText: content.heroBadgeText,
+      heroButtonText: content.heroButtonText,
+      heroSecondaryButtonText: content.heroSecondaryButtonText,
+      trustPill1: content.trustPill1,
+      trustPill2: content.trustPill2,
+      trustPill3: content.trustPill3,
+      scrollCtaHeadline: content.scrollCtaHeadline,
+      scrollCtaSubtext: content.scrollCtaSubtext,
+      scrollCtaBgColor: content.scrollCtaBgColor,
+      scrollCtaTextColor: content.scrollCtaTextColor,
+      scrollCtaBrushColor: content.scrollCtaBrushColor,
+      homePageBgColor: content.homePageBgColor,
+      aboutPageBgColor: content.aboutPageBgColor,
+      philosophyPageBgColor: content.philosophyPageBgColor,
+      productsPageBgColor: content.productsPageBgColor,
+      contactPageBgColor: content.contactPageBgColor,
+      philosophyCtaHeadline: content.philosophyCtaHeadline,  // ← ADD THIS
+      philosophyCtaSubtext: content.philosophyCtaSubtext,
+      philosophyCtaBody: content.philosophyCtaBody,
+      philosophyCtaTextColor: content.philosophyCtaTextColor,
+    };
+
+    // ✅ ADD THIS DEBUG LINE
+    console.log('🔍 SAVING COLORS:', {
+      homePageBgColor: payload.homePageBgColor,
+      aboutPageBgColor: payload.aboutPageBgColor,
+      philosophyPageBgColor: payload.philosophyPageBgColor,
+      productsPageBgColor: payload.productsPageBgColor,
+      contactPageBgColor: payload.contactPageBgColor,
+    });
+
+    
       const data = await res.json();
+       console.log('✅ API RESPONSE:', data);
       if (data.success) {
         toast("changes saved successfully", "success");
         setSavedContent(structuredClone(content));
@@ -245,6 +319,7 @@ export default function PagesEditor() {
     { id: "heroAdvanced", name: "hero details", icon: Edit3 }, // NEW
     { id: "scrollCta", name: "scroll cta", icon: Sparkles },
     { id: "sections", name: "sections", icon: FileText },
+    { id: "pageColors", name: "page colors", icon: Sparkles },
     { id: "challenges", name: "challenges", icon: Sparkles },
     { id: "about", name: "about", icon: Info },
     { id: "philosophy", name: "philosophy", icon: Sparkles },
@@ -1118,6 +1193,74 @@ export default function PagesEditor() {
                       />
                     </div>
                   ))}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* ── PAGE COLORS TAB ── */}
+          {activeTab === "pageColors" && (
+            <div className="space-y-3 sm:space-y-4">
+              {[
+                {
+                  key: "homePageBgColor",
+                  label: "Home Page",
+                  placeholder: "#ffffff",
+                },
+                {
+                  key: "aboutPageBgColor",
+                  label: "About Page",
+                  placeholder: "#f7f9f7",
+                },
+                {
+                  key: "philosophyPageBgColor",
+                  label: "Philosophy Page",
+                  placeholder: "#f7f9f7",
+                },
+                {
+                  key: "productsPageBgColor",
+                  label: "Products Page",
+                  placeholder: "#ffffff",
+                },
+                {
+                  key: "contactPageBgColor",
+                  label: "Contact Page",
+                  placeholder: "#f7f9f7",
+                },
+              ].map(({ key, label, placeholder }) => (
+                <div
+                  key={key}
+                  className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 p-3 sm:p-5 space-y-3"
+                >
+                  <h3 className="text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 pb-2">
+                    {label} Background Color
+                  </h3>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="color"
+                      value={content[key] || placeholder}
+                      onChange={(e) =>
+                        setContent((p) => ({ ...p, [key]: e.target.value }))
+                      }
+                      className="w-10 h-10 rounded-xl border-2 border-gray-200 cursor-pointer p-0.5 flex-shrink-0"
+                    />
+                    <input
+                      type="text"
+                      value={content[key] || ""}
+                      onChange={(e) =>
+                        setContent((p) => ({ ...p, [key]: e.target.value }))
+                      }
+                      className="flex-1 min-w-0 px-3 py-2.5 border border-gray-200 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-olive/20"
+                      placeholder={placeholder}
+                    />
+                  </div>
+                  {/* Preview */}
+                  <div
+                    className="rounded-xl p-4 text-center"
+                    style={{ backgroundColor: content[key] || placeholder }}
+                  >
+                    <p className="text-sm text-gray-700">Preview: {label}</p>
+                  </div>
                 </div>
               ))}
             </div>

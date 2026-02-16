@@ -54,7 +54,7 @@ export default function HeroSection({ config }: HeroSectionProps) {
       {/* main hero section */}
       <section
         ref={heroRef}
-        className="relative min-h-[100svh] flex items-center justify-center overflow-hidden pt-16 sm:pt-20"
+        className="relative min-h-[100svh] flex items-center justify-center overflow-hidden pt-16 sm:pt-20 mt-8 sm:mt-7"
       >
         <motion.div
           style={{

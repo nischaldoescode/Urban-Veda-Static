@@ -105,6 +105,12 @@ export interface SiteConfig {
   productCardBadgeText?: string;
   productCardExploreText?: string;
 
+  homePageBgColor?: string;
+  aboutPageBgColor?: string;
+  philosophyPageBgColor?: string;
+  productsPageBgColor?: string;
+  contactPageBgColor?: string;
+
   updatedAt?: Date;
 }
 

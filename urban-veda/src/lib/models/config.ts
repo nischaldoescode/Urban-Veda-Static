@@ -105,6 +105,11 @@ export interface IConfig {
   // product card
   productCardBadgeText?: string;
   productCardExploreText?: string;
+  homePageBgColor?: string;
+  aboutPageBgColor?: string;
+  philosophyPageBgColor?: string;
+  productsPageBgColor?: string;
+  contactPageBgColor?: string;
 
   updatedAt: Date;
 }
@@ -128,39 +133,39 @@ const ConfigSchema = new Schema<IConfig>({
   heroStatValue: { type: String, default: "12+" },
   navBgColor: { type: String },
   heroImage: { type: String, default: "" },
-  heroBadgeText: { 
-    type: String, 
-    default: "exclusive for sobha city residents" 
+  heroBadgeText: {
+    type: String,
+    default: "exclusive for sobha city residents",
   },
-  heroButtonText: { 
-    type: String, 
-    default: "trial my pack" 
+  heroButtonText: {
+    type: String,
+    default: "trial my pack",
   },
-  heroSecondaryButtonText: { 
-    type: String, 
-    default: "join community" 
+  heroSecondaryButtonText: {
+    type: String,
+    default: "join community",
   },
-  
+
   trustPill1: { type: String, default: "100% organic" },
   trustPill2: { type: String, default: "no preservatives" },
   trustPill3: { type: String, default: "daily fresh" },
-  
+
   // Scroll CTA
-  scrollCtaHeadline: { 
-    type: String, 
-    default: "nature doesn't rush, yet everything is accomplished" 
+  scrollCtaHeadline: {
+    type: String,
+    default: "nature doesn't rush, yet everything is accomplished",
   },
-  scrollCtaSubtext: { 
-    type: String, 
-    default: "ancient wisdom" 
+  scrollCtaSubtext: {
+    type: String,
+    default: "ancient wisdom",
   },
-  scrollCtaBgColor: { 
-    type: String, 
-    default: "#2d3e2d"  // Was: "#2d3e2d" - Now lighter dark green
+  scrollCtaBgColor: {
+    type: String,
+    default: "#2d3e2d", // Was: "#2d3e2d" - Now lighter dark green
   },
-  scrollCtaBrushColor: { 
-    type: String, 
-    default: "#8fbc8f"  // Was: "#8fbc8f" - Now heavier/more saturated
+  scrollCtaBrushColor: {
+    type: String,
+    default: "#8fbc8f", // Was: "#8fbc8f" - Now heavier/more saturated
   },
   scrollCtaTextColor: { type: String, default: "#f7f9f7" },
   navItems: {
@@ -287,6 +292,12 @@ const ConfigSchema = new Schema<IConfig>({
   ctaSubtext: { type: String, default: "nature's prescription" },
   productCardBadgeText: { type: String, default: "highly requested" },
   productCardExploreText: { type: String, default: "explore blend" },
+
+  homePageBgColor: { type: String },
+  aboutPageBgColor: { type: String },
+  philosophyPageBgColor: { type: String },
+  productsPageBgColor: { type: String },
+  contactPageBgColor: { type: String },
 
   updatedAt: { type: Date, default: Date.now },
 });

@@ -27,7 +27,10 @@ export default async function PhilosophyPage() {
   const content = config.philosophyPage;
 
   return (
-    <div className="min-h-screen bg-sage-bg">
+    <div
+      className="min-h-screen bg-sage-bg"
+      style={{ backgroundColor: config.philosophyPageBgColor || "#f7f9f7" }}
+    >
       {/*
        * HERO SECTION
        *
