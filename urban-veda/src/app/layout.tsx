@@ -65,6 +65,7 @@ interface NavItem {
 interface LayoutConfig {
   logoName: string;
   logoImage?: string;
+  navBgColor?: string;
   whatsappLink: string;
   footerTagline?: string;
   navItems?: NavItem[];
@@ -91,6 +92,7 @@ export default function RootLayout({
   const [config, setConfig] = useState<LayoutConfig>({
     logoName: "Urban Veda",
     logoImage: undefined,
+    navBgColor: undefined,
     whatsappLink: "https://chat.whatsapp.com/HGAz9W01xJsHpIHnGUn38M",
     footerTagline: "ancient wisdom for a modern world.",
     navItems: undefined,
@@ -113,6 +115,7 @@ export default function RootLayout({
           setConfig({
             logoName: data.data.logoName,
             logoImage: data.data.logoImage,
+            navBgColor: data.data.navBgColor,
             whatsappLink: data.data.whatsappLink,
             footerTagline: data.data.footerTagline,
             socialLinks: data.data.socialLinks,
@@ -134,7 +137,11 @@ export default function RootLayout({
         {!isAdminRoute && (
           <>
             <Navigation
-              config={config}
+              config={{
+                logoName: config.logoName,
+                logoImage: config.logoImage,
+                navBgColor: config.navBgColor,
+              }}
               navItems={config.navItems}
               onMobileMenuOpen={() => {}}
             />

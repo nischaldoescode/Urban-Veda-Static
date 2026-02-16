@@ -2,6 +2,7 @@
 
 export interface Juice {
   _id: string;
+  slug: string;
   name: string;
   ingredients: string;
   benefits: string;

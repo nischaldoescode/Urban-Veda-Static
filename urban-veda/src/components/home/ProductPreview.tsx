@@ -78,7 +78,7 @@ export default function ProductPreview({
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8, delay: i * 0.2 }}
             >
-              <Link href={`/products/${juice._id}`}>
+              <Link href={`/products/${juice.slug}`}>
                 <div className="bg-white rounded-[2.5rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 group cursor-pointer">
                   <div className="flex flex-col md:flex-row h-full">
                     {/* image section */}

@@ -89,7 +89,7 @@ export default async function ProductsPage() {
                 <ScrollReveal key={juice._id.toString()} delay={i * 0.08}>
                   <Link
                     key={juice._id.toString()}
-                    href={`/products/${juice._id}`}
+                    href={`/products/${juice.slug}`}
                   >
                     <div className="group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-olive/20 hover:shadow-2xl transition-all duration-400 cursor-pointer">
                       {/* image */}

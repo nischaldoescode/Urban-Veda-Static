@@ -55,7 +55,7 @@ export default function ProductsManager() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const res = await fetch("/api/juices");
+        const res = await fetch("/api/admin/juices");
         const data = await res.json();
 
         if (data.success) {
