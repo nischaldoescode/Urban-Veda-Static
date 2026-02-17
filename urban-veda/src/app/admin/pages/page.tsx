@@ -243,64 +243,64 @@ export default function PagesEditor() {
         }),
       });
 
-          const payload = {
-      heroHeadline: content.hero.headline,
-      heroSubtext: content.hero.subtext,
-      heroStatLabel: content.heroStatLabel,
-      heroStatValue: content.heroStatValue,
-      challenges: content.challenges,
-      aboutPage: content.about,
-      philosophyPage: content.philosophy,
-      productPreviewLabel: content.productPreviewLabel,
-      productPreviewHeadline: content.productPreviewHeadline,
-      productPreviewSubtext: content.productPreviewSubtext,
-      productCardExploreText: content.productCardExploreText,
-      challengesSectionLabel: content.challengesSectionLabel,
-      challengesSectionHeadline: content.challengesSectionHeadline,
-      challengesSectionSubtext: content.challengesSectionSubtext,
-      ctaHeadline: content.ctaHeadline,
-      ctaSubtext: content.ctaSubtext,
-      productsPageLabel: content.productsPageLabel,
-      productsPageHeadline: content.productsPageHeadline,
-      productsPageSubtext: content.productsPageSubtext,
-      productsPageSubscribeLabel: content.productsPageSubscribeLabel,
-      productCardBadgeText: content.productCardBadgeText,
-      productOrderNote: content.productOrderNote,
-      heroImage: content.heroImage,
-      heroBadgeText: content.heroBadgeText,
-      heroButtonText: content.heroButtonText,
-      heroSecondaryButtonText: content.heroSecondaryButtonText,
-      trustPill1: content.trustPill1,
-      trustPill2: content.trustPill2,
-      trustPill3: content.trustPill3,
-      scrollCtaHeadline: content.scrollCtaHeadline,
-      scrollCtaSubtext: content.scrollCtaSubtext,
-      scrollCtaBgColor: content.scrollCtaBgColor,
-      scrollCtaTextColor: content.scrollCtaTextColor,
-      scrollCtaBrushColor: content.scrollCtaBrushColor,
-      homePageBgColor: content.homePageBgColor,
-      aboutPageBgColor: content.aboutPageBgColor,
-      philosophyPageBgColor: content.philosophyPageBgColor,
-      productsPageBgColor: content.productsPageBgColor,
-      contactPageBgColor: content.contactPageBgColor,
-      philosophyCtaHeadline: content.philosophyCtaHeadline,  // ← ADD THIS
-      philosophyCtaSubtext: content.philosophyCtaSubtext,
-      philosophyCtaBody: content.philosophyCtaBody,
-      philosophyCtaTextColor: content.philosophyCtaTextColor,
-    };
+    //       const payload = {
+    //   heroHeadline: content.hero.headline,
+    //   heroSubtext: content.hero.subtext,
+    //   heroStatLabel: content.heroStatLabel,
+    //   heroStatValue: content.heroStatValue,
+    //   challenges: content.challenges,
+    //   aboutPage: content.about,
+    //   philosophyPage: content.philosophy,
+    //   productPreviewLabel: content.productPreviewLabel,
+    //   productPreviewHeadline: content.productPreviewHeadline,
+    //   productPreviewSubtext: content.productPreviewSubtext,
+    //   productCardExploreText: content.productCardExploreText,
+    //   challengesSectionLabel: content.challengesSectionLabel,
+    //   challengesSectionHeadline: content.challengesSectionHeadline,
+    //   challengesSectionSubtext: content.challengesSectionSubtext,
+    //   ctaHeadline: content.ctaHeadline,
+    //   ctaSubtext: content.ctaSubtext,
+    //   productsPageLabel: content.productsPageLabel,
+    //   productsPageHeadline: content.productsPageHeadline,
+    //   productsPageSubtext: content.productsPageSubtext,
+    //   productsPageSubscribeLabel: content.productsPageSubscribeLabel,
+    //   productCardBadgeText: content.productCardBadgeText,
+    //   productOrderNote: content.productOrderNote,
+    //   heroImage: content.heroImage,
+    //   heroBadgeText: content.heroBadgeText,
+    //   heroButtonText: content.heroButtonText,
+    //   heroSecondaryButtonText: content.heroSecondaryButtonText,
+    //   trustPill1: content.trustPill1,
+    //   trustPill2: content.trustPill2,
+    //   trustPill3: content.trustPill3,
+    //   scrollCtaHeadline: content.scrollCtaHeadline,
+    //   scrollCtaSubtext: content.scrollCtaSubtext,
+    //   scrollCtaBgColor: content.scrollCtaBgColor,
+    //   scrollCtaTextColor: content.scrollCtaTextColor,
+    //   scrollCtaBrushColor: content.scrollCtaBrushColor,
+    //   homePageBgColor: content.homePageBgColor,
+    //   aboutPageBgColor: content.aboutPageBgColor,
+    //   philosophyPageBgColor: content.philosophyPageBgColor,
+    //   productsPageBgColor: content.productsPageBgColor,
+    //   contactPageBgColor: content.contactPageBgColor,
+    //   philosophyCtaHeadline: content.philosophyCtaHeadline,
+    //   philosophyCtaSubtext: content.philosophyCtaSubtext,
+    //   philosophyCtaBody: content.philosophyCtaBody,
+    //   philosophyCtaTextColor: content.philosophyCtaTextColor,
+    // };
 
-    // ✅ ADD THIS DEBUG LINE
-    console.log('🔍 SAVING COLORS:', {
-      homePageBgColor: payload.homePageBgColor,
-      aboutPageBgColor: payload.aboutPageBgColor,
-      philosophyPageBgColor: payload.philosophyPageBgColor,
-      productsPageBgColor: payload.productsPageBgColor,
-      contactPageBgColor: payload.contactPageBgColor,
-    });
+    // // ADD THIS DEBUG LINE
+    // console.log('SAVING COLORS:', {
+    //   homePageBgColor: payload.homePageBgColor,
+    //   aboutPageBgColor: payload.aboutPageBgColor,
+    //   philosophyPageBgColor: payload.philosophyPageBgColor,
+    //   productsPageBgColor: payload.productsPageBgColor,
+    //   contactPageBgColor: payload.contactPageBgColor,
+    // });
 
     
       const data = await res.json();
-       console.log('✅ API RESPONSE:', data);
+      //  console.log('API RESPONSE:', data);
       if (data.success) {
         toast("changes saved successfully", "success");
         setSavedContent(structuredClone(content));
