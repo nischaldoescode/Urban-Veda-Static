@@ -102,6 +102,7 @@ export default async function HomePage() {
     benefits: doc.benefits,
     description: doc.description,
     image: doc.image,
+    stickerImage: doc.stickerImage,
     orderLink: doc.orderLink,
     isPopular: doc.isPopular || false,
     sortOrder: doc.sortOrder || 0,

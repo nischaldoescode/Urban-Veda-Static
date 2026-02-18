@@ -24,12 +24,12 @@ import ScrollReveal from "@/components/shared/ScrollReveal";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const { id } = await params;
+  const { slug } = await params;
   await connectDB();
 
-  const juice = await Juice.findById(id).lean<JuiceType>();
+  const juice = await Juice.findOne({ slug }).lean<JuiceType>();
 
   if (!juice) {
     return {
@@ -51,24 +51,24 @@ export async function generateMetadata({
 // generate static paths for all products at build time
 export async function generateStaticParams() {
   await connectDB();
-  const juices = await Juice.find({ isActive: true }).select("_id").lean();
+  const juices = await Juice.find({ isActive: true }).select("slug").lean();
 
   return juices.map((juice) => ({
-    id: juice._id.toString(),
+    slug: juice.slug,
   }));
 }
 
 export default async function ProductDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }) {
-  const { id } = await params;
+  const { slug } = await params;
   await connectDB();
 
   // fetch product and config
   const [juice, config] = await Promise.all([
-    Juice.findById(id).lean<JuiceType>(),
+    Juice.findOne({ slug }).lean<JuiceType>(),
     Config.findOne().lean<SiteConfig>(),
   ]);
 

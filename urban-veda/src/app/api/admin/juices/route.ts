@@ -1,30 +1,33 @@
-import { NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
-import Juice from '@/lib/models/Juice';
-import { isAuthenticated } from '@/lib/auth';
+import { NextResponse } from "next/server";
+import connectDB from "@/lib/mongodb";
+import Juice from "@/lib/models/Juice";
+import { isAuthenticated } from "@/lib/auth";
 
 export async function GET() {
   try {
     const authenticated = await isAuthenticated();
     if (!authenticated) {
       return NextResponse.json(
-        { success: false, error: 'unauthorized' },
-        { status: 401 }
+        { success: false, error: "unauthorized" },
+        { status: 401 },
       );
     }
 
     await connectDB();
 
     const juices = await Juice.find({})
+      .select(
+        "_id slug name ingredients benefits description image stickerImage orderLink isPopular sortOrder isActive createdAt updatedAt",
+      )
       .sort({ sortOrder: 1, createdAt: -1 })
       .lean();
 
     return NextResponse.json({ success: true, data: juices });
   } catch (error) {
-    console.error('admin juices fetch error:', error);
+    console.error("admin juices fetch error:", error);
     return NextResponse.json(
-      { success: false, error: 'failed to fetch juices' },
-      { status: 500 }
+      { success: false, error: "failed to fetch juices" },
+      { status: 500 },
     );
   }
 }
