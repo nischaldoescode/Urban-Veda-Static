@@ -98,7 +98,11 @@ export default function PagesEditor() {
   useEffect(() => {
     async function fetchContent() {
       try {
-        const res = await fetch("/api/config");
+        const res = await fetch("/api/config", {
+          headers: {
+            "x-app-request": "urbanveda-internal",
+          },
+        });
         const data = await res.json();
         if (data.success) {
           const loaded: PageContent = {
@@ -168,14 +172,24 @@ export default function PagesEditor() {
     section: "about" | "philosophy",
   ) => {
     setUploading(true);
+
+    // Get CSRF token
+    const csrfToken = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("csrf_token="))
+      ?.split("=")[1];
+
     try {
       const formData = new FormData();
       formData.append("file", file);
       const res = await fetch("/api/upload", {
         method: "POST",
+        headers: {
+          "x-app-request": "urbanveda-internal",
+          "x-csrf-token": csrfToken || "",
+        },
         body: formData,
       });
-
       const data = await res.json();
       if (data.success) {
         setContent((prev) => ({
@@ -193,10 +207,21 @@ export default function PagesEditor() {
   const handleSave = async () => {
     if (!hasChanges) return;
     setSaving(true);
+
+    // Get CSRF token from cookie
+    const csrfToken = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("csrf_token="))
+      ?.split("=")[1];
+
     try {
       const res = await fetch("/api/config", {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-app-request": "urbanveda-internal",
+          "x-csrf-token": csrfToken || "",
+        },
         body: JSON.stringify({
           heroHeadline: content.hero.headline,
           heroSubtext: content.hero.subtext,

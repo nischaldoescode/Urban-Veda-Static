@@ -55,7 +55,11 @@ export default function ProductsManager() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const res = await fetch("/api/admin/juices");
+        const res = await fetch("/api/admin/juices", {
+          headers: {
+            "x-app-request": "urbanveda-internal",
+          },
+        });
         const data = await res.json();
 
         if (data.success) {
@@ -106,6 +110,12 @@ export default function ProductsManager() {
   const handleSave = async () => {
     if (!editingProduct) return;
 
+    // Get CSRF token
+    const csrfToken = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("csrf_token="))
+      ?.split("=")[1];
+
     try {
       const isNew = !editingProduct._id;
       const url = isNew ? "/api/juices" : `/api/juices/${editingProduct._id}`;
@@ -113,7 +123,11 @@ export default function ProductsManager() {
 
       const res = await fetch(url, {
         method,
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-app-request": "urbanveda-internal",
+          "x-csrf-token": csrfToken || "",
+        },
         body: JSON.stringify(editingProduct),
       });
 
@@ -149,8 +163,20 @@ export default function ProductsManager() {
     });
     if (!ok) return;
 
+    // Get CSRF token
+    const csrfToken = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("csrf_token="))
+      ?.split("=")[1];
+
     try {
-      const res = await fetch(`/api/juices/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/juices/${id}`, {
+        method: "DELETE",
+        headers: {
+          "x-app-request": "urbanveda-internal",
+          "x-csrf-token": csrfToken || "",
+        },
+      });
       const data = await res.json();
       if (data.success) {
         setProducts(products.filter((p) => p._id !== id));

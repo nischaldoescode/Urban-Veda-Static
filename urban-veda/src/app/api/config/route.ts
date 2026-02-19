@@ -4,9 +4,19 @@ import connectDB from "@/lib/mongodb";
 import Config from "@/lib/models/config";
 import { isAuthenticated } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { protectAPIRoute } from "@/lib/apiProtection";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Check if request is from allowed source
+    const protectionError = await protectAPIRoute(request);
+    if (protectionError) {
+      console.log("API Protection blocked request to GET /api/config");
+      return protectionError;
+    }
+
+    console.log("API Protection allowed request to GET /api/config");
+
     await connectDB();
 
     let config = await Config.findOne();
@@ -50,6 +60,18 @@ export async function GET() {
 
 export async function PUT(request: NextRequest) {
   try {
+    // Check if request is from allowed source with CSRF
+    const protectionError = await protectAPIRoute(request, {
+      requireAuth: true,
+      requireCSRF: true,
+    });
+    if (protectionError) {
+      console.log("API Protection blocked request to PUT /api/config");
+      return protectionError;
+    }
+
+    console.log("API Protection allowed request to PUT /api/config");
+
     const authenticated = await isAuthenticated();
     if (!authenticated) {
       return NextResponse.json(

@@ -108,7 +108,20 @@ export default function RootLayout({
   useEffect(() => {
     async function fetchConfig() {
       try {
-        const res = await fetch("/api/config");
+        // First, initialize CSRF token
+        await fetch("/api/csrf/init", {
+          method: "POST",
+          headers: {
+            "x-app-request": "urbanveda-internal",
+          },
+        });
+
+        // Then fetch config with protection
+        const res = await fetch("/api/config", {
+          headers: {
+            "x-app-request": "urbanveda-internal",
+          },
+        });
         const data = await res.json();
 
         if (data.success) {
