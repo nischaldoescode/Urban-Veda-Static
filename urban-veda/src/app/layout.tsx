@@ -169,7 +169,7 @@ export default function RootLayout({
         {/* only show public nav/footer if NOT on admin routes */}
         {!isAdminRoute && (
           <>
-            <MobileBottomNav />
+            <MobileBottomNav navBgColor={config.navBgColor} />
             <Footer config={config} />
           </>
         )}

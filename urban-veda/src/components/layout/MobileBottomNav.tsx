@@ -5,7 +5,11 @@ import { usePathname } from "next/navigation";
 import { Home, ShoppingBag, Sparkles, Info, Mail } from "lucide-react";
 import { motion } from "framer-motion";
 
-export default function MobileBottomNav() {
+interface MobileBottomNavProps {
+  navBgColor?: string;
+}
+
+export default function MobileBottomNav({ navBgColor }: MobileBottomNavProps) {
   const pathname = usePathname();
 
   const navItems = [
@@ -18,7 +22,12 @@ export default function MobileBottomNav() {
 
   return (
     <div className="lg:hidden fixed bottom-4 left-4 right-4 z-50 flex justify-center pointer-events-none">
-      <nav className="pointer-events-auto flex items-center gap-0.5 bg-white/95 backdrop-blur-xl border border-gray-200 rounded-2xl shadow-xl px-1.5 py-1.5">
+      <nav 
+        style={navBgColor ? { backgroundColor: navBgColor } : undefined}
+        className={`pointer-events-auto flex items-center gap-0.5 backdrop-blur-xl border border-gray-200 rounded-2xl shadow-xl px-1.5 py-1.5 ${
+          navBgColor ? '' : 'bg-white/95'
+        }`}
+      >
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.path;
