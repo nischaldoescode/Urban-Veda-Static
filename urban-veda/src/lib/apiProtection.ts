@@ -1,37 +1,55 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { verifyCSRFToken } from './csrf';
+import { NextRequest, NextResponse } from "next/server";
+import { verifyCSRFToken } from "./csrf";
+
+/**
+ * Get allowed origins from environment variable
+ * Splits comma-separated list and filters out empty strings
+ */
+function getAllowedOrigins(): string[] {
+  const envOrigins = process.env.ALLOWED_ORIGINS;
+
+  if (!envOrigins) {
+    // Default to localhost in development
+    return ["http://localhost:3000"];
+  }
+
+  // Split by comma and trim whitespace
+  return envOrigins
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter((origin) => origin.length > 0);
+}
 
 /**
  * Check if request is from allowed origin
  */
 function isAllowedOrigin(request: NextRequest): boolean {
-  const origin = request.headers.get('origin');
-  const referer = request.headers.get('referer');
-  
-  const allowedOrigins = [
-    process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
-    'http://localhost:3000',
-  ];
-  
-  // Check origin header
-  if (origin && allowedOrigins.some(allowed => origin.startsWith(allowed))) {
-    return true;
-  }
-  
-  // Check referer header as fallback
-  if (referer && allowedOrigins.some(allowed => referer.startsWith(allowed))) {
-    return true;
-  }
-  
-  return false;
-}
+  const origin = request.headers.get("origin");
+  const referer = request.headers.get("referer");
 
-/**
- * Check if request has required custom header
- */
-function hasRequiredHeader(request: NextRequest): boolean {
-  const customHeader = request.headers.get('x-app-request');
-  return customHeader === 'urbanveda-internal';
+  const allowedOrigins = getAllowedOrigins();
+
+  console.log("Checking origin/referer:", { origin, referer });
+  console.log("Allowed origins:", allowedOrigins);
+
+  // Check origin header (most reliable for cross-origin requests)
+  if (origin) {
+    const isAllowed = allowedOrigins.some((allowed) => origin === allowed);
+    console.log(`Origin "${origin}" allowed:`, isAllowed);
+    if (isAllowed) return true;
+  }
+
+  // now let's Check referer header as fallback (for same-origin navigation)
+  if (referer) {
+    const isAllowed = allowedOrigins.some((allowed) =>
+      referer.startsWith(allowed),
+    );
+    console.log(`Referer "${referer}" allowed:`, isAllowed);
+    if (isAllowed) return true;
+  }
+
+  console.log("No matching origin or referer found");
+  return false;
 }
 
 /**
@@ -43,35 +61,39 @@ export async function protectAPIRoute(
   options: {
     requireAuth?: boolean;
     requireCSRF?: boolean;
-  } = {}
+  } = {},
 ): Promise<NextResponse | null> {
-  // 1. Check custom header
-  if (!hasRequiredHeader(request)) {
+  console.log("protectAPIRoute called for:", request.url);
+
+  // 1. Check origin
+  const isAllowed = isAllowedOrigin(request);
+
+  if (!isAllowed) {
+    console.log("BLOCKED: Invalid origin");
     return NextResponse.json(
-      { success: false, error: 'Forbidden: Invalid request source' },
-      { status: 403 }
+      { success: false, error: "Forbidden: Invalid origin" },
+      { status: 403 },
     );
   }
-  
-  // 2. Check origin
-  if (!isAllowedOrigin(request)) {
-    return NextResponse.json(
-      { success: false, error: 'Forbidden: Invalid origin' },
-      { status: 403 }
-    );
-  }
-  
-  // 3. Check CSRF token (for mutation requests)
-  if (options.requireCSRF && request.method !== 'GET') {
+
+  console.log("Origin check passed");
+
+  // 2. Check CSRF token (for mutation requests)
+  if (options.requireCSRF && request.method !== "GET") {
     const isValidCSRF = await verifyCSRFToken(request);
+    console.log("CSRF valid:", isValidCSRF);
+
     if (!isValidCSRF) {
+      console.log("BLOCKED: Invalid CSRF token");
       return NextResponse.json(
-        { success: false, error: 'Forbidden: Invalid CSRF token' },
-        { status: 403 }
+        { success: false, error: "Forbidden: Invalid CSRF token" },
+        { status: 403 },
       );
     }
   }
-  
+
+  console.log("ALLOWED: All checks passed");
+
   // All checks passed
   return null;
 }
