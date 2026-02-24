@@ -50,7 +50,7 @@ export default async function HomePage() {
   ]);
 
   // serialize mongodb documents to plain objects (remove _id ObjectId)
-  const config: SiteConfig | null = configDoc
+const config: SiteConfig | null = configDoc
     ? {
         logoName: configDoc.logoName,
         logoImage: configDoc.logoImage,
@@ -58,6 +58,9 @@ export default async function HomePage() {
         heroSubtext: configDoc.heroSubtext,
         heroStatLabel: configDoc.heroStatLabel,
         heroStatValue: configDoc.heroStatValue,
+        heroSlides: configDoc.heroSlides || [],
+        heroCarouselEnabled: configDoc.heroCarouselEnabled || false,
+        heroCarouselInterval: configDoc.heroCarouselInterval || 5000,
         whatsappLink: configDoc.whatsappLink,
         milkRideSubscribeLink: configDoc.milkRideSubscribeLink,
         announcement: configDoc.announcement,

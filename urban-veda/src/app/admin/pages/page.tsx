@@ -110,6 +110,9 @@ export default function PagesEditor() {
               headline: data.data.heroHeadline || "",
               subtext: data.data.heroSubtext || "",
             },
+            heroSlides: data.data.heroSlides || [],
+            heroCarouselEnabled: data.data.heroCarouselEnabled || false,
+            heroCarouselInterval: data.data.heroCarouselInterval || 5000,
             challenges: data.data.challenges || [],
             about: data.data.aboutPage || EMPTY.about,
             philosophy: data.data.philosophyPage || EMPTY.philosophy,
@@ -227,6 +230,9 @@ export default function PagesEditor() {
           heroSubtext: content.hero.subtext,
           heroStatLabel: content.heroStatLabel,
           heroStatValue: content.heroStatValue,
+          heroSlides: content.heroSlides,
+          heroCarouselEnabled: content.heroCarouselEnabled,
+          heroCarouselInterval: content.heroCarouselInterval,
           challenges: content.challenges,
           aboutPage: content.about,
           philosophyPage: content.philosophy,
@@ -340,7 +346,8 @@ export default function PagesEditor() {
 
   const tabs = [
     { id: "hero", name: "hero", icon: HomeIcon },
-    { id: "heroAdvanced", name: "hero details", icon: Edit3 }, // NEW
+    { id: "heroAdvanced", name: "hero details", icon: Edit3 },
+    { id: "heroCarousel", name: "hero carousel", icon: Sparkles },
     { id: "scrollCta", name: "scroll cta", icon: Sparkles },
     { id: "sections", name: "sections", icon: FileText },
     { id: "pageColors", name: "page colors", icon: Sparkles },
@@ -925,6 +932,307 @@ export default function PagesEditor() {
                     />
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── HERO CAROUSEL TAB ── */}
+          {activeTab === "heroCarousel" && (
+            <div className="space-y-4">
+              {/* Enable/Disable Toggle */}
+              <div className="bg-white rounded-xl border border-gray-100 p-5 space-y-4">
+                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 pb-2">
+                  carousel settings
+                </h3>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-bold text-gray-700">
+                      Enable Carousel
+                    </p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      When enabled, replaces static hero image with sliding
+                      carousel
+                    </p>
+                  </div>
+                  <button
+                    onClick={() =>
+                      setContent((p) => ({
+                        ...p,
+                        heroCarouselEnabled: !p.heroCarouselEnabled,
+                      }))
+                    }
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      content.heroCarouselEnabled ? "bg-olive" : "bg-gray-200"
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        content.heroCarouselEnabled
+                          ? "translate-x-6"
+                          : "translate-x-1"
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 mb-2">
+                    Slide Interval (milliseconds)
+                  </label>
+                  <input
+                    type="number"
+                    min="1000"
+                    max="30000"
+                    step="1000"
+                    value={content.heroCarouselInterval || 5000}
+                    onChange={(e) =>
+                      setContent((p) => ({
+                        ...p,
+                        heroCarouselInterval: parseInt(e.target.value) || 5000,
+                      }))
+                    }
+                    className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-olive/20"
+                  />
+                  <p className="text-xs text-gray-400 mt-1">
+                    {((content.heroCarouselInterval || 5000) / 1000).toFixed(1)}{" "}
+                    seconds per slide
+                  </p>
+                </div>
+              </div>
+
+              {/* Slides List */}
+              <div className="bg-white rounded-xl border border-gray-100 p-5 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                      carousel slides
+                    </h3>
+                    <p className="text-xs text-gray-400 mt-1">
+                      {(content.heroSlides || []).length} slide(s) configured
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      const newSlide = {
+                        id: `slide-${Date.now()}`,
+                        image: "",
+                        headline: "",
+                        subtext: "",
+                        order: (content.heroSlides || []).length,
+                      };
+                      setContent((p) => ({
+                        ...p,
+                        heroSlides: [...(p.heroSlides || []), newSlide],
+                      }));
+                    }}
+                    className="flex items-center gap-1.5 px-3 py-2 bg-olive text-white rounded-lg text-xs font-semibold hover:bg-olive/90"
+                  >
+                    <Plus size={13} /> Add Slide
+                  </button>
+                </div>
+
+                {/* Slides */}
+                {(content.heroSlides || []).length === 0 ? (
+                  <p className="text-sm text-gray-400 text-center py-8">
+                    No slides added yet. Click "Add Slide" to create your first
+                    slide.
+                  </p>
+                ) : (
+                  (content.heroSlides || [])
+                    .sort((a: any, b: any) => a.order - b.order)
+                    .map((slide: any, idx: number) => (
+                      <div
+                        key={slide.id}
+                        className="border border-gray-200 rounded-xl p-4 space-y-3"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-gray-700">
+                            Slide {idx + 1}
+                          </span>
+                          <div className="flex items-center gap-2">
+                            {/* Move Up */}
+                            {idx > 0 && (
+                              <button
+                                onClick={() => {
+                                  const slides = [
+                                    ...(content.heroSlides || []),
+                                  ];
+                                  [slides[idx], slides[idx - 1]] = [
+                                    slides[idx - 1],
+                                    slides[idx],
+                                  ];
+                                  slides.forEach((s, i) => (s.order = i));
+                                  setContent((p) => ({
+                                    ...p,
+                                    heroSlides: slides,
+                                  }));
+                                }}
+                                className="p-1 text-gray-400 hover:text-olive rounded"
+                                title="Move up"
+                              >
+                                ↑
+                              </button>
+                            )}
+                            {/* Move Down */}
+                            {idx < (content.heroSlides || []).length - 1 && (
+                              <button
+                                onClick={() => {
+                                  const slides = [
+                                    ...(content.heroSlides || []),
+                                  ];
+                                  [slides[idx], slides[idx + 1]] = [
+                                    slides[idx + 1],
+                                    slides[idx],
+                                  ];
+                                  slides.forEach((s, i) => (s.order = i));
+                                  setContent((p) => ({
+                                    ...p,
+                                    heroSlides: slides,
+                                  }));
+                                }}
+                                className="p-1 text-gray-400 hover:text-olive rounded"
+                                title="Move down"
+                              >
+                                ↓
+                              </button>
+                            )}
+                            {/* Delete */}
+                            <button
+                              onClick={() =>
+                                setContent((p) => ({
+                                  ...p,
+                                  heroSlides: (p.heroSlides || []).filter(
+                                    (s: any) => s.id !== slide.id,
+                                  ),
+                                }))
+                              }
+                              className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            >
+                              <Trash2 size={13} />
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Image Upload */}
+                        <div>
+                          <label className="block text-xs font-bold text-gray-600 mb-1.5">
+                            Slide Image
+                          </label>
+                          {slide.image && (
+                            <div className="mb-2 relative aspect-video rounded-lg overflow-hidden group">
+                              <img
+                                src={slide.image}
+                                alt={`Slide ${idx + 1}`}
+                                className="w-full h-full object-cover"
+                              />
+                              <button
+                                onClick={() => {
+                                  const slides = [
+                                    ...(content.heroSlides || []),
+                                  ];
+                                  slides[idx].image = "";
+                                  setContent((p) => ({
+                                    ...p,
+                                    heroSlides: slides,
+                                  }));
+                                }}
+                                className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <Trash2 size={11} />
+                              </button>
+                            </div>
+                          )}
+                          <label className="flex items-center justify-center gap-2 px-3 py-2 bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors">
+                            <Upload size={14} />
+                            <span className="font-semibold text-gray-700 text-xs">
+                              {uploading
+                                ? "uploading..."
+                                : slide.image
+                                  ? "replace"
+                                  : "upload"}
+                            </span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              disabled={uploading}
+                              onChange={async (e) => {
+                                const f = e.target.files?.[0];
+                                if (!f) return;
+                                setUploading(true);
+                                const csrfToken = document.cookie
+                                  .split("; ")
+                                  .find((row) => row.startsWith("csrf_token="))
+                                  ?.split("=")[1];
+                                try {
+                                  const fd = new FormData();
+                                  fd.append("file", f);
+                                  const res = await fetch("/api/upload", {
+                                    method: "POST",
+                                    headers: {
+                                      "x-csrf-token": csrfToken || "",
+                                    },
+                                    body: fd,
+                                  });
+                                  const d = await res.json();
+                                  if (d.success) {
+                                    const slides = [
+                                      ...(content.heroSlides || []),
+                                    ];
+                                    slides[idx].image = d.data.url;
+                                    setContent((p) => ({
+                                      ...p,
+                                      heroSlides: slides,
+                                    }));
+                                  }
+                                } catch {
+                                  toast("upload failed", "error");
+                                } finally {
+                                  setUploading(false);
+                                }
+                              }}
+                            />
+                          </label>
+                        </div>
+
+                        {/* Optional Headline */}
+                        <div>
+                          <label className="block text-xs font-bold text-gray-600 mb-1">
+                            Headline (optional)
+                          </label>
+                          <input
+                            type="text"
+                            value={slide.headline || ""}
+                            onChange={(e) => {
+                              const slides = [...(content.heroSlides || [])];
+                              slides[idx].headline = e.target.value;
+                              setContent((p) => ({ ...p, heroSlides: slides }));
+                            }}
+                            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-olive/20"
+                            placeholder="Leave empty to hide text overlay"
+                          />
+                        </div>
+
+                        {/* Optional Subtext */}
+                        <div>
+                          <label className="block text-xs font-bold text-gray-600 mb-1">
+                            Subtext (optional)
+                          </label>
+                          <textarea
+                            value={slide.subtext || ""}
+                            rows={2}
+                            onChange={(e) => {
+                              const slides = [...(content.heroSlides || [])];
+                              slides[idx].subtext = e.target.value;
+                              setContent((p) => ({ ...p, heroSlides: slides }));
+                            }}
+                            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-olive/20 resize-none"
+                            placeholder="Optional description"
+                          />
+                        </div>
+                      </div>
+                    ))
+                )}
               </div>
             </div>
           )}

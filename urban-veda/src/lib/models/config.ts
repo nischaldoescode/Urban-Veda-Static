@@ -9,6 +9,15 @@ export interface IConfig {
   heroSubtext: string;
   heroStatLabel?: string;
   heroStatValue?: string;
+  heroSlides?: Array<{
+    id: string;
+    image: string;
+    headline?: string;
+    subtext?: string;
+    order: number;
+  }>;
+  heroCarouselEnabled?: boolean;
+  heroCarouselInterval?: number;
   heroBadgeText?: string;
   heroButtonText?: string;
   heroSecondaryButtonText?: string;
@@ -119,6 +128,20 @@ const ConfigSchema = new Schema<IConfig>({
   logoImage: { type: String },
   heroHeadline: { type: String, required: true },
   heroSubtext: { type: String, required: true },
+    heroSlides: {
+    type: [
+      {
+        id: { type: String, required: true },
+        image: { type: String, required: true },
+        headline: { type: String },
+        subtext: { type: String },
+        order: { type: Number, default: 0 },
+      },
+    ],
+    default: [],
+  },
+  heroCarouselEnabled: { type: Boolean, default: false },
+  heroCarouselInterval: { type: Number, default: 5000 }, // 5 seconds
   challenges: [
     {
       icon: { type: String, default: "Sparkles" },
