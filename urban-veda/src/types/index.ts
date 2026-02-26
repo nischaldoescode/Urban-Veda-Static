@@ -31,6 +31,14 @@ export interface ColorPalette {
   background: string;
 }
 
+export interface HeroSlide {
+  id: string;
+  image: string;
+  headline?: string;
+  subtext?: string;
+  order: number;
+}
+
 export interface SiteConfig {
   logoName: string;
   logoImage?: string;
@@ -39,7 +47,10 @@ export interface SiteConfig {
   heroStatLabel?: string;
   heroStatValue?: string;
   heroImage?: string;
-  heroBadgeText?: string; // "exclusive for sobha city residents"
+  heroSlides?: HeroSlide[];
+  heroCarouselEnabled?: boolean;
+  heroCarouselInterval?: number; // milliseconds
+  heroBadgeText?: string;
   heroButtonText?: string; // "trial my pack"
   heroSecondaryButtonText?: string; // "join community"
 
