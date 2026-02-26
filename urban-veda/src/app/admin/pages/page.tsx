@@ -197,8 +197,9 @@ export default function PagesEditor() {
           [section]: { ...prev[section], image: data.data.url },
         }));
       }
-    } catch {
-      toast("image upload failed", "error");
+    } catch (error) {
+      toast("Image Upload failed");
+      console.log("Image upload error:", error);
     } finally {
       setUploading(false);
     }
