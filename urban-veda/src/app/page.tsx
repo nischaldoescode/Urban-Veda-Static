@@ -49,8 +49,7 @@ export default async function HomePage() {
       .lean(),
   ]);
 
-  // serialize mongodb documents to plain objects (remove _id ObjectId)
-const config: SiteConfig | null = configDoc
+  const config: SiteConfig | null = configDoc
     ? {
         logoName: configDoc.logoName,
         logoImage: configDoc.logoImage,
@@ -58,7 +57,14 @@ const config: SiteConfig | null = configDoc
         heroSubtext: configDoc.heroSubtext,
         heroStatLabel: configDoc.heroStatLabel,
         heroStatValue: configDoc.heroStatValue,
-        heroSlides: configDoc.heroSlides || [],
+        heroSlides:
+          configDoc.heroSlides?.map((slide: any) => ({
+            id: slide.id,
+            image: slide.image,
+            headline: slide.headline || "",
+            subtext: slide.subtext || "",
+            order: slide.order,
+          })) || [],
         heroCarouselEnabled: configDoc.heroCarouselEnabled || false,
         heroCarouselInterval: configDoc.heroCarouselInterval || 5000,
         whatsappLink: configDoc.whatsappLink,

@@ -209,3 +209,11 @@
   0%, 100% { transform: rotate(8deg) translateY(0px); }
   50% { transform: rotate(8deg) translateY(-8px); }
 }
+/* globals.css */
+[data-slot="carousel"] {
+  height: 100%;
+}
+
+[data-slot="carousel-content"] {
+  height: 100%;
+}

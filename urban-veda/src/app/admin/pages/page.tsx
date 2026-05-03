@@ -530,6 +530,96 @@ export default function PagesEditor() {
         </div>
       )}
 
+      {/* Hero Carousel Tab Preview */}
+      {activeTab === "heroCarousel" && (
+        <div className="space-y-3 p-1">
+          {/* Settings Summary */}
+          <div className="bg-white rounded-xl p-3 border border-gray-100">
+            <p className="text-xs font-bold text-olive uppercase tracking-widest mb-2">
+              carousel settings
+            </p>
+            <div className="flex items-center justify-between text-xs mb-1">
+              <span className="text-gray-600">Status:</span>
+              <span
+                className={`font-bold ${content.heroCarouselEnabled ? "text-olive" : "text-gray-400"}`}
+              >
+                {content.heroCarouselEnabled ? "Enabled" : "Disabled"}
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-xs mb-1">
+              <span className="text-gray-600">Slides:</span>
+              <span className="font-bold text-gray-800">
+                {(content.heroSlides || []).length}
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-gray-600">Interval:</span>
+              <span className="font-bold text-gray-800">
+                {((content.heroCarouselInterval || 5000) / 1000).toFixed(1)}s
+              </span>
+            </div>
+          </div>
+
+          {/* Slides Preview */}
+          {(content.heroSlides || []).length === 0 ? (
+            <p className="text-xs text-gray-400 text-center py-4">
+              No slides configured yet
+            </p>
+          ) : (
+            <div className="space-y-2">
+              {(content.heroSlides || [])
+                .sort((a: any, b: any) => a.order - b.order)
+                .map((slide: any, i: number) => (
+                  <div
+                    key={slide.id}
+                    className="bg-white rounded-xl border border-gray-100 overflow-hidden"
+                  >
+                    {slide.image ? (
+                      <div className="relative aspect-video">
+                        <img
+                          src={slide.image}
+                          alt={`Slide ${i + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                        {(slide.headline || slide.subtext) && (
+                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
+                            {slide.headline && (
+                              <p className="text-xs font-bold text-white mb-0.5">
+                                {slide.headline}
+                              </p>
+                            )}
+                            {slide.subtext && (
+                              <p className="text-[10px] text-white/80">
+                                {slide.subtext}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="aspect-video bg-gray-100 flex items-center justify-center">
+                        <p className="text-xs text-gray-400">
+                          No image uploaded
+                        </p>
+                      </div>
+                    )}
+                    <div className="p-2 bg-gray-50">
+                      <p className="text-[10px] text-gray-500 font-bold">
+                        Slide {i + 1}
+                        {!slide.image && (
+                          <span className="text-red-400 ml-1">
+                            ⚠ Missing image
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Scroll CTA Tab */}
       {activeTab === "scrollCta" && (
         <div
@@ -777,69 +867,87 @@ export default function PagesEditor() {
                 </div>
               </div>
 
-              {/*
-               * FIX 5: hero image upload was INSIDE grid-cols-2 as the 3rd child
-               * → it landed in the left column of row 2 = half width = overflow.
-               * Now it's OUTSIDE the grid, full width below.
-               */}
-              <div>
-                <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5">
-                  hero background image
-                </label>
-                {content.heroImage && (
-                  <div className="mb-3 relative aspect-video rounded-xl overflow-hidden group">
-                    <img
-                      src={content.heroImage}
-                      alt="hero"
-                      className="w-full h-full object-cover"
+              {/* Hero Background Image - Only show when carousel is disabled */}
+              {!content.heroCarouselEnabled && (
+                <div>
+                  <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5">
+                    hero background image
+                  </label>
+                  <p className="text-xs text-gray-400 mb-2">
+                    Static background image (disabled when carousel is active)
+                  </p>
+                  {content.heroImage && (
+                    <div className="mb-3 relative aspect-video rounded-xl overflow-hidden group">
+                      <img
+                        src={content.heroImage}
+                        alt="hero"
+                        className="w-full h-full object-cover"
+                      />
+                      <button
+                        onClick={() =>
+                          setContent((p) => ({ ...p, heroImage: "" }))
+                        }
+                        className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    </div>
+                  )}
+                  <label className="flex items-center justify-center gap-2 px-4 py-3 bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl hover:bg-gray-100 cursor-pointer transition-colors">
+                    <Upload size={16} />
+                    <span className="font-semibold text-gray-700 text-sm">
+                      {uploading
+                        ? "uploading..."
+                        : content.heroImage
+                          ? "replace image"
+                          : "upload hero image"}
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      disabled={uploading}
+                      onChange={async (e) => {
+                        const f = e.target.files?.[0];
+                        if (!f) return;
+                        setUploading(true);
+                        try {
+                          const fd = new FormData();
+                          fd.append("file", f);
+                          const res = await fetch("/api/upload", {
+                            method: "POST",
+                            body: fd,
+                          });
+                          const d = await res.json();
+                          if (d.success)
+                            setContent((p) => ({
+                              ...p,
+                              heroImage: d.data.url,
+                            }));
+                        } catch {
+                          toast("upload failed", "error");
+                        } finally {
+                          setUploading(false);
+                        }
+                      }}
                     />
-                    <button
-                      onClick={() =>
-                        setContent((p) => ({ ...p, heroImage: "" }))
-                      }
-                      className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <Trash2 size={13} />
-                    </button>
-                  </div>
-                )}
-                <label className="flex items-center justify-center gap-2 px-4 py-3 bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl hover:bg-gray-100 cursor-pointer transition-colors">
-                  <Upload size={16} />
-                  <span className="font-semibold text-gray-700 text-sm">
-                    {uploading
-                      ? "uploading..."
-                      : content.heroImage
-                        ? "replace image"
-                        : "upload hero image"}
-                  </span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    disabled={uploading}
-                    onChange={async (e) => {
-                      const f = e.target.files?.[0];
-                      if (!f) return;
-                      setUploading(true);
-                      try {
-                        const fd = new FormData();
-                        fd.append("file", f);
-                        const res = await fetch("/api/upload", {
-                          method: "POST",
-                          body: fd,
-                        });
-                        const d = await res.json();
-                        if (d.success)
-                          setContent((p) => ({ ...p, heroImage: d.data.url }));
-                      } catch {
-                        toast("upload failed", "error");
-                      } finally {
-                        setUploading(false);
-                      }
-                    }}
-                  />
-                </label>
-              </div>
+                  </label>
+                </div>
+              )}
+
+              {/* Info message when carousel is enabled */}
+              {content.heroCarouselEnabled && (
+                <div className="bg-olive/5 border border-olive/20 rounded-xl p-4">
+                  <p className="text-sm text-gray-700 flex items-center gap-2">
+                    <Sparkles size={16} className="text-olive flex-shrink-0" />
+                    <span>
+                      Hero carousel is active. Background image is hidden.
+                      Configure slides in the <strong>Hero Carousel</strong>{" "}
+                      tab.
+                    </span>
+                  </p>
+                </div>
+              )}
             </div>
           )}
 

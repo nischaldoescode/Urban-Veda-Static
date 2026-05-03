@@ -4,7 +4,12 @@
  */
 "use client";
 
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  AnimatePresence,
+} from "framer-motion";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -61,12 +66,14 @@ export default function HeroSection({ config }: HeroSectionProps) {
   return (
     <>
       {/* main hero section */}
-  <section
+      <section
         ref={heroRef}
         className="relative min-h-[100svh] flex items-center justify-center overflow-hidden pt-16 sm:pt-20 mt-8 sm:mt-7"
       >
         {/* Carousel Background or Static Image */}
-        {config.heroCarouselEnabled && config.heroSlides && config.heroSlides.length > 0 ? (
+        {config.heroCarouselEnabled &&
+        config.heroSlides &&
+        config.heroSlides.length > 0 ? (
           <HeroCarousel
             slides={config.heroSlides}
             interval={config.heroCarouselInterval || 5000}
@@ -275,7 +282,7 @@ export default function HeroSection({ config }: HeroSectionProps) {
               )}
           </h2>
         </div>
-</motion.section>
+      </motion.section>
     </>
   );
 }
@@ -304,108 +311,121 @@ function HeroCarousel({
 }: HeroCarouselProps) {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
-  const [count, setCount] = useState(0);
-  
-  const plugin = useRef(
-    Autoplay({ delay: interval, stopOnInteraction: true })
-  );
 
+  const plugin = useRef(Autoplay({ delay: interval, stopOnInteraction: true }));
   const sortedSlides = [...slides].sort((a, b) => a.order - b.order);
 
   useEffect(() => {
-    if (!api) return;
+    if (!api) {
+      console.log("⚠️ Carousel API not ready yet");
+      return;
+    }
 
-    setCount(api.scrollSnapList().length);
+    console.log("✅ Carousel API initialized:", {
+      snapCount: api.scrollSnapList().length,
+      canScrollNext: api.canScrollNext(),
+      canScrollPrev: api.canScrollPrev(),
+    });
+
     setCurrent(api.selectedScrollSnap());
 
-    api.on("select", () => {
+    const onSelect = () => {
       setCurrent(api.selectedScrollSnap());
-    });
+      console.log("📍 Slide changed to:", api.selectedScrollSnap());
+    };
+
+    api.on("select", onSelect);
+
+    return () => {
+      api.off("select", onSelect);
+    };
   }, [api]);
 
+  console.log("🎠 Carousel Render:", {
+    slidesCount: sortedSlides.length,
+    currentSlide: current,
+    hasApi: !!api,
+  });
+
+  if (sortedSlides.length === 0) {
+    return (
+      <div className="absolute inset-0 bg-gradient-to-br from-sage-bg via-olive/5 to-herbal-green/10" />
+    );
+  }
+
   return (
-    <motion.div
-      style={{
-        opacity: imageOpacity,
-        scale: imageScale,
-      }}
-      className="absolute inset-0"
-    >
+    <div className="absolute inset-0 overflow-hidden">
       <Carousel
         setApi={setApi}
         plugins={[plugin.current]}
         className="w-full h-full"
         opts={{
-          align: "start",
           loop: true,
+          align: "start",
         }}
         onMouseEnter={() => plugin.current.stop()}
         onMouseLeave={() => plugin.current.play()}
       >
-        <CarouselContent className="h-full">
-          {sortedSlides.map((slide, index) => (
-            <CarouselItem key={slide.id} className="h-full relative">
-              <AnimatePresence mode="wait">
-                {current === index && (
-                  <motion.div
-                    key={slide.id}
-                    initial={{ opacity: 0, scale: 1.1 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.7, ease: "easeOut" }}
-                    className="absolute inset-0"
-                  >
-                    <div
-                      className="absolute inset-0 bg-cover bg-center bg-no-repeat w-full h-full"
-                      style={{
-                        backgroundImage: `url(${slide.image})`,
-                      }}
-                    />
+        <CarouselContent className="h-full ml-0">
+          {sortedSlides.map((slide) => (
+            <CarouselItem key={slide.id} className="basis-full h-full pl-0">
+              <motion.div
+                style={{
+                  opacity: imageOpacity,
+                  scale: imageScale,
+                }}
+                className="relative w-full h-full"
+              >
+                {/* Background Image */}
+                <div
+                  className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                  style={{
+                    backgroundImage: `url(${slide.image})`,
+                    backgroundColor: "#1a1a1a",
+                  }}
+                />
 
-                    {/* Text Overlay if provided */}
-                    {(slide.headline || slide.subtext) && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 0.3 }}
-                        className="absolute bottom-20 left-1/2 -translate-x-1/2 z-10 text-center max-w-3xl px-4"
-                      >
-                        {slide.headline && (
-                          <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white drop-shadow-2xl mb-2 font-serif">
-                            {slide.headline}
-                          </h3>
-                        )}
-                        {slide.subtext && (
-                          <p className="text-sm sm:text-base text-white/90 drop-shadow-lg">
-                            {slide.subtext}
-                          </p>
-                        )}
-                      </motion.div>
-                    )}
-                  </motion.div>
+                {/* Dark Overlay */}
+                <motion.div
+                  style={{
+                    opacity: useTransform(heroProgress, [0, 1], [1, 0.3]),
+                  }}
+                  className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/20 sm:from-black/60 sm:via-black/30 sm:to-transparent pointer-events-none"
+                />
+
+                {/* Text Overlay */}
+                {(slide.headline || slide.subtext) && (
+                  <div className="absolute inset-0 flex items-end justify-center pb-32 px-4 z-10">
+                    <div className="text-center max-w-3xl">
+                      {slide.headline && (
+                        <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white drop-shadow-2xl mb-2 font-serif">
+                          {slide.headline}
+                        </h3>
+                      )}
+                      {slide.subtext && (
+                        <p className="text-sm sm:text-base text-white/90 drop-shadow-lg">
+                          {slide.subtext}
+                        </p>
+                      )}
+                    </div>
+                  </div>
                 )}
-              </AnimatePresence>
+              </motion.div>
             </CarouselItem>
           ))}
         </CarouselContent>
 
-        {/* Navigation Arrows - Hidden on mobile */}
-        <div className="hidden lg:block">
-          <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 border-white/20 text-white backdrop-blur-sm" />
-          <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 border-white/20 text-white backdrop-blur-sm" />
-        </div>
-
         {/* Dots Indicator */}
-        {count > 1 && (
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-20">
-            {Array.from({ length: count }).map((_, index) => (
+        {sortedSlides.length > 1 && (
+          <div className="absolute bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 flex gap-1.5 sm:gap-2 z-30">
+            {sortedSlides.map((_, index) => (
               <button
                 key={index}
                 onClick={() => api?.scrollTo(index)}
-                className={`h-2 rounded-full transition-all duration-300 ${
+                className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 ${
                   index === current
-                    ? "w-8 bg-white"
-                    : "w-2 bg-white/40 hover:bg-white/60"
+                    ? "w-6 sm:w-8 bg-white"
+                    : "w-1.5 sm:w-2 bg-white/40 hover:bg-white/60"
                 }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
@@ -413,14 +433,6 @@ function HeroCarousel({
           </div>
         )}
       </Carousel>
-
-      {/* Dark Overlay */}
-      <motion.div
-        style={{
-          opacity: useTransform(heroProgress, [0, 1], [1, 0.3]),
-        }}
-        className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/20 sm:from-black/60 sm:via-black/30 sm:to-transparent pointer-events-none"
-      />
-    </motion.div>
+    </div>
   );
 }
